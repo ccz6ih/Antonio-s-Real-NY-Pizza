@@ -1,0 +1,155 @@
+{%- liquid
+  assign base_price = product.selected_or_first_available_variant.price
+  assign base_price_dollars = base_price | money
+-%}
+
+<div class="pb-appetizer" id="pb-appetizer-{{ product.id }}" data-variant-id="{{ product.selected_or_first_available_variant.id }}" data-base-price="{{ base_price }}">
+
+  <div class="pb-appetizer__inner">
+
+    <div class="pb-appetizer__header">
+      <h2 class="pb-appetizer__title">{{ product.title }}</h2>
+      <p class="pb-appetizer__price" data-appetizer-price>{{ base_price_dollars }}</p>
+    </div>
+
+    <!-- Sauce Picker -->
+    <div class="pb-appetizer__section">
+      <label class="pb-appetizer__label" for="pb-sauce-select-{{ product.id }}">Choose a Dipping Sauce</label>
+      <div class="pb-select-wrap">
+        <select class="pb-select" id="pb-sauce-select-{{ product.id }}" aria-label="Dipping sauce">
+          <option value="Marinara" selected>Marinara</option>
+          <option value="Buffalo">Buffalo</option>
+          <option value="Honey Mustard">Honey Mustard</option>
+          <option value="Ranch">Ranch</option>
+          <option value="BBQ">BBQ</option>
+        </select>
+        <div class="pb-select-wrap__arrow" aria-hidden="true">&#9660;</div>
+      </div>
+    </div>
+
+    <!-- Quantity Selector -->
+    <div class="pb-appetizer__section">
+      <label class="pb-appetizer__label" id="pb-app-qty-label-{{ product.id }}">Quantity</label>
+      <div class="pb-qty" role="group" aria-labelledby="pb-app-qty-label-{{ product.id }}">
+        <button type="button" class="pb-qty__btn pb-qty__btn--minus" aria-label="Decrease quantity" data-qty-minus>&#8722;</button>
+        <input
+          type="number"
+          class="pb-qty__input"
+          id="pb-app-qty-{{ product.id }}"
+          value="1"
+          min="1"
+          max="99"
+          aria-label="Quantity"
+          data-qty-input
+          readonly
+        >
+        <button type="button" class="pb-qty__btn pb-qty__btn--plus" aria-label="Increase quantity" data-qty-plus>&#43;</button>
+      </div>
+    </div>
+
+    <!-- Add to Order Button -->
+    <div class="pb-appetizer__cta">
+      <button type="button" class="pb-btn-atc pb-btn-atc--full" data-atc aria-label="Add to order">
+        Add to Order
+      </button>
+    </div>
+    <div class="pb-atc-feedback" aria-live="polite" aria-atomic="true"></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var ROOT_SELECTOR = '#pb-appetizer-{{ product.id }}';
+
+  function pbAppetizer() {
+    var root = document.querySelector(ROOT_SELECTOR);
+    if (!root) return;
+
+    var variantId = root.dataset.variantId;
+    var quantity = 1;
+
+    var qtyInput = root.querySelector('[data-qty-input]');
+    var minusBtn = root.querySelector('[data-qty-minus]');
+    var plusBtn = root.querySelector('[data-qty-plus]');
+    var atcBtn = root.querySelector('[data-atc]');
+    var feedbackEl = root.querySelector('.pb-atc-feedback');
+    var sauceSelect = root.querySelector('.pb-select');
+
+    function updateQtyDisplay() {
+      if (qtyInput) qtyInput.value = quantity;
+      if (minusBtn) minusBtn.disabled = quantity <= 1;
+    }
+
+    if (minusBtn) {
+      minusBtn.addEventListener('click', function () {
+        if (quantity > 1) { quantity--; updateQtyDisplay(); }
+      });
+    }
+
+    if (plusBtn) {
+      plusBtn.addEventListener('click', function () {
+        if (quantity < 99) { quantity++; updateQtyDisplay(); }
+      });
+    }
+
+    if (qtyInput) {
+      qtyInput.addEventListener('change', function () {
+        var val = parseInt(qtyInput.value, 10);
+        if (!isNaN(val) && val >= 1 && val <= 99) {
+          quantity = val;
+        }
+        updateQtyDisplay();
+      });
+    }
+
+    if (atcBtn) {
+      atcBtn.addEventListener('click', function () {
+        var sauce = sauceSelect ? sauceSelect.value : 'Marinara';
+        var properties = { 'Sauce': sauce };
+
+        atcBtn.classList.add('pb-btn-atc--loading');
+        atcBtn.setAttribute('disabled', 'disabled');
+        atcBtn.textContent = 'Adding\u2026';
+
+        fetch('/cart/add.json', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ id: variantId, quantity: quantity, properties: properties })
+        })
+        .then(function (res) { if (!res.ok) throw new Error('Cart error'); return res.json(); })
+        .then(function () {
+          atcBtn.classList.remove('pb-btn-atc--loading');
+          atcBtn.classList.add('pb-btn-atc--success');
+          atcBtn.textContent = 'Added!';
+          if (feedbackEl) feedbackEl.textContent = 'Item added to your order.';
+          document.dispatchEvent(new CustomEvent('cart:refresh'));
+          setTimeout(function () {
+            atcBtn.classList.remove('pb-btn-atc--success');
+            atcBtn.removeAttribute('disabled');
+            atcBtn.textContent = 'Add to Order';
+            if (feedbackEl) feedbackEl.textContent = '';
+          }, 3000);
+        })
+        .catch(function (err) {
+          atcBtn.classList.remove('pb-btn-atc--loading');
+          atcBtn.removeAttribute('disabled');
+          atcBtn.textContent = 'Add to Order';
+          if (feedbackEl) feedbackEl.textContent = 'Something went wrong. Please try again.';
+          console.error(err);
+        });
+      });
+    }
+
+    updateQtyDisplay();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', pbAppetizer);
+  } else {
+    pbAppetizer();
+  }
+})();
+</script>

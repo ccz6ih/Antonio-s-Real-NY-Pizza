@@ -1,0 +1,310 @@
+{%- liquid
+  assign base_price = product.selected_or_first_available_variant.price
+  assign base_price_dollars = base_price | money
+-%}
+
+<div class="pb-calzone" id="pb-calzone-{{ product.id }}" data-variant-id="{{ product.selected_or_first_available_variant.id }}" data-base-price="{{ base_price }}">
+
+  <div class="pb-calzone__inner">
+
+    <div class="pb-calzone__header">
+      <h2 class="pb-calzone__title">{{ product.title }}</h2>
+      <p class="pb-calzone__price-display" data-calzone-price>{{ base_price_dollars }}</p>
+    </div>
+
+    <!-- Fillings Grid -->
+    <div class="pb-calzone__section">
+      <h3 class="pb-calzone__section-label">Choose Your Fillings <span class="pb-calzone__section-sub">Pick up to 6 &mdash; each +$2.50</span></h3>
+
+      <div class="pb-topping-grid" role="group" aria-label="Filling selection" data-max="6">
+
+        <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Pepperoni">
+          <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Pepperoni-Slide-01.png" alt="Pepperoni" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+          <span class="pb-topping-tile__label">Pepperoni</span>
+        </button>
+
+        <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Mushrooms">
+          <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Mushroom-Slide.png" alt="Mushrooms" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+          <span class="pb-topping-tile__label">Mushrooms</span>
+        </button>
+
+        <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Tomatoes">
+          <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Tomato-Slide.png" alt="Tomatoes" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+          <span class="pb-topping-tile__label">Tomatoes</span>
+        </button>
+
+        <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Black Olives">
+          <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Black-Olive.png" alt="Black Olives" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+          <span class="pb-topping-tile__label">Black Olives</span>
+        </button>
+
+        <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Sweet Peppers">
+          <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Sweet-Pepper.png" alt="Sweet Peppers" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+          <span class="pb-topping-tile__label">Sweet Peppers</span>
+        </button>
+
+        <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Extra Cheese">
+          <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Cheese.png" alt="Extra Cheese" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+          <span class="pb-topping-tile__label">Extra Cheese</span>
+        </button>
+
+        <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Oregano">
+          <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Oregano-Leaves.png" alt="Oregano" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+          <span class="pb-topping-tile__label">Oregano</span>
+        </button>
+
+        <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Arugula">
+          <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Rocket-Leave.png" alt="Arugula" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+          <span class="pb-topping-tile__label">Arugula</span>
+        </button>
+
+        {%- assign calzone_text_fillings = 'Sausage,Onions,Anchovies,Jalapeños,Spinach,Basil' | split: ',' -%}
+        {%- for filling in calzone_text_fillings -%}
+          <button type="button" class="pb-topping-tile pb-topping-tile--text" aria-pressed="false" data-value="{{ filling | strip }}">
+            <span class="pb-topping-tile__text-icon">{{ filling | strip | slice: 0, 2 | upcase }}</span>
+            <span class="pb-topping-tile__label">{{ filling | strip }}</span>
+          </button>
+        {%- endfor -%}
+
+      </div>
+
+      <div class="pb-topping-counter" aria-live="polite" aria-atomic="true">
+        <span class="pb-topping-counter__badge">0 fillings &mdash; +$0.00</span>
+      </div>
+    </div>
+
+    <!-- Ricotta Toggle -->
+    <div class="pb-calzone__section">
+      <h3 class="pb-calzone__section-label">Add Ricotta?</h3>
+      <div class="pb-toggle-group" role="group" aria-label="Ricotta">
+        <button type="button" class="pb-toggle-btn is-selected" data-toggle="ricotta" data-value="Yes" aria-pressed="true">Yes, Please</button>
+        <button type="button" class="pb-toggle-btn" data-toggle="ricotta" data-value="No" aria-pressed="false">No Thanks</button>
+      </div>
+    </div>
+
+    <!-- Extra Sauce Toggle -->
+    <div class="pb-calzone__section">
+      <h3 class="pb-calzone__section-label">Extra Sauce on the Side?</h3>
+      <div class="pb-toggle-group" role="group" aria-label="Extra sauce">
+        <button type="button" class="pb-toggle-btn" data-toggle="extra_sauce" data-value="Yes" aria-pressed="false">Yes, Please</button>
+        <button type="button" class="pb-toggle-btn is-selected" data-toggle="extra_sauce" data-value="No" aria-pressed="true">No Thanks</button>
+      </div>
+    </div>
+
+    <!-- Notes -->
+    <div class="pb-calzone__section">
+      <label class="pb-calzone__section-label" for="pb-calzone-notes-{{ product.id }}">Special Instructions <span class="pb-calzone__section-sub">(optional)</span></label>
+      <div class="pb-textarea-wrap">
+        <textarea
+          class="pb-textarea"
+          id="pb-calzone-notes-{{ product.id }}"
+          maxlength="200"
+          rows="3"
+          placeholder="E.g. extra crispy, no sauce…"
+          aria-label="Special instructions"
+          data-notes
+        ></textarea>
+        <div class="pb-char-counter" aria-live="polite">
+          <span class="pb-char-counter__current">0</span> / 200
+        </div>
+      </div>
+    </div>
+
+    <!-- Summary + Add to Cart -->
+    <div class="pb-calzone__summary pb-summary-card">
+      <dl class="pb-summary-list">
+        <div class="pb-summary-row" data-summary-row="fillings">
+          <dt>Fillings</dt>
+          <dd data-summary-value="fillings">None selected</dd>
+        </div>
+        <div class="pb-summary-row">
+          <dt>Ricotta</dt>
+          <dd data-summary-value="ricotta">Yes, Please</dd>
+        </div>
+        <div class="pb-summary-row">
+          <dt>Extra Sauce</dt>
+          <dd data-summary-value="extra_sauce">No Thanks</dd>
+        </div>
+      </dl>
+      <div class="pb-summary-total">
+        <span>Total</span>
+        <span class="pb-summary-total__price" data-calzone-total>{{ base_price_dollars }}</span>
+      </div>
+    </div>
+
+    <div class="pb-calzone__cta">
+      <button type="button" class="pb-btn-atc pb-btn-atc--full" data-atc aria-label="Add to cart">
+        Add to Cart
+      </button>
+    </div>
+    <div class="pb-atc-feedback" aria-live="polite" aria-atomic="true"></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var ROOT_SELECTOR = '#pb-calzone-{{ product.id }}';
+  var FILLING_PRICE = 250;
+  var MAX_FILLINGS = 6;
+
+  function pbCalzone() {
+    var root = document.querySelector(ROOT_SELECTOR);
+    if (!root) return;
+
+    var variantId = root.dataset.variantId;
+    var basePrice = parseInt(root.dataset.basePrice, 10) || 0;
+    var choices = { fillings: [], ricotta: 'Yes', extra_sauce: 'No', notes: '' };
+
+    function formatMoney(cents) {
+      return '$' + (cents / 100).toFixed(2);
+    }
+
+    // ── Filling tiles ─────────────────────────────────────────────────────────
+
+    root.querySelectorAll('.pb-topping-tile').forEach(function (tile) {
+      tile.addEventListener('click', function () {
+        var val = tile.dataset.value;
+        var idx = choices.fillings.indexOf(val);
+        if (idx > -1) {
+          choices.fillings.splice(idx, 1);
+          tile.classList.remove('is-selected');
+          tile.setAttribute('aria-pressed', 'false');
+        } else {
+          if (choices.fillings.length >= MAX_FILLINGS) {
+            var badge = root.querySelector('.pb-topping-counter__badge');
+            if (badge) {
+              badge.classList.add('pb-shake');
+              badge.addEventListener('animationend', function () { badge.classList.remove('pb-shake'); }, { once: true });
+            }
+            return;
+          }
+          choices.fillings.push(val);
+          tile.classList.add('is-selected');
+          tile.setAttribute('aria-pressed', 'true');
+        }
+        updateFillingCounter();
+        updateSummary();
+      });
+    });
+
+    function updateFillingCounter() {
+      var count = choices.fillings.length;
+      var upcharge = count * FILLING_PRICE;
+      var badge = root.querySelector('.pb-topping-counter__badge');
+      if (badge) badge.textContent = count + (count === 1 ? ' filling' : ' fillings') + ' \u2014 +' + formatMoney(upcharge);
+      root.querySelectorAll('.pb-topping-tile').forEach(function (tile) {
+        var selected = tile.classList.contains('is-selected');
+        tile.classList.toggle('is-maxed', !selected && count >= MAX_FILLINGS);
+      });
+    }
+
+    // ── Toggle buttons (ricotta, extra_sauce) ─────────────────────────────────
+
+    root.querySelectorAll('.pb-toggle-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var group = btn.dataset.toggle;
+        root.querySelectorAll('.pb-toggle-btn[data-toggle="' + group + '"]').forEach(function (b) {
+          b.classList.remove('is-selected');
+          b.setAttribute('aria-pressed', 'false');
+        });
+        btn.classList.add('is-selected');
+        btn.setAttribute('aria-pressed', 'true');
+        choices[group] = btn.dataset.value;
+        updateSummary();
+      });
+    });
+
+    // ── Notes ─────────────────────────────────────────────────────────────────
+
+    var notesTextarea = root.querySelector('[data-notes]');
+    var charCurrent = root.querySelector('.pb-char-counter__current');
+    if (notesTextarea) {
+      notesTextarea.addEventListener('input', function () {
+        choices.notes = notesTextarea.value;
+        if (charCurrent) charCurrent.textContent = notesTextarea.value.length;
+        updateSummary();
+      });
+    }
+
+    // ── Summary ───────────────────────────────────────────────────────────────
+
+    function updateSummary() {
+      var upcharge = choices.fillings.length * FILLING_PRICE;
+      var total = basePrice + upcharge;
+
+      var setValue = function (key, val) {
+        var el = root.querySelector('[data-summary-value="' + key + '"]');
+        if (el) el.textContent = val;
+      };
+
+      setValue('fillings', choices.fillings.length ? choices.fillings.join(', ') : 'None selected');
+      setValue('ricotta', choices.ricotta === 'Yes' ? 'Yes, Please' : 'No Thanks');
+      setValue('extra_sauce', choices.extra_sauce === 'Yes' ? 'Yes, Please' : 'No Thanks');
+
+      var totalEl = root.querySelector('[data-calzone-total]');
+      if (totalEl) totalEl.textContent = formatMoney(total);
+    }
+
+    // ── Add to Cart ───────────────────────────────────────────────────────────
+
+    var atcBtn = root.querySelector('[data-atc]');
+    var feedbackEl = root.querySelector('.pb-atc-feedback');
+
+    if (atcBtn) {
+      atcBtn.addEventListener('click', function () {
+        var upcharge = choices.fillings.length * FILLING_PRICE;
+        var properties = {
+          'Fillings': choices.fillings.length ? choices.fillings.join(', ') : 'None',
+          'Ricotta': choices.ricotta,
+          'Extra Sauce on Side': choices.extra_sauce,
+          'Notes': choices.notes || '',
+          '_topping_count': String(choices.fillings.length),
+          '_topping_upcharge': formatMoney(upcharge)
+        };
+
+        atcBtn.classList.add('pb-btn-atc--loading');
+        atcBtn.setAttribute('disabled', 'disabled');
+        atcBtn.textContent = 'Adding\u2026';
+
+        fetch('/cart/add.json', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ id: variantId, quantity: 1, properties: properties })
+        })
+        .then(function (res) { if (!res.ok) throw new Error('Cart error'); return res.json(); })
+        .then(function () {
+          atcBtn.classList.remove('pb-btn-atc--loading');
+          atcBtn.classList.add('pb-btn-atc--success');
+          atcBtn.textContent = 'Added!';
+          if (feedbackEl) feedbackEl.textContent = 'Your calzone has been added to the cart.';
+          document.dispatchEvent(new CustomEvent('cart:refresh'));
+          setTimeout(function () {
+            atcBtn.classList.remove('pb-btn-atc--success');
+            atcBtn.removeAttribute('disabled');
+            atcBtn.textContent = 'Add to Cart';
+            if (feedbackEl) feedbackEl.textContent = '';
+          }, 3000);
+        })
+        .catch(function (err) {
+          atcBtn.classList.remove('pb-btn-atc--loading');
+          atcBtn.removeAttribute('disabled');
+          atcBtn.textContent = 'Add to Cart';
+          if (feedbackEl) feedbackEl.textContent = 'Something went wrong. Please try again.';
+          console.error(err);
+        });
+      });
+    }
+
+    updateSummary();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', pbCalzone);
+  } else {
+    pbCalzone();
+  }
+})();
+</script>

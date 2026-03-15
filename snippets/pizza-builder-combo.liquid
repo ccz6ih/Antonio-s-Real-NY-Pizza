@@ -1,0 +1,415 @@
+{%- liquid
+  assign base_price = product.selected_or_first_available_variant.price
+  assign base_price_dollars = base_price | money
+
+  comment
+    Parse combo sub-items from product description.
+    Expected format in description: lines containing "Choose your X" or "Choose X"
+    We detect these via JS and build a dynamic step UI.
+    If none found, we fall back to simple quantity + ATC.
+  endcomment
+-%}
+
+<div class="pb-combo" id="pb-combo-{{ product.id }}"
+  data-variant-id="{{ product.selected_or_first_available_variant.id }}"
+  data-base-price="{{ base_price }}"
+  data-description="{{ product.description | strip_html | escape }}"
+>
+
+  <!-- JS populates this area with detected steps or fallback -->
+  <div class="pb-combo__builder" data-combo-builder>
+
+    <!-- Fallback (shown until JS runs or if no steps detected) -->
+    <div class="pb-combo__fallback" data-combo-fallback>
+
+      <div class="pb-simple__header">
+        <h2 class="pb-simple__title">{{ product.title }}</h2>
+        <p class="pb-simple__price">{{ base_price_dollars }}</p>
+      </div>
+
+      {%- if product.description != blank -%}
+        <div class="pb-simple__desc pb-combo__desc">{{ product.description }}</div>
+      {%- endif -%}
+
+      <div class="pb-simple__qty-wrap">
+        <label class="pb-simple__qty-label" id="pb-combo-qty-label-{{ product.id }}">Quantity</label>
+        <div class="pb-qty" role="group" aria-labelledby="pb-combo-qty-label-{{ product.id }}">
+          <button type="button" class="pb-qty__btn pb-qty__btn--minus" aria-label="Decrease quantity" data-qty-minus>&#8722;</button>
+          <input type="number" class="pb-qty__input" value="1" min="1" max="99" aria-label="Quantity" data-qty-input readonly>
+          <button type="button" class="pb-qty__btn pb-qty__btn--plus" aria-label="Increase quantity" data-qty-plus>&#43;</button>
+        </div>
+      </div>
+
+      <div class="pb-simple__cta">
+        <button type="button" class="pb-btn-atc pb-btn-atc--full" data-fallback-atc>Add to Order</button>
+      </div>
+      <div class="pb-atc-feedback" data-fallback-feedback aria-live="polite" aria-atomic="true"></div>
+
+    </div><!-- /.pb-combo__fallback -->
+
+    <!-- Dynamic step builder (injected by JS when sub-items detected) -->
+    <div class="pb-combo__dynamic" data-combo-dynamic style="display:none">
+
+      <h2 class="pb-combo__title">{{ product.title }}</h2>
+      <p class="pb-combo__subtitle">Build your combo below</p>
+
+      <!-- Progress bar injected by JS -->
+      <div class="pb-progress" data-combo-progress aria-label="Combo builder progress">
+        <div class="pb-progress__track" data-combo-progress-track></div>
+        <div class="pb-progress__bar-bg">
+          <div class="pb-progress__bar-fill" data-combo-progress-fill style="width:0%"></div>
+        </div>
+      </div>
+
+      <!-- Steps injected by JS -->
+      <div class="pb-viewport" aria-live="polite" data-combo-viewport></div>
+
+      <div class="pb-atc-feedback" data-combo-feedback aria-live="polite" aria-atomic="true"></div>
+
+    </div><!-- /.pb-combo__dynamic -->
+
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var ROOT_SELECTOR = '#pb-combo-{{ product.id }}';
+
+  // Predefined option sets for recognized combo keywords
+  var COMBO_STEP_CONFIGS = {
+    'pizza size': ['Small (12")', 'Medium (14")', 'Large (16")', 'XL (18")'],
+    'pizza': ['Small (12")', 'Medium (14")', 'Large (16")', 'XL (18")'],
+    'wing sauce': ['Buffalo', 'BBQ', 'Honey Garlic', 'Plain', 'Lemon Pepper'],
+    'wings': ['Buffalo', 'BBQ', 'Honey Garlic', 'Plain', 'Lemon Pepper'],
+    'drink': ['Coke', 'Diet Coke', 'Sprite', 'Water', 'Lemonade', 'Iced Tea'],
+    'soda': ['Coke', 'Diet Coke', 'Sprite', 'Water', 'Lemonade', 'Iced Tea'],
+    'side': ['Garlic Knots', 'Caesar Salad', 'Garden Salad', 'Breadsticks', 'Onion Rings'],
+    'salad': ['Caesar Salad', 'Garden Salad', 'Greek Salad', 'Arugula Salad'],
+    'sauce': ['Marinara', 'Ranch', 'Buffalo', 'Honey Mustard', 'BBQ'],
+    'dipping sauce': ['Marinara', 'Ranch', 'Buffalo', 'Honey Mustard', 'BBQ'],
+    'dessert': ['Cannoli', 'Tiramisu', 'Cheesecake Slice', 'No Dessert']
+  };
+
+  function pbCombo() {
+    var root = document.querySelector(ROOT_SELECTOR);
+    if (!root) return;
+
+    var variantId = root.dataset.variantId;
+    var basePrice = parseInt(root.dataset.basePrice, 10) || 0;
+    var description = root.dataset.description || '';
+
+    // Detect "Choose your X" or "Choose X" patterns
+    var choosePattern = /choose (?:your |a )?([a-z\s]+)/gi;
+    var detectedSteps = [];
+    var match;
+
+    while ((match = choosePattern.exec(description)) !== null) {
+      var keyword = match[1].trim().toLowerCase();
+      // Find best matching config
+      var optionKey = Object.keys(COMBO_STEP_CONFIGS).find(function (k) {
+        return keyword.indexOf(k) !== -1 || k.indexOf(keyword) !== -1;
+      });
+      if (optionKey) {
+        detectedSteps.push({
+          label: 'Choose your ' + keyword.charAt(0).toUpperCase() + keyword.slice(1),
+          key: keyword.replace(/\s+/g, '_'),
+          options: COMBO_STEP_CONFIGS[optionKey]
+        });
+      }
+    }
+
+    // Deduplicate by key
+    var seen = {};
+    detectedSteps = detectedSteps.filter(function (step) {
+      if (seen[step.key]) return false;
+      seen[step.key] = true;
+      return true;
+    });
+
+    if (detectedSteps.length < 2) {
+      // Fall back to simple ATC
+      initFallback();
+      return;
+    }
+
+    // Add summary as final step
+    detectedSteps.push({ label: 'Review Combo', key: '_summary', options: [] });
+
+    initDynamicBuilder(detectedSteps);
+
+    // ── Fallback ──────────────────────────────────────────────────────────────
+
+    function initFallback() {
+      var fallback = root.querySelector('[data-combo-fallback]');
+      if (fallback) fallback.style.display = '';
+
+      var qty = 1;
+      var qtyInput = root.querySelector('[data-qty-input]');
+      var minusBtn = root.querySelector('[data-qty-minus]');
+      var plusBtn = root.querySelector('[data-qty-plus]');
+      var atcBtn = root.querySelector('[data-fallback-atc]');
+      var feedbackEl = root.querySelector('[data-fallback-feedback]');
+
+      function updateQty() {
+        if (qtyInput) qtyInput.value = qty;
+        if (minusBtn) minusBtn.disabled = qty <= 1;
+      }
+
+      if (minusBtn) minusBtn.addEventListener('click', function () { if (qty > 1) { qty--; updateQty(); } });
+      if (plusBtn) plusBtn.addEventListener('click', function () { if (qty < 99) { qty++; updateQty(); } });
+
+      if (atcBtn) {
+        atcBtn.addEventListener('click', function () {
+          atcBtn.classList.add('pb-btn-atc--loading');
+          atcBtn.setAttribute('disabled', 'disabled');
+          atcBtn.textContent = 'Adding\u2026';
+
+          fetch('/cart/add.json', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ id: variantId, quantity: qty })
+          })
+          .then(function (res) { if (!res.ok) throw new Error('Cart error'); return res.json(); })
+          .then(function () {
+            atcBtn.classList.remove('pb-btn-atc--loading');
+            atcBtn.classList.add('pb-btn-atc--success');
+            atcBtn.textContent = 'Added!';
+            if (feedbackEl) feedbackEl.textContent = 'Combo added to your order.';
+            document.dispatchEvent(new CustomEvent('cart:refresh'));
+            setTimeout(function () {
+              atcBtn.classList.remove('pb-btn-atc--success');
+              atcBtn.removeAttribute('disabled');
+              atcBtn.textContent = 'Add to Order';
+              if (feedbackEl) feedbackEl.textContent = '';
+            }, 3000);
+          })
+          .catch(function (err) {
+            atcBtn.classList.remove('pb-btn-atc--loading');
+            atcBtn.removeAttribute('disabled');
+            atcBtn.textContent = 'Add to Order';
+            if (feedbackEl) feedbackEl.textContent = 'Something went wrong. Please try again.';
+            console.error(err);
+          });
+        });
+      }
+
+      updateQty();
+    }
+
+    // ── Dynamic builder ───────────────────────────────────────────────────────
+
+    function initDynamicBuilder(steps) {
+      var fallback = root.querySelector('[data-combo-fallback]');
+      var dynamic = root.querySelector('[data-combo-dynamic]');
+      if (fallback) fallback.style.display = 'none';
+      if (dynamic) dynamic.style.display = '';
+
+      var progressTrack = root.querySelector('[data-combo-progress-track]');
+      var progressFill = root.querySelector('[data-combo-progress-fill]');
+      var viewport = root.querySelector('[data-combo-viewport]');
+      var feedbackEl = root.querySelector('[data-combo-feedback]');
+
+      var currentStep = 0;
+      var totalSteps = steps.length;
+      var selections = {};
+
+      // Build progress dots
+      if (progressTrack) {
+        steps.forEach(function (step, i) {
+          var dot = document.createElement('div');
+          dot.className = 'pb-progress__step' + (i === 0 ? ' is-active' : '');
+          dot.dataset.step = i;
+          dot.innerHTML = '<div class="pb-progress__dot"></div><span class="pb-progress__label">' + (step.label.replace('Choose your ', '').replace('Choose a ', '').replace('Review ', '')) + '</span>';
+          progressTrack.appendChild(dot);
+        });
+      }
+
+      // Build step panels
+      if (viewport) {
+        steps.forEach(function (step, i) {
+          var panel = document.createElement('div');
+          panel.className = 'pb-step' + (i === 0 ? ' is-active' : '');
+          panel.dataset.step = i;
+          panel.setAttribute('role', 'group');
+
+          var isSummary = step.key === '_summary';
+
+          if (isSummary) {
+            panel.innerHTML = buildSummaryHTML(steps, i);
+          } else {
+            panel.innerHTML = buildChoiceHTML(step, i, totalSteps);
+          }
+
+          viewport.appendChild(panel);
+
+          // Attach option button listeners
+          panel.querySelectorAll('.pb-option-btn').forEach(function (btn) {
+            btn.addEventListener('click', function () {
+              panel.querySelectorAll('.pb-option-btn').forEach(function (b) {
+                b.classList.remove('is-selected');
+                b.setAttribute('aria-checked', 'false');
+              });
+              btn.classList.add('is-selected');
+              btn.setAttribute('aria-checked', 'true');
+              selections[step.key] = btn.dataset.value;
+              var nextBtn = panel.querySelector('[data-next]');
+              if (nextBtn) nextBtn.removeAttribute('disabled');
+            });
+          });
+
+          // ATC button for summary step
+          var atcBtn = panel.querySelector('[data-atc]');
+          if (atcBtn) {
+            atcBtn.addEventListener('click', function () {
+              var properties = {};
+              steps.forEach(function (s) {
+                if (s.key !== '_summary' && selections[s.key]) {
+                  properties[s.label.replace('Choose your ', '').replace('Choose a ', '')] = selections[s.key];
+                }
+              });
+
+              atcBtn.classList.add('pb-btn-atc--loading');
+              atcBtn.setAttribute('disabled', 'disabled');
+              atcBtn.textContent = 'Adding\u2026';
+
+              fetch('/cart/add.json', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify({ id: variantId, quantity: 1, properties: properties })
+              })
+              .then(function (res) { if (!res.ok) throw new Error('Cart error'); return res.json(); })
+              .then(function () {
+                atcBtn.classList.remove('pb-btn-atc--loading');
+                atcBtn.classList.add('pb-btn-atc--success');
+                atcBtn.textContent = 'Added!';
+                if (feedbackEl) feedbackEl.textContent = 'Combo added to your cart.';
+                document.dispatchEvent(new CustomEvent('cart:refresh'));
+                setTimeout(function () {
+                  atcBtn.classList.remove('pb-btn-atc--success');
+                  atcBtn.removeAttribute('disabled');
+                  atcBtn.textContent = 'Add to Cart';
+                  if (feedbackEl) feedbackEl.textContent = '';
+                }, 3000);
+              })
+              .catch(function (err) {
+                atcBtn.classList.remove('pb-btn-atc--loading');
+                atcBtn.removeAttribute('disabled');
+                atcBtn.textContent = 'Add to Cart';
+                if (feedbackEl) feedbackEl.textContent = 'Something went wrong. Please try again.';
+                console.error(err);
+              });
+            });
+          }
+        });
+
+        // Navigation delegation
+        viewport.addEventListener('click', function (e) {
+          var nextTarget = e.target.closest('[data-next]');
+          if (nextTarget && !nextTarget.disabled) {
+            var nextIdx = parseInt(nextTarget.dataset.next, 10);
+            goToStep(nextIdx, 'next');
+            return;
+          }
+          var prevTarget = e.target.closest('[data-prev]');
+          if (prevTarget) {
+            goToStep(parseInt(prevTarget.dataset.prev, 10), 'prev');
+          }
+        });
+      }
+
+      function goToStep(n, direction) {
+        var leaving = viewport.querySelector('.pb-step[data-step="' + currentStep + '"]');
+        var arriving = viewport.querySelector('.pb-step[data-step="' + n + '"]');
+        if (!leaving || !arriving) return;
+
+        var leaveClass = direction === 'next' ? 'pb-step--leave-left' : 'pb-step--leave-right';
+        var enterClass = direction === 'next' ? 'pb-step--enter-right' : 'pb-step--enter-left';
+
+        leaving.classList.add(leaveClass);
+        arriving.classList.add(enterClass);
+        arriving.classList.add('is-active');
+        arriving.getBoundingClientRect();
+        arriving.classList.remove(enterClass);
+
+        leaving.addEventListener('transitionend', function handler() {
+          leaving.classList.remove('is-active', leaveClass);
+          leaving.removeEventListener('transitionend', handler);
+        }, { once: true });
+
+        currentStep = n;
+        updateProgressBar();
+
+        if (n === totalSteps - 1) refreshSummaryPanel(steps);
+
+        var focusTarget = arriving.querySelector('button');
+        if (focusTarget) setTimeout(function () { focusTarget.focus(); }, 320);
+      }
+
+      function updateProgressBar() {
+        var pct = (currentStep / (totalSteps - 1)) * 100;
+        if (progressFill) progressFill.style.width = pct + '%';
+        if (progressTrack) {
+          progressTrack.querySelectorAll('.pb-progress__step').forEach(function (dot) {
+            var n = parseInt(dot.dataset.step, 10);
+            dot.classList.toggle('is-active', n === currentStep);
+            dot.classList.toggle('is-done', n < currentStep);
+          });
+        }
+      }
+
+      function refreshSummaryPanel(steps) {
+        var summaryList = root.querySelector('[data-combo-summary-list]');
+        if (!summaryList) return;
+        summaryList.innerHTML = '';
+        steps.forEach(function (step) {
+          if (step.key === '_summary') return;
+          var item = document.createElement('div');
+          item.className = 'pb-summary-row';
+          var label = step.label.replace('Choose your ', '').replace('Choose a ', '');
+          item.innerHTML = '<dt>' + label + '</dt><dd>' + (selections[step.key] || '\u2014') + '</dd>';
+          summaryList.appendChild(item);
+        });
+      }
+
+      function buildChoiceHTML(step, idx, total) {
+        var numLabel = (idx + 1) + ' <span class="pb-step__of">of ' + total + '</span>';
+        var opts = step.options.map(function (opt) {
+          return '<button type="button" class="pb-option-btn" role="radio" aria-checked="false" data-value="' + opt + '">' + opt + '</button>';
+        }).join('');
+
+        var prevBtn = idx > 0
+          ? '<button type="button" class="pb-btn-prev" data-prev="' + (idx - 1) + '">&larr; Back</button>'
+          : '';
+
+        return '<h2 class="pb-step__heading"><span class="pb-step__num">' + numLabel + '</span>' + step.label + '</h2>'
+          + '<div class="pb-btn-group" role="radiogroup" aria-label="' + step.label + '">' + opts + '</div>'
+          + '<div class="pb-step__nav">' + prevBtn
+          + '<button type="button" class="pb-btn-next" data-next="' + (idx + 1) + '" disabled>Next &rarr;</button>'
+          + '</div>';
+      }
+
+      function buildSummaryHTML(steps, idx) {
+        return '<h2 class="pb-step__heading"><span class="pb-step__num">' + (idx + 1) + ' <span class="pb-step__of">of ' + steps.length + '</span></span>Review Your Combo</h2>'
+          + '<div class="pb-summary-card"><dl class="pb-summary-list" data-combo-summary-list></dl>'
+          + '<div class="pb-summary-total"><span>Total</span><span class="pb-summary-total__price">' + formatMoney(basePrice) + '</span></div></div>'
+          + '<div class="pb-step__nav pb-step__nav--cart">'
+          + '<button type="button" class="pb-btn-prev" data-prev="' + (idx - 1) + '">&larr; Edit</button>'
+          + '<button type="button" class="pb-btn-atc" data-atc>Add to Cart</button>'
+          + '</div>';
+      }
+
+      function formatMoney(cents) {
+        return '$' + (cents / 100).toFixed(2);
+      }
+    }
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', pbCombo);
+  } else {
+    pbCombo();
+  }
+})();
+</script>

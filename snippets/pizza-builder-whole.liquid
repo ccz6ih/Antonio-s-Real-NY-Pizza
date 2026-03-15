@@ -1,0 +1,522 @@
+{%- liquid
+  assign base_price = product.selected_or_first_available_variant.price
+  assign base_price_dollars = base_price | money
+-%}
+
+<div class="pb-whole" id="pb-whole-{{ product.id }}" data-variant-id="{{ product.selected_or_first_available_variant.id }}" data-base-price="{{ base_price }}">
+
+  <!-- Progress Bar -->
+  <div class="pb-progress" aria-label="Builder progress">
+    <div class="pb-progress__track">
+      {%- for i in (1..6) -%}
+        <div class="pb-progress__step {% if i == 1 %}is-active{% endif %}" data-step="{{ i }}">
+          <div class="pb-progress__dot"></div>
+          <span class="pb-progress__label">
+            {%- case i -%}
+              {%- when 1 -%}Sauce
+              {%- when 2 -%}Cheese
+              {%- when 3 -%}Toppings
+              {%- when 4 -%}Cut
+              {%- when 5 -%}Notes
+              {%- when 6 -%}Review
+            {%- endcase -%}
+          </span>
+        </div>
+      {%- endfor -%}
+    </div>
+    <div class="pb-progress__bar-bg">
+      <div class="pb-progress__bar-fill" style="width:0%"></div>
+    </div>
+  </div>
+
+  <!-- Step Viewport -->
+  <div class="pb-viewport" aria-live="polite">
+
+    <!-- STEP 1: Sauce -->
+    <div class="pb-step is-active" data-step="1" role="group" aria-labelledby="pb-step1-heading">
+      <h2 class="pb-step__heading" id="pb-step1-heading">
+        <span class="pb-step__num">1 <span class="pb-step__of">of 6</span></span>
+        Choose Your Sauce
+      </h2>
+      <div class="pb-btn-group" role="radiogroup" aria-label="Sauce selection">
+        {%- assign sauces = 'Marinara,Grandma Sauce,White / Garlic Oil,No Sauce' | split: ',' -%}
+        {%- for sauce in sauces -%}
+          <button type="button" class="pb-option-btn" role="radio" aria-checked="false" data-group="sauce" data-value="{{ sauce | strip }}">
+            {{ sauce | strip }}
+          </button>
+        {%- endfor -%}
+      </div>
+      <div class="pb-step__nav">
+        <button type="button" class="pb-btn-next" data-next="2" disabled>Next: Cheese &rarr;</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Cheese -->
+    <div class="pb-step" data-step="2" role="group" aria-labelledby="pb-step2-heading">
+      <h2 class="pb-step__heading" id="pb-step2-heading">
+        <span class="pb-step__num">2 <span class="pb-step__of">of 6</span></span>
+        Choose Your Cheese
+      </h2>
+      <div class="pb-btn-group" role="radiogroup" aria-label="Cheese selection">
+        {%- assign cheeses = 'Grated Mozz,Fresh Mozz,Ricotta,Extra Cheese,No Cheese' | split: ',' -%}
+        {%- for cheese in cheeses -%}
+          <button type="button" class="pb-option-btn" role="radio" aria-checked="false" data-group="cheese" data-value="{{ cheese | strip }}">
+            {{ cheese | strip }}
+          </button>
+        {%- endfor -%}
+      </div>
+      <div class="pb-step__nav">
+        <button type="button" class="pb-btn-prev" data-prev="1">&larr; Back</button>
+        <button type="button" class="pb-btn-next" data-next="3" disabled>Next: Toppings &rarr;</button>
+      </div>
+    </div>
+
+    <!-- STEP 3: Toppings -->
+    <div class="pb-step" data-step="3" role="group" aria-labelledby="pb-step3-heading">
+      <h2 class="pb-step__heading" id="pb-step3-heading">
+        <span class="pb-step__num">3 <span class="pb-step__of">of 6</span></span>
+        Choose Your Toppings
+        <span class="pb-step__sub">Pick up to 10 &mdash; each +$2.50</span>
+      </h2>
+
+      <div class="pb-topping-grid" role="group" aria-label="Topping selection" data-max="10">
+
+        <!-- Icon toppings -->
+        <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Pepperoni">
+          <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Pepperoni-Slide-01.png" alt="Pepperoni" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+          <span class="pb-topping-tile__label">Pepperoni</span>
+        </button>
+
+        <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Mushrooms">
+          <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Mushroom-Slide.png" alt="Mushrooms" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+          <span class="pb-topping-tile__label">Mushrooms</span>
+        </button>
+
+        <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Tomatoes">
+          <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Tomato-Slide.png" alt="Tomatoes" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+          <span class="pb-topping-tile__label">Tomatoes</span>
+        </button>
+
+        <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Black Olives">
+          <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Black-Olive.png" alt="Black Olives" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+          <span class="pb-topping-tile__label">Black Olives</span>
+        </button>
+
+        <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Sweet Peppers">
+          <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Sweet-Pepper.png" alt="Sweet Peppers" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+          <span class="pb-topping-tile__label">Sweet Peppers</span>
+        </button>
+
+        <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Extra Cheese">
+          <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Cheese.png" alt="Extra Cheese" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+          <span class="pb-topping-tile__label">Extra Cheese</span>
+        </button>
+
+        <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Oregano">
+          <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Oregano-Leaves.png" alt="Oregano" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+          <span class="pb-topping-tile__label">Oregano</span>
+        </button>
+
+        <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Arugula">
+          <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Rocket-Leave.png" alt="Arugula" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+          <span class="pb-topping-tile__label">Arugula</span>
+        </button>
+
+        <!-- Text-only toppings -->
+        {%- assign text_toppings = 'Sausage,Onions,Anchovies,Jalapeños,Spinach,Basil' | split: ',' -%}
+        {%- for topping in text_toppings -%}
+          <button type="button" class="pb-topping-tile pb-topping-tile--text" aria-pressed="false" data-value="{{ topping | strip }}">
+            <span class="pb-topping-tile__text-icon">{{ topping | strip | slice: 0, 2 | upcase }}</span>
+            <span class="pb-topping-tile__label">{{ topping | strip }}</span>
+          </button>
+        {%- endfor -%}
+
+      </div>
+
+      <div class="pb-topping-counter" aria-live="polite" aria-atomic="true">
+        <span class="pb-topping-counter__badge">0 toppings &mdash; +$0.00</span>
+      </div>
+
+      <div class="pb-step__nav">
+        <button type="button" class="pb-btn-prev" data-prev="2">&larr; Back</button>
+        <button type="button" class="pb-btn-next" data-next="4">Next: Cut Style &rarr;</button>
+      </div>
+    </div>
+
+    <!-- STEP 4: Cut Style -->
+    <div class="pb-step" data-step="4" role="group" aria-labelledby="pb-step4-heading">
+      <h2 class="pb-step__heading" id="pb-step4-heading">
+        <span class="pb-step__num">4 <span class="pb-step__of">of 6</span></span>
+        Choose Your Cut
+      </h2>
+      <div class="pb-btn-group" role="radiogroup" aria-label="Cut style selection">
+        {%- assign cuts = 'Triangle Slices,Square Slices,No Cut' | split: ',' -%}
+        {%- for cut in cuts -%}
+          <button type="button" class="pb-option-btn" role="radio" aria-checked="false" data-group="cut" data-value="{{ cut | strip }}">
+            {{ cut | strip }}
+          </button>
+        {%- endfor -%}
+      </div>
+      <div class="pb-step__nav">
+        <button type="button" class="pb-btn-prev" data-prev="3">&larr; Back</button>
+        <button type="button" class="pb-btn-next" data-next="5" disabled>Next: Notes &rarr;</button>
+      </div>
+    </div>
+
+    <!-- STEP 5: Special Instructions -->
+    <div class="pb-step" data-step="5" role="group" aria-labelledby="pb-step5-heading">
+      <h2 class="pb-step__heading" id="pb-step5-heading">
+        <span class="pb-step__num">5 <span class="pb-step__of">of 6</span></span>
+        Special Instructions
+        <span class="pb-step__sub">Optional &mdash; allergy info, special requests</span>
+      </h2>
+      <div class="pb-textarea-wrap">
+        <textarea
+          class="pb-textarea"
+          id="pb-notes-whole-{{ product.id }}"
+          maxlength="200"
+          rows="4"
+          placeholder="E.g. Well done, light sauce, no oregano…"
+          aria-label="Special instructions (200 character maximum)"
+        ></textarea>
+        <div class="pb-char-counter" aria-live="polite">
+          <span class="pb-char-counter__current">0</span> / 200
+        </div>
+      </div>
+      <div class="pb-step__nav">
+        <button type="button" class="pb-btn-prev" data-prev="4">&larr; Back</button>
+        <button type="button" class="pb-btn-next" data-next="6">Review Order &rarr;</button>
+      </div>
+    </div>
+
+    <!-- STEP 6: Summary + Add to Cart -->
+    <div class="pb-step" data-step="6" role="group" aria-labelledby="pb-step6-heading">
+      <h2 class="pb-step__heading" id="pb-step6-heading">
+        <span class="pb-step__num">6 <span class="pb-step__of">of 6</span></span>
+        Review Your Order
+      </h2>
+
+      <div class="pb-summary-card">
+        <div class="pb-summary-card__product">
+          {%- if product.featured_image -%}
+            <img src="{{ product.featured_image | image_url: width: 120 }}" alt="{{ product.title | escape }}" class="pb-summary-card__img" width="120" height="120" loading="lazy">
+          {%- endif -%}
+          <div class="pb-summary-card__meta">
+            <p class="pb-summary-card__title">{{ product.title }}</p>
+            <p class="pb-summary-card__price" data-summary-price>{{ base_price_dollars }}</p>
+          </div>
+        </div>
+        <dl class="pb-summary-list">
+          <div class="pb-summary-row" data-summary-row="sauce">
+            <dt>Sauce</dt>
+            <dd data-summary-value="sauce">&mdash;</dd>
+          </div>
+          <div class="pb-summary-row" data-summary-row="cheese">
+            <dt>Cheese</dt>
+            <dd data-summary-value="cheese">&mdash;</dd>
+          </div>
+          <div class="pb-summary-row" data-summary-row="toppings">
+            <dt>Toppings</dt>
+            <dd data-summary-value="toppings">&mdash;</dd>
+          </div>
+          <div class="pb-summary-row" data-summary-row="cut">
+            <dt>Cut Style</dt>
+            <dd data-summary-value="cut">&mdash;</dd>
+          </div>
+          <div class="pb-summary-row" data-summary-row="notes" style="display:none">
+            <dt>Notes</dt>
+            <dd data-summary-value="notes">&mdash;</dd>
+          </div>
+        </dl>
+        <div class="pb-summary-total">
+          <span>Total</span>
+          <span class="pb-summary-total__price" data-summary-total>{{ base_price_dollars }}</span>
+        </div>
+      </div>
+
+      <div class="pb-step__nav pb-step__nav--cart">
+        <button type="button" class="pb-btn-prev" data-prev="5">&larr; Edit</button>
+        <button type="button" class="pb-btn-atc" data-atc aria-label="Add to cart">
+          Add to Cart
+        </button>
+      </div>
+      <div class="pb-atc-feedback" aria-live="polite" aria-atomic="true"></div>
+    </div>
+
+  </div><!-- /.pb-viewport -->
+</div><!-- /.pb-whole -->
+
+<script>
+(function () {
+  'use strict';
+
+  var ROOT_SELECTOR = '#pb-whole-{{ product.id }}';
+  var TOPPING_PRICE = 250; // cents
+  var MAX_TOPPINGS = 10;
+
+  function pbWhole() {
+    var root = document.querySelector(ROOT_SELECTOR);
+    if (!root) return;
+
+    var currentStep = 1;
+    var totalSteps = 6;
+    var choices = { sauce: null, cheese: null, toppings: [], cut: null, notes: '' };
+
+    var variantId = root.dataset.variantId;
+    var basePrice = parseInt(root.dataset.basePrice, 10) || 0;
+
+    // ── Helpers ──────────────────────────────────────────────────────────────
+
+    function getStep(n) {
+      return root.querySelector('.pb-step[data-step="' + n + '"]');
+    }
+
+    function formatMoney(cents) {
+      return '$' + (cents / 100).toFixed(2);
+    }
+
+    function updateProgressBar() {
+      var pct = ((currentStep - 1) / (totalSteps - 1)) * 100;
+      var fill = root.querySelector('.pb-progress__bar-fill');
+      if (fill) fill.style.width = pct + '%';
+
+      root.querySelectorAll('.pb-progress__step').forEach(function (dot) {
+        var n = parseInt(dot.dataset.step, 10);
+        dot.classList.toggle('is-active', n === currentStep);
+        dot.classList.toggle('is-done', n < currentStep);
+      });
+    }
+
+    function goToStep(n, direction) {
+      var leaving = getStep(currentStep);
+      var arriving = getStep(n);
+      if (!leaving || !arriving) return;
+
+      var leaveClass = direction === 'next' ? 'pb-step--leave-left' : 'pb-step--leave-right';
+      var enterClass = direction === 'next' ? 'pb-step--enter-right' : 'pb-step--enter-left';
+
+      leaving.classList.add(leaveClass);
+
+      arriving.classList.add(enterClass);
+      arriving.classList.add('is-active');
+
+      // Trigger reflow so CSS transition fires
+      arriving.getBoundingClientRect();
+      arriving.classList.remove(enterClass);
+
+      leaving.addEventListener('transitionend', function handler() {
+        leaving.classList.remove('is-active', leaveClass);
+        leaving.removeEventListener('transitionend', handler);
+      }, { once: true });
+
+      currentStep = n;
+      updateProgressBar();
+
+      if (n === 6) buildSummary();
+
+      // Focus first interactive element in new step
+      var focusTarget = arriving.querySelector('button, textarea, input');
+      if (focusTarget) {
+        setTimeout(function () { focusTarget.focus(); }, 320);
+      }
+    }
+
+    // ── Option button groups (sauce, cheese, cut) ────────────────────────────
+
+    root.querySelectorAll('.pb-option-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var group = btn.dataset.group;
+        var val = btn.dataset.value;
+
+        root.querySelectorAll('.pb-option-btn[data-group="' + group + '"]').forEach(function (b) {
+          b.classList.remove('is-selected');
+          b.setAttribute('aria-checked', 'false');
+        });
+
+        btn.classList.add('is-selected');
+        btn.setAttribute('aria-checked', 'true');
+        choices[group] = val;
+
+        // Enable next button for steps that require a selection
+        var step = btn.closest('.pb-step');
+        if (step) {
+          var nextBtn = step.querySelector('.pb-btn-next');
+          if (nextBtn) nextBtn.removeAttribute('disabled');
+        }
+      });
+    });
+
+    // ── Topping grid ─────────────────────────────────────────────────────────
+
+    root.querySelectorAll('.pb-topping-tile').forEach(function (tile) {
+      tile.addEventListener('click', function () {
+        var val = tile.dataset.value;
+        var idx = choices.toppings.indexOf(val);
+
+        if (idx > -1) {
+          // Deselect
+          choices.toppings.splice(idx, 1);
+          tile.classList.remove('is-selected');
+          tile.setAttribute('aria-pressed', 'false');
+        } else {
+          if (choices.toppings.length >= MAX_TOPPINGS) {
+            // Visual shake on counter
+            var badge = root.querySelector('.pb-topping-counter__badge');
+            if (badge) {
+              badge.classList.add('pb-shake');
+              badge.addEventListener('animationend', function () {
+                badge.classList.remove('pb-shake');
+              }, { once: true });
+            }
+            return;
+          }
+          choices.toppings.push(val);
+          tile.classList.add('is-selected');
+          tile.setAttribute('aria-pressed', 'true');
+        }
+
+        updateToppingCounter();
+      });
+    });
+
+    function updateToppingCounter() {
+      var count = choices.toppings.length;
+      var upcharge = count * TOPPING_PRICE;
+      var badge = root.querySelector('.pb-topping-counter__badge');
+      if (badge) {
+        badge.textContent = count + (count === 1 ? ' topping' : ' toppings') + ' \u2014 +' + formatMoney(upcharge);
+      }
+
+      // Toggle maxed-out state
+      root.querySelectorAll('.pb-topping-tile').forEach(function (tile) {
+        var selected = tile.classList.contains('is-selected');
+        tile.classList.toggle('is-maxed', !selected && count >= MAX_TOPPINGS);
+        if (count >= MAX_TOPPINGS && !selected) {
+          tile.setAttribute('aria-disabled', 'true');
+        } else {
+          tile.removeAttribute('aria-disabled');
+        }
+      });
+    }
+
+    // ── Textarea character counter ────────────────────────────────────────────
+
+    var textarea = root.querySelector('.pb-textarea');
+    var charCurrent = root.querySelector('.pb-char-counter__current');
+    if (textarea) {
+      textarea.addEventListener('input', function () {
+        choices.notes = textarea.value;
+        if (charCurrent) charCurrent.textContent = textarea.value.length;
+      });
+    }
+
+    // ── Navigation buttons ────────────────────────────────────────────────────
+
+    root.addEventListener('click', function (e) {
+      var target = e.target.closest('[data-next]');
+      if (target && !target.disabled) {
+        goToStep(parseInt(target.dataset.next, 10), 'next');
+        return;
+      }
+      target = e.target.closest('[data-prev]');
+      if (target) {
+        goToStep(parseInt(target.dataset.prev, 10), 'prev');
+      }
+    });
+
+    // ── Summary builder ───────────────────────────────────────────────────────
+
+    function buildSummary() {
+      var upcharge = choices.toppings.length * TOPPING_PRICE;
+      var total = basePrice + upcharge;
+
+      var setValue = function (key, val) {
+        var el = root.querySelector('[data-summary-value="' + key + '"]');
+        if (el) el.textContent = val || '\u2014';
+      };
+
+      setValue('sauce', choices.sauce);
+      setValue('cheese', choices.cheese);
+      setValue('toppings', choices.toppings.length ? choices.toppings.join(', ') : 'None');
+      setValue('cut', choices.cut);
+      setValue('notes', choices.notes || null);
+
+      var notesRow = root.querySelector('[data-summary-row="notes"]');
+      if (notesRow) notesRow.style.display = choices.notes ? '' : 'none';
+
+      var priceEl = root.querySelector('[data-summary-price]');
+      if (priceEl) priceEl.textContent = formatMoney(basePrice);
+
+      var totalEl = root.querySelector('[data-summary-total]');
+      if (totalEl) totalEl.textContent = formatMoney(total);
+    }
+
+    // ── Add to Cart ───────────────────────────────────────────────────────────
+
+    var atcBtn = root.querySelector('[data-atc]');
+    var feedbackEl = root.querySelector('.pb-atc-feedback');
+
+    if (atcBtn) {
+      atcBtn.addEventListener('click', function () {
+        var upcharge = choices.toppings.length * TOPPING_PRICE;
+        var properties = {
+          'Sauce': choices.sauce || 'Not specified',
+          'Cheese': choices.cheese || 'Not specified',
+          'Toppings': choices.toppings.length ? choices.toppings.join(', ') : 'None',
+          'Cut': choices.cut || 'Not specified',
+          'Notes': choices.notes || '',
+          '_topping_count': String(choices.toppings.length),
+          '_topping_upcharge': formatMoney(upcharge)
+        };
+
+        atcBtn.classList.add('pb-btn-atc--loading');
+        atcBtn.setAttribute('disabled', 'disabled');
+        atcBtn.textContent = 'Adding…';
+
+        fetch('/cart/add.json', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({
+            id: variantId,
+            quantity: 1,
+            properties: properties
+          })
+        })
+        .then(function (res) {
+          if (!res.ok) throw new Error('Cart error ' + res.status);
+          return res.json();
+        })
+        .then(function () {
+          atcBtn.classList.remove('pb-btn-atc--loading');
+          atcBtn.classList.add('pb-btn-atc--success');
+          atcBtn.textContent = 'Added!';
+          if (feedbackEl) feedbackEl.textContent = 'Your pizza has been added to the cart.';
+          document.dispatchEvent(new CustomEvent('cart:refresh'));
+          setTimeout(function () {
+            atcBtn.classList.remove('pb-btn-atc--success');
+            atcBtn.removeAttribute('disabled');
+            atcBtn.textContent = 'Add to Cart';
+            if (feedbackEl) feedbackEl.textContent = '';
+          }, 3000);
+        })
+        .catch(function (err) {
+          atcBtn.classList.remove('pb-btn-atc--loading');
+          atcBtn.removeAttribute('disabled');
+          atcBtn.textContent = 'Add to Cart';
+          if (feedbackEl) feedbackEl.textContent = 'Something went wrong. Please try again.';
+          console.error('Pizza builder ATC error:', err);
+        });
+      });
+    }
+
+    // ── Init ──────────────────────────────────────────────────────────────────
+    updateProgressBar();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', pbWhole);
+  } else {
+    pbWhole();
+  }
+})();
+</script>

@@ -1,0 +1,138 @@
+{%- liquid
+  assign base_price = product.selected_or_first_available_variant.price
+  assign base_price_dollars = base_price | money
+-%}
+
+<div class="pb-simple" id="pb-simple-{{ product.id }}" data-variant-id="{{ product.selected_or_first_available_variant.id }}">
+
+  <div class="pb-simple__inner">
+
+    <div class="pb-simple__header">
+      <h2 class="pb-simple__title">{{ product.title }}</h2>
+      <p class="pb-simple__price">{{ base_price_dollars }}</p>
+    </div>
+
+    {%- if product.description != blank -%}
+      <div class="pb-simple__desc">{{ product.description }}</div>
+    {%- endif -%}
+
+    <!-- Quantity Selector -->
+    <div class="pb-simple__qty-wrap">
+      <label class="pb-simple__qty-label" id="pb-simple-qty-label-{{ product.id }}">Quantity</label>
+      <div class="pb-qty" role="group" aria-labelledby="pb-simple-qty-label-{{ product.id }}">
+        <button type="button" class="pb-qty__btn pb-qty__btn--minus" aria-label="Decrease quantity" data-qty-minus>&#8722;</button>
+        <input
+          type="number"
+          class="pb-qty__input"
+          id="pb-simple-qty-{{ product.id }}"
+          value="1"
+          min="1"
+          max="99"
+          aria-label="Quantity"
+          data-qty-input
+          readonly
+        >
+        <button type="button" class="pb-qty__btn pb-qty__btn--plus" aria-label="Increase quantity" data-qty-plus>&#43;</button>
+      </div>
+    </div>
+
+    <!-- Add to Order Button -->
+    <div class="pb-simple__cta">
+      <button type="button" class="pb-btn-atc pb-btn-atc--full" data-atc aria-label="Add to order">
+        Add to Order
+      </button>
+    </div>
+    <div class="pb-atc-feedback" aria-live="polite" aria-atomic="true"></div>
+
+  </div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+
+  var ROOT_SELECTOR = '#pb-simple-{{ product.id }}';
+
+  function pbSimple() {
+    var root = document.querySelector(ROOT_SELECTOR);
+    if (!root) return;
+
+    var variantId = root.dataset.variantId;
+    var quantity = 1;
+
+    var qtyInput = root.querySelector('[data-qty-input]');
+    var minusBtn = root.querySelector('[data-qty-minus]');
+    var plusBtn = root.querySelector('[data-qty-plus]');
+    var atcBtn = root.querySelector('[data-atc]');
+    var feedbackEl = root.querySelector('.pb-atc-feedback');
+
+    function updateQtyDisplay() {
+      if (qtyInput) qtyInput.value = quantity;
+      if (minusBtn) minusBtn.disabled = quantity <= 1;
+    }
+
+    if (minusBtn) {
+      minusBtn.addEventListener('click', function () {
+        if (quantity > 1) { quantity--; updateQtyDisplay(); }
+      });
+    }
+
+    if (plusBtn) {
+      plusBtn.addEventListener('click', function () {
+        if (quantity < 99) { quantity++; updateQtyDisplay(); }
+      });
+    }
+
+    if (qtyInput) {
+      qtyInput.addEventListener('change', function () {
+        var val = parseInt(qtyInput.value, 10);
+        if (!isNaN(val) && val >= 1 && val <= 99) quantity = val;
+        updateQtyDisplay();
+      });
+    }
+
+    if (atcBtn) {
+      atcBtn.addEventListener('click', function () {
+        atcBtn.classList.add('pb-btn-atc--loading');
+        atcBtn.setAttribute('disabled', 'disabled');
+        atcBtn.textContent = 'Adding\u2026';
+
+        fetch('/cart/add.json', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ id: variantId, quantity: quantity })
+        })
+        .then(function (res) { if (!res.ok) throw new Error('Cart error'); return res.json(); })
+        .then(function () {
+          atcBtn.classList.remove('pb-btn-atc--loading');
+          atcBtn.classList.add('pb-btn-atc--success');
+          atcBtn.textContent = 'Added!';
+          if (feedbackEl) feedbackEl.textContent = 'Item added to your order.';
+          document.dispatchEvent(new CustomEvent('cart:refresh'));
+          setTimeout(function () {
+            atcBtn.classList.remove('pb-btn-atc--success');
+            atcBtn.removeAttribute('disabled');
+            atcBtn.textContent = 'Add to Order';
+            if (feedbackEl) feedbackEl.textContent = '';
+          }, 3000);
+        })
+        .catch(function (err) {
+          atcBtn.classList.remove('pb-btn-atc--loading');
+          atcBtn.removeAttribute('disabled');
+          atcBtn.textContent = 'Add to Order';
+          if (feedbackEl) feedbackEl.textContent = 'Something went wrong. Please try again.';
+          console.error(err);
+        });
+      });
+    }
+
+    updateQtyDisplay();
+  }
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', pbSimple);
+  } else {
+    pbSimple();
+  }
+})();
+</script>
