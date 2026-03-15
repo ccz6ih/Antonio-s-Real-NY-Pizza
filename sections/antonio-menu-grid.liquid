@@ -1,0 +1,512 @@
+{% comment %}
+  antonio-menu-grid.liquid
+  Main menu product grid for Antonio's Real NY Pizza.
+  Displays products from a selected collection with NY pizzeria card aesthetic.
+{% endcomment %}
+
+{%- liquid
+  assign collection = section.settings.collection
+  assign max_products = section.settings.max_products | default: 8
+  assign section_id = section.id
+-%}
+
+<style>
+  /* ── Google Fonts ─────────────────────────────────────── */
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Bebas+Neue&display=swap');
+
+  /* ── Section wrapper ──────────────────────────────────── */
+  #antonio-menu-grid-{{ section_id }} {
+    width: 100%;
+    padding: 60px 24px;
+    box-sizing: border-box;
+    background-color: #1a1a1a;
+  }
+
+  /* ── Section heading block ────────────────────────────── */
+  .amg-heading-block {
+    text-align: center;
+    margin-bottom: 48px;
+  }
+
+  .amg-heading {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 42px;
+    font-weight: 700;
+    color: #F5A623;
+    margin: 0 0 10px;
+    line-height: 1.15;
+    text-shadow: 1px 1px 4px rgba(0,0,0,0.6);
+  }
+
+  .amg-subheading {
+    font-family: Georgia, serif;
+    font-size: 17px;
+    color: #ccc;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* ── Product grid ─────────────────────────────────────── */
+  .amg-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 28px;
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  @media (max-width: 768px) {
+    .amg-grid {
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+    }
+    .amg-heading {
+      font-size: 32px;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .amg-grid {
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    #antonio-menu-grid-{{ section_id }} {
+      padding: 40px 16px;
+    }
+  }
+
+  /* ── Card ─────────────────────────────────────────────── */
+  .amg-card {
+    background: #fff;
+    border-radius: 10px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    cursor: pointer;
+    text-decoration: none;
+    color: inherit;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.35);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    /* Start hidden — GSAP will animate in */
+    opacity: 0;
+    transform: translateY(20px);
+  }
+
+  .amg-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.55);
+  }
+
+  /* ── Image wrapper ────────────────────────────────────── */
+  .amg-image-wrap {
+    position: relative;
+    width: 100%;
+    padding-top: 75%; /* 4:3 aspect ratio */
+    overflow: hidden;
+    background: #2a2a2a;
+    flex-shrink: 0;
+  }
+
+  .amg-image-wrap img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.35s ease;
+  }
+
+  .amg-card:hover .amg-image-wrap img {
+    transform: scale(1.04);
+  }
+
+  .amg-image-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #2d2d2d;
+    color: #555;
+    font-size: 48px;
+  }
+
+  /* ── Category badge (top-left) ────────────────────────── */
+  .amg-badge-category {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-family: Georgia, serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #fff;
+    z-index: 2;
+    text-shadow: 0 1px 2px rgba(0,0,0,0.4);
+  }
+
+  /* Category colours */
+  .amg-cat-pizza      { background-color: #C0392B; }
+  .amg-cat-pasta      { background-color: #27AE60; }
+  .amg-cat-salad      { background-color: #5D8A4E; } /* basil */
+  .amg-cat-calzone    { background-color: #D35400; }
+  .amg-cat-stromboli  { background-color: #E67E22; }
+  .amg-cat-wings      { background-color: #8E44AD; }
+  .amg-cat-appetizer  { background-color: #2980B9; }
+  .amg-cat-appetizers { background-color: #2980B9; }
+  .amg-cat-dessert    { background-color: #C0392B; }
+  .amg-cat-desserts   { background-color: #C0392B; }
+  .amg-cat-drink      { background-color: #1A6A9A; }
+  .amg-cat-drinks     { background-color: #1A6A9A; }
+  .amg-cat-soup       { background-color: #B7770D; }
+  .amg-cat-sub        { background-color: #6D4C41; }
+  .amg-cat-subs       { background-color: #6D4C41; }
+  .amg-cat-default    { background-color: #555; }
+
+  /* ── Feature badge (top-right) ────────────────────────── */
+  .amg-badge-feature {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-family: Georgia, serif;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: #fff;
+    z-index: 2;
+  }
+
+  .amg-badge-bestseller { background-color: #F5A623; color: #1a1a1a; }
+  .amg-badge-new        { background-color: #2ECC71; }
+  .amg-badge-spicy      { background-color: #E74C3C; }
+  .amg-badge-popular    { background-color: #9B59B6; }
+  .amg-badge-seasonal   { background-color: #16A085; }
+  .amg-badge-limited    { background-color: #E67E22; }
+  .amg-badge-other      { background-color: #555; }
+
+  /* ── Card body ────────────────────────────────────────── */
+  .amg-card-body {
+    padding: 18px 18px 20px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    gap: 8px;
+  }
+
+  .amg-product-name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0;
+    line-height: 1.3;
+  }
+
+  .amg-product-desc {
+    font-family: Georgia, serif;
+    font-size: 13.5px;
+    color: #666;
+    margin: 0;
+    line-height: 1.5;
+    flex: 1;
+  }
+
+  .amg-product-price {
+    font-family: 'Bebas Neue', 'Arial Narrow', sans-serif;
+    font-size: 24px;
+    color: #F5A623;
+    margin: 4px 0 0;
+    letter-spacing: 0.04em;
+    line-height: 1;
+  }
+
+  .amg-product-price .amg-compare-price {
+    font-size: 16px;
+    color: #aaa;
+    text-decoration: line-through;
+    margin-left: 6px;
+  }
+
+  /* ── CTA button ───────────────────────────────────────── */
+  .amg-cta-btn {
+    display: block;
+    width: 100%;
+    padding: 13px 0;
+    margin-top: 14px;
+    background-color: #C0392B;
+    color: #fff;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 14px;
+    font-weight: 700;
+    letter-spacing: 0.05em;
+    text-align: center;
+    text-decoration: none;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+    box-sizing: border-box;
+  }
+
+  .amg-cta-btn:hover {
+    background-color: #A93226;
+    transform: translateY(-1px);
+  }
+
+  .amg-cta-btn:active {
+    transform: translateY(0);
+  }
+
+  /* ── Empty state ──────────────────────────────────────── */
+  .amg-empty {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #888;
+    font-family: Georgia, serif;
+    font-size: 16px;
+    padding: 60px 0;
+  }
+</style>
+
+<section
+  id="antonio-menu-grid-{{ section_id }}"
+  data-section-id="{{ section_id }}"
+  aria-label="{{ section.settings.heading | escape }}"
+>
+
+  {%- if section.settings.show_heading and section.settings.heading != blank -%}
+    <div class="amg-heading-block">
+      <h2 class="amg-heading">{{ section.settings.heading | escape }}</h2>
+      {%- if section.settings.subheading != blank -%}
+        <p class="amg-subheading">{{ section.settings.subheading | escape }}</p>
+      {%- endif -%}
+    </div>
+  {%- endif -%}
+
+  <div class="amg-grid" id="amg-grid-{{ section_id }}">
+
+    {%- if collection != blank -%}
+
+      {%- assign products_shown = 0 -%}
+      {%- for product in collection.products limit: max_products -%}
+        {%- assign products_shown = products_shown | plus: 1 -%}
+
+        {%- comment -%} ── Category badge class ──────────────────────── {%- endcomment -%}
+        {%- assign cat_raw = product.type | downcase | strip -%}
+        {%- case cat_raw -%}
+          {%- when 'pizza' -%}      {%- assign cat_class = 'amg-cat-pizza' -%}
+          {%- when 'pasta' -%}      {%- assign cat_class = 'amg-cat-pasta' -%}
+          {%- when 'salad' -%}      {%- assign cat_class = 'amg-cat-salad' -%}
+          {%- when 'calzone' -%}    {%- assign cat_class = 'amg-cat-calzone' -%}
+          {%- when 'stromboli' -%}  {%- assign cat_class = 'amg-cat-stromboli' -%}
+          {%- when 'wings' -%}      {%- assign cat_class = 'amg-cat-wings' -%}
+          {%- when 'appetizer' -%}  {%- assign cat_class = 'amg-cat-appetizer' -%}
+          {%- when 'appetizers' -%} {%- assign cat_class = 'amg-cat-appetizers' -%}
+          {%- when 'dessert' -%}    {%- assign cat_class = 'amg-cat-dessert' -%}
+          {%- when 'desserts' -%}   {%- assign cat_class = 'amg-cat-desserts' -%}
+          {%- when 'drink' -%}      {%- assign cat_class = 'amg-cat-drink' -%}
+          {%- when 'drinks' -%}     {%- assign cat_class = 'amg-cat-drinks' -%}
+          {%- when 'soup' -%}       {%- assign cat_class = 'amg-cat-soup' -%}
+          {%- when 'sub' -%}        {%- assign cat_class = 'amg-cat-sub' -%}
+          {%- when 'subs' -%}       {%- assign cat_class = 'amg-cat-subs' -%}
+          {%- else -%}              {%- assign cat_class = 'amg-cat-default' -%}
+        {%- endcase -%}
+
+        {%- comment -%} ── Feature badge from metafield ──────────────── {%- endcomment -%}
+        {%- assign pizza_badge = product.metafields.custom.pizza_badge.value | downcase | strip -%}
+        {%- if pizza_badge != blank -%}
+          {%- case pizza_badge -%}
+            {%- when 'bestseller' -%} {%- assign badge_class = 'amg-badge-bestseller' -%}
+            {%- when 'new' -%}        {%- assign badge_class = 'amg-badge-new' -%}
+            {%- when 'spicy' -%}      {%- assign badge_class = 'amg-badge-spicy' -%}
+            {%- when 'popular' -%}    {%- assign badge_class = 'amg-badge-popular' -%}
+            {%- when 'seasonal' -%}   {%- assign badge_class = 'amg-badge-seasonal' -%}
+            {%- when 'limited' -%}    {%- assign badge_class = 'amg-badge-limited' -%}
+            {%- else -%}              {%- assign badge_class = 'amg-badge-other' -%}
+          {%- endcase -%}
+        {%- endif -%}
+
+        {%- comment -%} ── Short description (strip HTML, 80 chars) ───── {%- endcomment -%}
+        {%- assign desc_plain = product.description | strip_html | strip | truncate: 80 -%}
+
+        {%- comment -%} ── Price display ─────────────────────────────── {%- endcomment -%}
+        {%- assign show_compare = false -%}
+        {%- if product.compare_at_price > product.price -%}
+          {%- assign show_compare = true -%}
+        {%- endif -%}
+
+        <a
+          class="amg-card"
+          href="{{ product.url }}"
+          aria-label="{{ product.title | escape }}"
+          data-amg-card
+        >
+          <!-- Image -->
+          <div class="amg-image-wrap">
+            {%- if product.featured_image != blank -%}
+              <img
+                src="{{ product.featured_image | image_url: width: 600 }}"
+                alt="{{ product.featured_image.alt | default: product.title | escape }}"
+                width="600"
+                height="450"
+                loading="lazy"
+              >
+            {%- else -%}
+              <div class="amg-image-placeholder" aria-hidden="true">🍕</div>
+            {%- endif -%}
+
+            <!-- Category badge (top-left) -->
+            {%- if cat_raw != blank -%}
+              <span class="amg-badge-category {{ cat_class }}">
+                {{ product.type | escape }}
+              </span>
+            {%- endif -%}
+
+            <!-- Feature badge (top-right) -->
+            {%- if pizza_badge != blank -%}
+              <span class="amg-badge-feature {{ badge_class }}">
+                {{ product.metafields.custom.pizza_badge.value | escape }}
+              </span>
+            {%- endif -%}
+          </div>
+
+          <!-- Card body -->
+          <div class="amg-card-body">
+            <h3 class="amg-product-name">{{ product.title | escape }}</h3>
+
+            {%- if desc_plain != blank -%}
+              <p class="amg-product-desc">{{ desc_plain }}</p>
+            {%- endif -%}
+
+            <p class="amg-product-price">
+              {{ product.price | money }}
+              {%- if show_compare -%}
+                <span class="amg-compare-price">{{ product.compare_at_price | money }}</span>
+              {%- endif -%}
+            </p>
+
+            <span class="amg-cta-btn" aria-hidden="true">Customize &amp; Order</span>
+          </div>
+        </a>
+
+      {%- else -%}
+        <p class="amg-empty">No menu items found. Select a collection in the section settings.</p>
+      {%- endfor -%}
+
+      {%- if products_shown == 0 -%}
+        <p class="amg-empty">This collection is empty.</p>
+      {%- endif -%}
+
+    {%- else -%}
+      <p class="amg-empty">Select a collection in the section settings to display menu items.</p>
+    {%- endif -%}
+
+  </div><!-- /.amg-grid -->
+</section>
+
+<!-- ── GSAP ScrollTrigger animation ───────────────────────────────────── -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
+
+<script>
+(function () {
+  'use strict';
+
+  var SECTION_ID = {{ section_id | json }};
+
+  function initMenuGridAnimations() {
+    if (typeof gsap === 'undefined' || typeof ScrollTrigger === 'undefined') return;
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    var grid  = document.getElementById('amg-grid-' + SECTION_ID);
+    if (!grid) return;
+
+    var cards = grid.querySelectorAll('[data-amg-card]');
+    if (!cards.length) return;
+
+    /* Ensure cards are invisible before GSAP takes over */
+    gsap.set(cards, { opacity: 0, y: 20 });
+
+    gsap.to(cards, {
+      opacity: 1,
+      y: 0,
+      duration: 0.55,
+      ease: 'power2.out',
+      stagger: 0.1,
+      scrollTrigger: {
+        trigger: grid,
+        start: 'top 85%',
+        once: true
+      }
+    });
+  }
+
+  /* Run after both GSAP scripts are loaded.
+     We listen for the window load event; if it already fired (rare in
+     Shopify themes), we initialise immediately. */
+  if (document.readyState === 'complete') {
+    initMenuGridAnimations();
+  } else {
+    window.addEventListener('load', initMenuGridAnimations, { once: true });
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Antonio's Menu Grid",
+  "tag": "div",
+  "class": "antonio-menu-grid-section",
+  "disabled_on": {
+    "groups": ["header", "footer"]
+  },
+  "settings": [
+    {
+      "type": "collection",
+      "id": "collection",
+      "label": "Menu collection"
+    },
+    {
+      "type": "checkbox",
+      "id": "show_heading",
+      "label": "Show heading",
+      "default": true
+    },
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Heading",
+      "default": "Our Menu"
+    },
+    {
+      "type": "text",
+      "id": "subheading",
+      "label": "Subheading",
+      "default": "Fresh ingredients. Old-school recipes. Real New York flavor."
+    },
+    {
+      "type": "range",
+      "id": "max_products",
+      "label": "Maximum products to show",
+      "min": 4,
+      "max": 24,
+      "step": 1,
+      "default": 8
+    }
+  ],
+  "presets": [
+    {
+      "name": "Antonio's Menu Grid",
+      "category": "Antonio's Pizza"
+    }
+  ]
+}
+{% endschema %}

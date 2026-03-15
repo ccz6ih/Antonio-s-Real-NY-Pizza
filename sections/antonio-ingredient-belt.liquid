@@ -1,0 +1,348 @@
+{% comment %} Antonio's Ingredient Belt — animated floating ingredient icons {% endcomment %}
+
+{%- liquid
+  assign bg_color = section.settings.bg_color
+  assign show_on_mobile = section.settings.show_on_mobile
+  assign speed_setting = section.settings.speed
+
+  case speed_setting
+    when 'slow'
+      assign row1_duration = 32
+      assign row2_duration = 44
+    when 'fast'
+      assign row1_duration = 12
+      assign row2_duration = 17
+    else
+      assign row1_duration = 20
+      assign row2_duration = 28
+  endcase
+-%}
+
+{% assign ingredients = "Pepperoni|https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Pepperoni-Slide-01.png,Mushroom|https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Mushroom-Slide.png,Tomato|https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Tomato-Slide.png,Tomato Top|https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Tomato-Slide-Top-View.png,Black Olive|https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Black-Olive.png,Black Olive Slice|https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Black-Olive-Slide-01.png,Sweet Pepper|https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Sweet-Pepper.png,Cheese|https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Cheese.png,Oregano|https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Oregano-Leaves.png,Arugula|https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Rocket-Leave.png" | split: "," %}
+
+<div
+  id="ingredient-belt-{{ section.id }}"
+  class="ingredient-belt{% unless show_on_mobile %} ingredient-belt--hide-mobile{% endunless %}"
+  data-section-id="{{ section.id }}"
+  data-row1-duration="{{ row1_duration }}"
+  data-row2-duration="{{ row2_duration }}"
+  style="--belt-bg: {{ bg_color }};"
+>
+  <div class="ingredient-belt__inner">
+
+    {%- comment -%} Row 1 — faster {%- endcomment -%}
+    <div class="ingredient-belt__row" data-belt-row="1">
+      <div class="ingredient-belt__track" id="belt-track-1-{{ section.id }}">
+        {%- for pass in (1..4) -%}
+          {%- for item in ingredients -%}
+            {%- assign parts = item | split: "|" -%}
+            {%- assign iname = parts[0] -%}
+            {%- assign iurl  = parts[1] -%}
+            <div class="ingredient-belt__icon" data-name="{{ iname }}">
+              <img
+                src="{{ iurl }}"
+                alt="{{ iname }}"
+                width="80"
+                height="80"
+                loading="lazy"
+                draggable="false"
+              >
+              <span class="ingredient-belt__tooltip">{{ iname }}</span>
+            </div>
+          {%- endfor -%}
+        {%- endfor -%}
+      </div>
+    </div>
+
+    {%- comment -%} Row 2 — slower {%- endcomment -%}
+    <div class="ingredient-belt__row" data-belt-row="2">
+      <div class="ingredient-belt__track" id="belt-track-2-{{ section.id }}">
+        {%- assign ingredients_r2 = "Cheese|https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Cheese.png,Arugula|https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Rocket-Leave.png,Sweet Pepper|https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Sweet-Pepper.png,Oregano|https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Oregano-Leaves.png,Black Olive Slice|https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Black-Olive-Slide-01.png,Tomato|https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Tomato-Slide.png,Black Olive|https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Black-Olive.png,Mushroom|https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Mushroom-Slide.png,Tomato Top|https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Tomato-Slide-Top-View.png,Pepperoni|https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Pepperoni-Slide-01.png" | split: "," -%}
+        {%- for pass in (1..4) -%}
+          {%- for item in ingredients_r2 -%}
+            {%- assign parts = item | split: "|" -%}
+            {%- assign iname = parts[0] -%}
+            {%- assign iurl  = parts[1] -%}
+            <div class="ingredient-belt__icon" data-name="{{ iname }}">
+              <img
+                src="{{ iurl }}"
+                alt="{{ iname }}"
+                width="80"
+                height="80"
+                loading="lazy"
+                draggable="false"
+              >
+              <span class="ingredient-belt__tooltip">{{ iname }}</span>
+            </div>
+          {%- endfor -%}
+        {%- endfor -%}
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<style>
+  #ingredient-belt-{{ section.id }} {
+    --belt-icon-size: 80px;
+    --belt-gap: 32px;
+    --belt-row-height: 96px;
+    --belt-padding-v: 12px;
+
+    background: var(--belt-bg, #1A1A1A);
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    position: relative;
+    /* Fade masks on left and right edges */
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 8%,
+      black 92%,
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      black 8%,
+      black 92%,
+      transparent 100%
+    );
+  }
+
+  #ingredient-belt-{{ section.id }}.ingredient-belt--hide-mobile {
+    display: none;
+  }
+
+  @media screen and (min-width: 750px) {
+    #ingredient-belt-{{ section.id }}.ingredient-belt--hide-mobile {
+      display: block;
+    }
+  }
+
+  #ingredient-belt-{{ section.id }} .ingredient-belt__inner {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    height: 100%;
+    padding: var(--belt-padding-v) 0;
+    box-sizing: border-box;
+  }
+
+  #ingredient-belt-{{ section.id }} .ingredient-belt__row {
+    flex: 1;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+  }
+
+  #ingredient-belt-{{ section.id }} .ingredient-belt__track {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: var(--belt-gap);
+    /* width is intentionally not set — GSAP drives translation */
+    will-change: transform;
+    flex-shrink: 0;
+    padding-right: var(--belt-gap);
+  }
+
+  #ingredient-belt-{{ section.id }} .ingredient-belt__icon {
+    position: relative;
+    flex-shrink: 0;
+    width: var(--belt-icon-size);
+    height: var(--belt-icon-size);
+    cursor: default;
+    /* transition for hover scale handled by GSAP */
+  }
+
+  #ingredient-belt-{{ section.id }} .ingredient-belt__icon img {
+    width: var(--belt-icon-size);
+    height: var(--belt-icon-size);
+    object-fit: contain;
+    background: transparent;
+    display: block;
+    filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.45));
+    pointer-events: none;
+    user-select: none;
+  }
+
+  /* Tooltip */
+  #ingredient-belt-{{ section.id }} .ingredient-belt__tooltip {
+    position: absolute;
+    bottom: calc(100% + 6px);
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(0, 0, 0, 0.82);
+    color: #fff;
+    font-family: sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    padding: 3px 8px;
+    border-radius: 4px;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.18s ease;
+    z-index: 10;
+  }
+
+  #ingredient-belt-{{ section.id }} .ingredient-belt__tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 4px solid transparent;
+    border-top-color: rgba(0, 0, 0, 0.82);
+  }
+
+  #ingredient-belt-{{ section.id }} .ingredient-belt__icon:hover .ingredient-belt__tooltip {
+    opacity: 1;
+  }
+</style>
+
+<script>
+(function() {
+  'use strict';
+
+  var SECTION_ID = '{{ section.id }}';
+  var ROW1_DURATION = {{ row1_duration }};
+  var ROW2_DURATION = {{ row2_duration }};
+
+  function initBelt() {
+    var beltEl = document.getElementById('ingredient-belt-' + SECTION_ID);
+    if (!beltEl) return;
+
+    var track1 = document.getElementById('belt-track-1-' + SECTION_ID);
+    var track2 = document.getElementById('belt-track-2-' + SECTION_ID);
+
+    if (!track1 || !track2 || typeof gsap === 'undefined') return;
+
+    /* ---- Belt scroll animations ---- */
+    function animateTrack(track, duration) {
+      /* Each track contains 4 repetitions of the icon set.
+         We translate by exactly -25% (one full copy) and repeat,
+         which creates a seamless infinite loop. */
+      gsap.to(track, {
+        x: function() {
+          return -(track.scrollWidth / 4);
+        },
+        duration: duration,
+        ease: 'none',
+        repeat: -1,
+        modifiers: {
+          x: function(x) {
+            var total = track.scrollWidth / 4;
+            /* wrap the value inside [0, -total] */
+            var val = parseFloat(x) % total;
+            return val + 'px';
+          }
+        }
+      });
+    }
+
+    animateTrack(track1, ROW1_DURATION);
+    animateTrack(track2, ROW2_DURATION);
+
+    /* ---- Per-icon float + rotate animations ---- */
+    var icons = beltEl.querySelectorAll('.ingredient-belt__icon');
+
+    icons.forEach(function(icon) {
+      var floatDuration = 2 + Math.random() * 2;       /* 2–4s */
+      var floatY        = 4 + Math.random() * 8;        /* 4–12px (±8 centred) */
+      var floatDelay    = Math.random() * 3;
+      var rotDuration   = 2.5 + Math.random() * 2;     /* 2.5–4.5s */
+      var rotAngle      = 3 + Math.random() * 4;        /* 3–7deg */
+      var rotDelay      = Math.random() * 3;
+      var rotDir        = Math.random() > 0.5 ? 1 : -1;
+
+      /* Float */
+      gsap.to(icon, {
+        y: floatY,
+        duration: floatDuration,
+        ease: 'sine.inOut',
+        repeat: -1,
+        yoyo: true,
+        delay: floatDelay
+      });
+
+      /* Rotate */
+      gsap.to(icon, {
+        rotation: rotDir * rotAngle,
+        duration: rotDuration,
+        ease: 'sine.inOut',
+        repeat: -1,
+        yoyo: true,
+        delay: rotDelay
+      });
+
+      /* Hover: scale up, pause rotate */
+      var rotTween = gsap.getTweensOf(icon).find(function(t) {
+        return t.vars && t.vars.rotation !== undefined;
+      });
+
+      icon.addEventListener('mouseenter', function() {
+        gsap.to(icon, { scale: 1.2, duration: 0.2, ease: 'back.out(1.4)', overwrite: 'auto' });
+        if (rotTween) rotTween.pause();
+      });
+
+      icon.addEventListener('mouseleave', function() {
+        gsap.to(icon, { scale: 1, duration: 0.22, ease: 'power2.out', overwrite: 'auto' });
+        if (rotTween) rotTween.resume();
+      });
+    });
+  }
+
+  /* Load GSAP then initialise */
+  if (typeof gsap !== 'undefined') {
+    initBelt();
+  } else {
+    var script = document.createElement('script');
+    script.src = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js';
+    script.onload = function() { initBelt(); };
+    document.head.appendChild(script);
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Ingredient Belt",
+  "tag": "section",
+  "class": "antonio-ingredient-belt",
+  "settings": [
+    {
+      "type": "color",
+      "id": "bg_color",
+      "label": "Background color",
+      "default": "#1A1A1A",
+      "info": "Set to transparent by leaving empty, or choose any color."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_on_mobile",
+      "label": "Show on mobile",
+      "default": true
+    },
+    {
+      "type": "select",
+      "id": "speed",
+      "label": "Animation speed",
+      "default": "medium",
+      "options": [
+        { "value": "slow",   "label": "Slow"   },
+        { "value": "medium", "label": "Medium" },
+        { "value": "fast",   "label": "Fast"   }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Ingredient Belt"
+    }
+  ]
+}
+{% endschema %}

@@ -1,0 +1,450 @@
+{%- liquid
+  assign headline    = section.settings.headline    | default: "Real New York Pizza."
+  assign subheadline = section.settings.subheadline | default: "Long Island Born & Raised. Made by actual New Yorkers."
+  assign cta1_text   = section.settings.cta1_text   | default: "Order Now"
+  assign cta1_url    = section.settings.cta1_url    | default: "#"
+  assign cta2_text   = section.settings.cta2_text   | default: "See The Menu"
+  assign cta2_url    = section.settings.cta2_url    | default: "#"
+  assign bg_image    = section.settings.bg_image
+-%}
+
+<section
+  id="antonio-hero-{{ section.id }}"
+  class="antonio-hero"
+  aria-label="Hero"
+>
+  {%- if bg_image != blank -%}
+    <div class="antonio-hero__bg-image-wrap">
+      {{
+        bg_image
+        | image_url: width: 2400
+        | image_tag:
+          loading: "eager",
+          fetchpriority: "high",
+          class: "antonio-hero__bg-img",
+          alt: ""
+      }}
+    </div>
+  {%- endif -%}
+
+  <div class="antonio-hero__overlay" aria-hidden="true"></div>
+  <div class="antonio-hero__glow"     aria-hidden="true"></div>
+
+  <div class="antonio-hero__inner">
+    <div class="antonio-hero__content">
+      <h1 class="antonio-hero__headline" id="ah-headline-{{ section.id }}">
+        {{ headline }}
+      </h1>
+
+      <p class="antonio-hero__subheadline" id="ah-sub-{{ section.id }}" aria-label="{{ subheadline }}">
+        <span class="ah-sub-text"></span><span class="ah-cursor" aria-hidden="true">|</span>
+      </p>
+
+      <div class="antonio-hero__ctas" id="ah-ctas-{{ section.id }}">
+        <a
+          href="{{ cta1_url }}"
+          class="antonio-hero__btn antonio-hero__btn--primary"
+        >
+          {{ cta1_text }}
+        </a>
+        <a
+          href="{{ cta2_url }}"
+          class="antonio-hero__btn antonio-hero__btn--ghost"
+        >
+          {{ cta2_text }}
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="antonio-hero__scroll-indicator" aria-hidden="true">
+    <svg class="antonio-hero__scroll-arrow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 5v14M5 12l7 7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+</section>
+
+<style>
+  /* ─── Reset / base ────────────────────────────────────────────── */
+  #antonio-hero-{{ section.id }} *,
+  #antonio-hero-{{ section.id }} *::before,
+  #antonio-hero-{{ section.id }} *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* ─── Google Font ─────────────────────────────────────────────── */
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,900;1,700&display=swap');
+
+  /* ─── Section shell ───────────────────────────────────────────── */
+  .antonio-hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #1A1A1A;
+    overflow: hidden;
+    color: #F9F5EF;
+  }
+
+  /* ─── Background image ────────────────────────────────────────── */
+  .antonio-hero__bg-image-wrap {
+    position: absolute;
+    inset: 0;
+    clip-path: inset(100% 0 0 0); /* revealed by GSAP */
+  }
+
+  .antonio-hero__bg-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    display: block;
+  }
+
+  /* ─── Dark overlay ────────────────────────────────────────────── */
+  .antonio-hero__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      160deg,
+      rgba(26, 26, 26, 0.72) 0%,
+      rgba(26, 26, 26, 0.55) 50%,
+      rgba(26, 26, 26, 0.78) 100%
+    );
+    z-index: 1;
+  }
+
+  /* ─── Neon / ember glow ───────────────────────────────────────── */
+  .antonio-hero__glow {
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 60% 45% at 20% 80%, rgba(200, 41, 30, 0.28) 0%, transparent 70%),
+      radial-gradient(ellipse 45% 35% at 80% 15%, rgba(245, 166, 35, 0.14) 0%, transparent 65%);
+    z-index: 2;
+    pointer-events: none;
+  }
+
+  /* ─── Inner wrapper ───────────────────────────────────────────── */
+  .antonio-hero__inner {
+    position: relative;
+    z-index: 10;
+    width: 100%;
+    max-width: 1200px;
+    padding: 0 clamp(1.25rem, 5vw, 4rem);
+  }
+
+  .antonio-hero__content {
+    max-width: 780px;
+  }
+
+  /* ─── Headline ────────────────────────────────────────────────── */
+  .antonio-hero__headline {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 900;
+    font-size: clamp(2.5rem, 7vw, 5rem); /* 40px → 80px */
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: #F9F5EF;
+    text-shadow:
+      0 2px 24px rgba(200, 41, 30, 0.35),
+      0 1px 4px rgba(0, 0, 0, 0.7);
+    will-change: transform, opacity;
+    opacity: 0;
+    transform: translateY(40px);
+  }
+
+  /* ─── Subheadline ─────────────────────────────────────────────── */
+  .antonio-hero__subheadline {
+    margin-top: clamp(1rem, 2.5vw, 1.5rem);
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-weight: 400;
+    font-size: clamp(1rem, 2.2vw, 1.375rem);
+    color: #F5A623;
+    letter-spacing: 0.01em;
+    line-height: 1.5;
+    min-height: 2.1em; /* prevent layout shift during typewriter */
+  }
+
+  /* Blinking cursor */
+  .ah-cursor {
+    display: inline-block;
+    color: #C8291E;
+    font-style: normal;
+    animation: ah-blink 0.9s step-end infinite;
+    margin-left: 1px;
+  }
+
+  @keyframes ah-blink {
+    0%, 100% { opacity: 1; }
+    50%       { opacity: 0; }
+  }
+
+  /* ─── CTAs ────────────────────────────────────────────────────── */
+  .antonio-hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+    margin-top: clamp(1.5rem, 3vw, 2.25rem);
+    opacity: 0;
+  }
+
+  .antonio-hero__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.875rem 2rem;
+    border-radius: 4px;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
+    font-size: clamp(0.9rem, 1.4vw, 1.0625rem);
+    letter-spacing: 0.04em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+    white-space: nowrap;
+  }
+
+  .antonio-hero__btn:hover {
+    transform: translateY(-2px);
+  }
+
+  /* Primary – Marinara Red */
+  .antonio-hero__btn--primary {
+    background-color: #C8291E;
+    color: #F9F5EF;
+    border: 2px solid #C8291E;
+    box-shadow: 0 4px 20px rgba(200, 41, 30, 0.45);
+  }
+
+  .antonio-hero__btn--primary:hover {
+    background-color: #a8221a;
+    border-color: #a8221a;
+    box-shadow: 0 6px 28px rgba(200, 41, 30, 0.65);
+  }
+
+  /* Ghost / outlined */
+  .antonio-hero__btn--ghost {
+    background-color: transparent;
+    color: #F9F5EF;
+    border: 2px solid rgba(249, 245, 239, 0.7);
+  }
+
+  .antonio-hero__btn--ghost:hover {
+    background-color: rgba(249, 245, 239, 0.08);
+    border-color: #F9F5EF;
+  }
+
+  /* ─── Scroll indicator ────────────────────────────────────────── */
+  .antonio-hero__scroll-indicator {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .antonio-hero__scroll-arrow {
+    width: 32px;
+    height: 32px;
+    color: rgba(249, 245, 239, 0.55);
+    animation: ah-bounce 1.8s ease-in-out infinite;
+  }
+
+  @keyframes ah-bounce {
+    0%, 100% { transform: translateY(0);    opacity: 0.55; }
+    50%       { transform: translateY(8px); opacity: 1;    }
+  }
+
+  /* ─── Mobile tweaks ───────────────────────────────────────────── */
+  @media (max-width: 767px) {
+    .antonio-hero {
+      min-height: 80vh;
+      align-items: flex-end;
+      padding-bottom: 5rem;
+    }
+
+    .antonio-hero__content {
+      text-align: center;
+    }
+
+    .antonio-hero__ctas {
+      justify-content: center;
+    }
+
+    .antonio-hero__btn {
+      width: 100%;
+      max-width: 320px;
+    }
+  }
+</style>
+
+{%- comment -%} ── GSAP Animations ──────────────────────────────── {%- endcomment -%}
+<script>
+(function () {
+  'use strict';
+
+  var SECTION_ID  = {{ section.id | json }};
+  var SUBHEADLINE = {{ subheadline | json }};
+
+  /* ── Load scripts sequentially then run timeline ── */
+  function loadScript(src, cb) {
+    if (document.querySelector('script[src="' + src + '"]')) {
+      // already loading / loaded – wait for it
+      var existing = document.querySelector('script[src="' + src + '"]');
+      if (existing.dataset.loaded) { cb(); return; }
+      existing.addEventListener('load', cb);
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = src;
+    s.async = false;
+    s.addEventListener('load', function () {
+      s.dataset.loaded = '1';
+      cb();
+    });
+    document.head.appendChild(s);
+  }
+
+  function init() {
+    if (typeof gsap === 'undefined') return;
+
+    gsap.registerPlugin(TextPlugin);
+
+    var prefix   = '#antonio-hero-' + SECTION_ID + ' ';
+    var bgWrap   = document.querySelector(prefix + '.antonio-hero__bg-image-wrap');
+    var headline = document.querySelector('#ah-headline-' + SECTION_ID);
+    var subText  = document.querySelector(prefix + '.ah-sub-text');
+    var cursor   = document.querySelector(prefix + '.ah-cursor');
+    var ctasEl   = document.querySelector('#ah-ctas-' + SECTION_ID);
+    var btns     = ctasEl ? ctasEl.querySelectorAll('.antonio-hero__btn') : [];
+
+    var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
+
+    /* 1. Background image clip-path reveal (0.8s) */
+    if (bgWrap) {
+      tl.fromTo(
+        bgWrap,
+        { clipPath: 'inset(100% 0 0 0)' },
+        { clipPath: 'inset(0% 0 0 0)', duration: 0.8 }
+      );
+    } else {
+      tl.to({}, { duration: 0.1 }); /* placeholder tick if no image */
+    }
+
+    /* 2. Headline slides up (starts 0.3s after clip-path begins) */
+    tl.to(
+      headline,
+      { opacity: 1, y: 0, duration: 0.65 },
+      bgWrap ? '-=0.5' : '0'
+    );
+
+    /* 3. Typewriter on subheadline (starts after headline lands) */
+    tl.to(
+      subText,
+      {
+        duration: SUBHEADLINE.length * 0.038,
+        text: { value: SUBHEADLINE, delimiter: '' },
+        ease: 'none'
+      },
+      '+=0.15'
+    );
+
+    /* 4. Hide blinking cursor once typewriter is done */
+    tl.to(cursor, { opacity: 0, duration: 0.3 }, '+=0.8');
+
+    /* 5. CTAs fade in with stagger */
+    tl.to(ctasEl, { opacity: 1, duration: 0.01 }, '<-0.3');
+    tl.from(
+      btns,
+      { opacity: 0, y: 20, duration: 0.45, stagger: 0.15 },
+      '<'
+    );
+  }
+
+  var GSAP_URL       = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js';
+  var TEXT_PLUG_URL  = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js';
+
+  function ready(fn) {
+    if (document.readyState !== 'loading') { fn(); }
+    else { document.addEventListener('DOMContentLoaded', fn); }
+  }
+
+  ready(function () {
+    loadScript(GSAP_URL, function () {
+      loadScript(TEXT_PLUG_URL, init);
+    });
+  });
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Antonio Hero",
+  "tag": "section",
+  "class": "antonio-hero-section",
+  "settings": [
+    {
+      "type": "image_picker",
+      "id": "bg_image",
+      "label": "Background Image",
+      "info": "Recommended: at least 2400×1400px. The section uses a dark overlay automatically."
+    },
+    {
+      "type": "text",
+      "id": "headline",
+      "label": "Headline",
+      "default": "Real New York Pizza."
+    },
+    {
+      "type": "text",
+      "id": "subheadline",
+      "label": "Subheadline",
+      "default": "Long Island Born & Raised. Made by actual New Yorkers."
+    },
+    {
+      "type": "header",
+      "content": "Primary CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta1_text",
+      "label": "Button Text",
+      "default": "Order Now"
+    },
+    {
+      "type": "url",
+      "id": "cta1_url",
+      "label": "Button URL"
+    },
+    {
+      "type": "header",
+      "content": "Secondary CTA"
+    },
+    {
+      "type": "text",
+      "id": "cta2_text",
+      "label": "Button Text",
+      "default": "See The Menu"
+    },
+    {
+      "type": "url",
+      "id": "cta2_url",
+      "label": "Button URL"
+    }
+  ],
+  "presets": [
+    {
+      "name": "Antonio Hero",
+      "category": "Custom"
+    }
+  ]
+}
+{% endschema %}

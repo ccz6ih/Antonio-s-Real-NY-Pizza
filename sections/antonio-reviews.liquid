@@ -1,0 +1,524 @@
+{% comment %}
+  Antonio's Real NY Pizza — Customer Reviews Ticker
+  Section: antonio-reviews.liquid
+  Two-row infinite GSAP scroll on desktop, single row on mobile.
+{% endcomment %}
+
+<section
+  class="antonio-reviews"
+  id="antonio-reviews-{{ section.id }}"
+  data-section-id="{{ section.id }}"
+>
+  <div class="antonio-reviews__inner">
+    <h2 class="antonio-reviews__heading">What New York Is Saying</h2>
+
+    {% if section.blocks.size > 0 %}
+
+      {%- comment -%} Split blocks into two rows for desktop {%- endcomment -%}
+      {%- assign half = section.blocks.size | divided_by: 2 -%}
+
+      {%- comment -%} Row 1 — all blocks {%- endcomment -%}
+      <div class="antonio-reviews__track-wrapper" data-row="1">
+        <div class="antonio-reviews__track" id="ar-track-1-{{ section.id }}">
+          {% for block in section.blocks %}
+            {%- assign stars_count = block.settings.stars | default: 5 -%}
+            {%- assign review_text = block.settings.review | truncate: 123 -%}
+            <div class="ar-card" {{ block.shopify_attributes }}>
+              <div class="ar-card__stars" aria-label="{{ stars_count }} out of 5 stars">
+                {%- for i in (1..5) -%}
+                  {%- if i <= stars_count -%}
+                    <span class="ar-star ar-star--filled">&#9733;</span>
+                  {%- else -%}
+                    <span class="ar-star ar-star--empty">&#9733;</span>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+              <p class="ar-card__quote">&ldquo;{{ review_text }}&rdquo;</p>
+              <div class="ar-card__meta">
+                <span class="ar-card__name">{{ block.settings.name | escape }}</span>
+                {%- if block.settings.location != blank -%}
+                  <span class="ar-card__location">{{ block.settings.location | escape }}</span>
+                {%- endif -%}
+                {%- if block.settings.date != blank -%}
+                  <span class="ar-card__date">{{ block.settings.date | escape }}</span>
+                {%- endif -%}
+              </div>
+            </div>
+          {% endfor %}
+          {%- comment -%} Duplicate set for seamless loop {%- endcomment -%}
+          {% for block in section.blocks %}
+            {%- assign stars_count = block.settings.stars | default: 5 -%}
+            {%- assign review_text = block.settings.review | truncate: 123 -%}
+            <div class="ar-card ar-card--clone" aria-hidden="true">
+              <div class="ar-card__stars">
+                {%- for i in (1..5) -%}
+                  {%- if i <= stars_count -%}
+                    <span class="ar-star ar-star--filled">&#9733;</span>
+                  {%- else -%}
+                    <span class="ar-star ar-star--empty">&#9733;</span>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+              <p class="ar-card__quote">&ldquo;{{ review_text }}&rdquo;</p>
+              <div class="ar-card__meta">
+                <span class="ar-card__name">{{ block.settings.name | escape }}</span>
+                {%- if block.settings.location != blank -%}
+                  <span class="ar-card__location">{{ block.settings.location | escape }}</span>
+                {%- endif -%}
+                {%- if block.settings.date != blank -%}
+                  <span class="ar-card__date">{{ block.settings.date | escape }}</span>
+                {%- endif -%}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+      {%- comment -%} Row 2 — desktop only, 30% faster {%- endcomment -%}
+      <div class="antonio-reviews__track-wrapper antonio-reviews__track-wrapper--row2" data-row="2">
+        <div class="antonio-reviews__track" id="ar-track-2-{{ section.id }}">
+          {% for block in section.blocks %}
+            {%- assign stars_count = block.settings.stars | default: 5 -%}
+            {%- assign review_text = block.settings.review | truncate: 123 -%}
+            <div class="ar-card">
+              <div class="ar-card__stars" aria-label="{{ stars_count }} out of 5 stars">
+                {%- for i in (1..5) -%}
+                  {%- if i <= stars_count -%}
+                    <span class="ar-star ar-star--filled">&#9733;</span>
+                  {%- else -%}
+                    <span class="ar-star ar-star--empty">&#9733;</span>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+              <p class="ar-card__quote">&ldquo;{{ review_text }}&rdquo;</p>
+              <div class="ar-card__meta">
+                <span class="ar-card__name">{{ block.settings.name | escape }}</span>
+                {%- if block.settings.location != blank -%}
+                  <span class="ar-card__location">{{ block.settings.location | escape }}</span>
+                {%- endif -%}
+                {%- if block.settings.date != blank -%}
+                  <span class="ar-card__date">{{ block.settings.date | escape }}</span>
+                {%- endif -%}
+              </div>
+            </div>
+          {% endfor %}
+          {% for block in section.blocks %}
+            {%- assign stars_count = block.settings.stars | default: 5 -%}
+            {%- assign review_text = block.settings.review | truncate: 123 -%}
+            <div class="ar-card ar-card--clone" aria-hidden="true">
+              <div class="ar-card__stars">
+                {%- for i in (1..5) -%}
+                  {%- if i <= stars_count -%}
+                    <span class="ar-star ar-star--filled">&#9733;</span>
+                  {%- else -%}
+                    <span class="ar-star ar-star--empty">&#9733;</span>
+                  {%- endif -%}
+                {%- endfor -%}
+              </div>
+              <p class="ar-card__quote">&ldquo;{{ review_text }}&rdquo;</p>
+              <div class="ar-card__meta">
+                <span class="ar-card__name">{{ block.settings.name | escape }}</span>
+                {%- if block.settings.location != blank -%}
+                  <span class="ar-card__location">{{ block.settings.location | escape }}</span>
+                {%- endif -%}
+                {%- if block.settings.date != blank -%}
+                  <span class="ar-card__date">{{ block.settings.date | escape }}</span>
+                {%- endif -%}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      </div>
+
+    {% else %}
+      <p class="antonio-reviews__empty">Add review blocks in the theme editor to display testimonials.</p>
+    {% endif %}
+  </div>
+</section>
+
+<style>
+  /* ============================================================
+     Antonio Reviews — Section Styles
+  ============================================================ */
+
+  #antonio-reviews-{{ section.id }} {
+    background-color: #1A1A1A;
+    padding: 60px 0;
+    overflow: hidden;
+    width: 100%;
+  }
+
+  #antonio-reviews-{{ section.id }} .antonio-reviews__inner {
+    max-width: 100%;
+  }
+
+  /* ---------- Heading ---------- */
+  #antonio-reviews-{{ section.id }} .antonio-reviews__heading {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(26px, 4vw, 40px);
+    font-weight: 700;
+    color: #FFFFFF;
+    text-align: center;
+    margin: 0 0 48px;
+    padding-bottom: 14px;
+    position: relative;
+    display: inline-block;
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
+  }
+
+  #antonio-reviews-{{ section.id }} .antonio-reviews__heading::after {
+    content: '';
+    display: block;
+    width: 100%;
+    height: 3px;
+    background-color: #C8291E;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    border-radius: 2px;
+  }
+
+  /* ---------- Track Wrapper (overflow mask) ---------- */
+  #antonio-reviews-{{ section.id }} .antonio-reviews__track-wrapper {
+    overflow: hidden;
+    width: 100%;
+    margin-bottom: 20px;
+    -webkit-mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      #000 80px,
+      #000 calc(100% - 80px),
+      transparent 100%
+    );
+    mask-image: linear-gradient(
+      to right,
+      transparent 0%,
+      #000 80px,
+      #000 calc(100% - 80px),
+      transparent 100%
+    );
+  }
+
+  #antonio-reviews-{{ section.id }} .antonio-reviews__track-wrapper:last-child {
+    margin-bottom: 0;
+  }
+
+  /* Row 2 hidden on mobile */
+  #antonio-reviews-{{ section.id }} .antonio-reviews__track-wrapper--row2 {
+    display: none;
+  }
+
+  /* ---------- Track (flex strip) ---------- */
+  #antonio-reviews-{{ section.id }} .antonio-reviews__track {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 20px;
+    width: max-content;
+    will-change: transform;
+  }
+
+  /* ---------- Card ---------- */
+  #antonio-reviews-{{ section.id }} .ar-card {
+    flex: 0 0 280px;
+    width: 280px;
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    padding: 20px;
+    border-left: 3px solid #C8291E;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    box-sizing: border-box;
+  }
+
+  /* ---------- Stars ---------- */
+  #antonio-reviews-{{ section.id }} .ar-card__stars {
+    display: flex;
+    gap: 2px;
+    line-height: 1;
+  }
+
+  #antonio-reviews-{{ section.id }} .ar-star {
+    font-size: 18px;
+    line-height: 1;
+  }
+
+  #antonio-reviews-{{ section.id }} .ar-star--filled {
+    color: #F5A623;
+  }
+
+  #antonio-reviews-{{ section.id }} .ar-star--empty {
+    color: #D4C5C5;
+  }
+
+  /* ---------- Quote ---------- */
+  #antonio-reviews-{{ section.id }} .ar-card__quote {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-style: italic;
+    font-size: 15px;
+    line-height: 1.55;
+    color: #2C2C2C;
+    margin: 0;
+    flex: 1;
+  }
+
+  /* ---------- Meta ---------- */
+  #antonio-reviews-{{ section.id }} .ar-card__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  #antonio-reviews-{{ section.id }} .ar-card__name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 700;
+    font-size: 13px;
+    color: #1A1A1A;
+  }
+
+  #antonio-reviews-{{ section.id }} .ar-card__location {
+    font-size: 12px;
+    color: #888888;
+    font-style: normal;
+  }
+
+  #antonio-reviews-{{ section.id }} .ar-card__date {
+    font-size: 11px;
+    color: #AAAAAA;
+  }
+
+  /* ---------- Empty state ---------- */
+  #antonio-reviews-{{ section.id }} .antonio-reviews__empty {
+    color: #888888;
+    text-align: center;
+    font-size: 15px;
+    padding: 0 20px;
+  }
+
+  /* ---------- Desktop: show row 2 ---------- */
+  @media screen and (min-width: 768px) {
+    #antonio-reviews-{{ section.id }} .antonio-reviews__track-wrapper--row2 {
+      display: block;
+    }
+  }
+</style>
+
+<script>
+(function () {
+  'use strict';
+
+  var SECTION_ID = '{{ section.id }}';
+  var GSAP_CDN   = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js';
+
+  /* Card width + gap */
+  var CARD_W     = 280;
+  var CARD_GAP   = 20;
+  var CARD_STEP  = CARD_W + CARD_GAP;
+
+  /* Base duration (seconds) per card-step — row 2 is 30% faster */
+  var BASE_SPD   = 3.2;   /* seconds to travel one card width */
+  var ROW2_MULT  = 0.70;  /* 30% faster */
+
+  function initReviews() {
+    if (typeof gsap === 'undefined') return;
+
+    var section = document.getElementById('antonio-reviews-' + SECTION_ID);
+    if (!section) return;
+
+    var wrappers = section.querySelectorAll('.antonio-reviews__track-wrapper');
+
+    wrappers.forEach(function (wrapper, idx) {
+      var track      = wrapper.querySelector('.antonio-reviews__track');
+      if (!track) return;
+
+      /* Count only original (non-clone) cards */
+      var allCards   = track.querySelectorAll('.ar-card:not(.ar-card--clone)');
+      var cardCount  = allCards.length;
+      if (cardCount === 0) return;
+
+      /* Total width of one set */
+      var setWidth   = cardCount * CARD_STEP;
+
+      /* Speed multiplier for row 2 */
+      var speedMult  = (idx === 1) ? ROW2_MULT : 1;
+      var duration   = (cardCount * BASE_SPD) / speedMult;
+
+      /* GSAP infinite scroll tween */
+      var tween = gsap.to(track, {
+        x: '-=' + setWidth,
+        duration: duration,
+        ease: 'none',
+        repeat: -1,
+        modifiers: {
+          x: gsap.utils.unitize(function (x) {
+            return parseFloat(x) % setWidth;
+          })
+        }
+      });
+
+      /* Pause on hover */
+      wrapper.addEventListener('mouseenter', function () { tween.pause(); });
+      wrapper.addEventListener('mouseleave', function () { tween.resume(); });
+    });
+  }
+
+  function loadGSAP(callback) {
+    if (typeof gsap !== 'undefined') {
+      callback();
+      return;
+    }
+    var s = document.createElement('script');
+    s.src = GSAP_CDN;
+    s.async = true;
+    s.onload = callback;
+    s.onerror = function () {
+      console.warn('[Antonio Reviews] Failed to load GSAP from CDN.');
+    };
+    document.head.appendChild(s);
+  }
+
+  /* Run on DOMContentLoaded or immediately if already ready */
+  function ready(fn) {
+    if (document.readyState !== 'loading') {
+      fn();
+    } else {
+      document.addEventListener('DOMContentLoaded', fn);
+    }
+  }
+
+  ready(function () {
+    loadGSAP(initReviews);
+  });
+
+  /* Shopify theme editor: re-init on section reload */
+  if (window.Shopify && window.Shopify.designMode) {
+    document.addEventListener('shopify:section:load', function (e) {
+      if (e.detail && e.detail.sectionId === SECTION_ID) {
+        loadGSAP(initReviews);
+      }
+    });
+  }
+})();
+</script>
+
+{% schema %}
+{
+  "name": "Antonio's Reviews",
+  "tag": "section",
+  "class": "antonio-reviews-section",
+  "max_blocks": 20,
+  "settings": [],
+  "blocks": [
+    {
+      "type": "review",
+      "name": "Customer Review",
+      "settings": [
+        {
+          "type": "range",
+          "id": "stars",
+          "label": "Star Rating",
+          "min": 1,
+          "max": 5,
+          "step": 1,
+          "default": 5
+        },
+        {
+          "type": "textarea",
+          "id": "review",
+          "label": "Review Text",
+          "info": "Max 120 characters recommended",
+          "default": "Best pizza I've ever had outside of the city!"
+        },
+        {
+          "type": "text",
+          "id": "name",
+          "label": "Customer Name",
+          "default": "John D."
+        },
+        {
+          "type": "text",
+          "id": "location",
+          "label": "Location",
+          "default": "Massapequa, NY"
+        },
+        {
+          "type": "text",
+          "id": "date",
+          "label": "Date",
+          "default": "March 2025"
+        }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Antonio's Reviews",
+      "blocks": [
+        {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "review": "This is the real deal — thin crust, perfect char, sauce that tastes like it came straight from Brooklyn. Antonio's is the only pizza on Long Island I'll drive out of my way for.",
+            "name": "Mike R.",
+            "location": "Hicksville, NY",
+            "date": "February 2025"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "review": "I grew up eating pizza in Queens and thought nothing on the Island could compare. Antonio's proved me completely wrong. The Margherita slice is absolutely perfect.",
+            "name": "Donna C.",
+            "location": "Garden City, NY",
+            "date": "January 2025"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "review": "Hands down the best New York-style pizza in Nassau County. The crust has that incredible crunch and the cheese pull is unreal. My whole family is obsessed.",
+            "name": "Tommy V.",
+            "location": "Levittown, NY",
+            "date": "March 2025"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "review": "We ordered three pies for a family gathering and every single one was gone in minutes. The Sicilian is thick, saucy, and absolutely incredible. Antonio's is our new go-to.",
+            "name": "Angela M.",
+            "location": "Plainview, NY",
+            "date": "February 2025"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "review": "I've been searching for an authentic NY slice since moving out to Long Island 5 years ago. Found it. Antonio's sauce recipe tastes like a Sunday in my grandma's kitchen.",
+            "name": "Frank S.",
+            "location": "Bethpage, NY",
+            "date": "January 2025"
+          }
+        },
+        {
+          "type": "review",
+          "settings": {
+            "stars": 5,
+            "review": "The pizza here is legitimately as good as anything you'll find in the five boroughs. Crispy bottom, fresh mozzarella, that perfect balance of tangy and sweet in the sauce. Outstanding.",
+            "name": "Lauren B.",
+            "location": "Syosset, NY",
+            "date": "March 2025"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}
