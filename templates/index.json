@@ -1,0 +1,63 @@
+{
+  "sections": {
+    "antonio-hero": {
+      "type": "antonio-hero",
+      "settings": {}
+    },
+    "antonio-specials-marquee": {
+      "type": "antonio-specials-marquee",
+      "settings": {}
+    },
+    "antonio-menu-nav": {
+      "type": "antonio-menu-nav",
+      "settings": {}
+    },
+    "antonio-menu-grid-pies": {
+      "type": "antonio-menu-grid",
+      "settings": {
+        "collection": "whole-pies",
+        "heading": "Our Whole Pies",
+        "max_products": 8
+      }
+    },
+    "antonio-ingredient-belt": {
+      "type": "antonio-ingredient-belt",
+      "settings": {}
+    },
+    "antonio-menu-grid-starters": {
+      "type": "antonio-menu-grid",
+      "settings": {
+        "collection": "starters",
+        "heading": "Starters & Bites",
+        "max_products": 6
+      }
+    },
+    "antonio-story": {
+      "type": "antonio-story",
+      "settings": {}
+    },
+    "antonio-menu-grid-deals": {
+      "type": "antonio-menu-grid",
+      "settings": {
+        "collection": "family-deals",
+        "heading": "Family Deals",
+        "max_products": 3
+      }
+    },
+    "antonio-reviews": {
+      "type": "antonio-reviews",
+      "settings": {}
+    }
+  },
+  "order": [
+    "antonio-hero",
+    "antonio-specials-marquee",
+    "antonio-menu-nav",
+    "antonio-menu-grid-pies",
+    "antonio-ingredient-belt",
+    "antonio-menu-grid-starters",
+    "antonio-story",
+    "antonio-menu-grid-deals",
+    "antonio-reviews"
+  ]
+}
