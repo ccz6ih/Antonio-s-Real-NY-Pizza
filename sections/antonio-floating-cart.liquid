@@ -1,0 +1,402 @@
+{%- comment -%}
+  antonio-floating-cart.liquid
+  Global floating cart trigger — Desktop bubble + Mobile sticky bar
+  Depends on: GSAP (loaded via CDN), antonio-cart.js
+  Savor compatibility: listens to ThemeEvents.cartUpdate ('cart:update'),
+  opens drawer via cart-drawer-component.open() / showDialog()
+{%- endcomment -%}
+
+{%- liquid
+  assign item_count = cart.item_count
+  assign cart_total = cart.total_price | money
+-%}
+
+{# ───────────────────────────────────────────────
+   DESKTOP — Floating bubble (bottom-right corner)
+─────────────────────────────────────────────── #}
+<button
+  id="antonio-cart-bubble"
+  class="antonio-cart-bubble"
+  aria-label="View cart, {{ item_count }} {{ item_count | pluralize: 'item', 'items' }}"
+  data-item-count="{{ item_count }}"
+  {% if item_count == 0 %}hidden{% endif %}
+>
+  {%- comment -%} Pizza slice SVG — white on Marinara Red circle {%- endcomment -%}
+  <span class="antonio-cart-bubble__icon" aria-hidden="true">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="28" height="28" fill="white">
+      <!-- Pizza slice shape -->
+      <path d="M12 2C7.03 2 2.83 5.36 1.5 10h21C21.17 5.36 16.97 2 12 2z"/>
+      <path d="M1.5 10L12 22l10.5-12H1.5z"/>
+      <!-- Toppings dots -->
+      <circle cx="9" cy="14" r="1.2" fill="#F5A623"/>
+      <circle cx="13.5" cy="16" r="1.2" fill="#F5A623"/>
+      <circle cx="11" cy="12" r="1" fill="#C8291E"/>
+    </svg>
+  </span>
+
+  {%- comment -%} Item count badge {%- endcomment -%}
+  <span
+    id="antonio-cart-bubble__count"
+    class="antonio-cart-bubble__count"
+    aria-hidden="true"
+    {% if item_count == 0 %}hidden{% endif %}
+  >
+    {{- item_count -}}
+  </span>
+</button>
+
+{# ───────────────────────────────────────────────
+   MOBILE — Sticky bottom bar (full width)
+─────────────────────────────────────────────── #}
+<div
+  id="antonio-mobile-bar"
+  class="antonio-mobile-bar"
+  role="button"
+  tabindex="0"
+  aria-label="View order, {{ item_count }} {{ item_count | pluralize: 'item', 'items' }}, {{ cart_total }}"
+  data-item-count="{{ item_count }}"
+  {% if item_count == 0 %}hidden{% endif %}
+>
+  <div class="antonio-mobile-bar__inner">
+    <span class="antonio-mobile-bar__count-pill" id="antonio-mobile-bar__count">
+      {{- item_count -}}
+    </span>
+
+    <span class="antonio-mobile-bar__label" id="antonio-mobile-bar__label">
+      VIEW ORDER
+      <span id="antonio-mobile-bar__items-text">
+        ({{ item_count }} {{ item_count | pluralize: 'item', 'items' }})
+      </span>
+    </span>
+
+    <span class="antonio-mobile-bar__total" id="antonio-mobile-bar__total">
+      {{- cart_total -}}
+    </span>
+  </div>
+</div>
+
+{% stylesheet %}
+  /* ─── Shared tokens ─────────────────────────────── */
+  :root {
+    --antonio-red: #C8291E;
+    --antonio-gold: #F5A623;
+    --antonio-bubble-size: 56px;
+    --antonio-bar-height: 56px;
+  }
+
+  /* ─── Desktop Bubble ────────────────────────────── */
+  .antonio-cart-bubble {
+    position: fixed;
+    bottom: 24px;
+    right: 24px;
+    z-index: 999;
+    width: var(--antonio-bubble-size);
+    height: var(--antonio-bubble-size);
+    border-radius: 50%;
+    background-color: var(--antonio-red);
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.28);
+    padding: 0;
+    /* starts off-screen; GSAP slides it in */
+    transform: translateX(80px);
+    transition: box-shadow 0.2s ease;
+  }
+
+  .antonio-cart-bubble:hover {
+    box-shadow: 0 6px 22px rgba(0, 0, 0, 0.38);
+  }
+
+  .antonio-cart-bubble[hidden] {
+    display: none;
+  }
+
+  .antonio-cart-bubble__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+
+  /* Count badge */
+  .antonio-cart-bubble__count {
+    position: absolute;
+    top: -4px;
+    right: -4px;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: var(--antonio-gold);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 20px;
+    text-align: center;
+    pointer-events: none;
+    font-family: sans-serif;
+  }
+
+  .antonio-cart-bubble__count[hidden] {
+    display: none;
+  }
+
+  /* ─── Mobile Bar ────────────────────────────────── */
+  .antonio-mobile-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 999;
+    height: var(--antonio-bar-height);
+    background-color: var(--antonio-red);
+    color: #fff;
+    cursor: pointer;
+    /* starts off-screen; GSAP slides it up */
+    transform: translateY(56px);
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .antonio-mobile-bar[hidden] {
+    display: none;
+  }
+
+  .antonio-mobile-bar__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 100%;
+    padding: 0 16px;
+    gap: 12px;
+  }
+
+  .antonio-mobile-bar__count-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    padding: 0 7px;
+    border-radius: 12px;
+    background-color: rgba(255, 255, 255, 0.25);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    font-family: sans-serif;
+    flex-shrink: 0;
+  }
+
+  .antonio-mobile-bar__label {
+    flex: 1;
+    text-align: center;
+    font-family: 'Bebas Neue', 'Bebas Neue Fallback', sans-serif;
+    font-size: 20px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: #fff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .antonio-mobile-bar__total {
+    font-family: 'Bebas Neue', 'Bebas Neue Fallback', sans-serif;
+    font-size: 20px;
+    color: #fff;
+    flex-shrink: 0;
+  }
+
+  /* ─── Responsive visibility ─────────────────────── */
+  /* Mobile: show bar, hide bubble */
+  @media screen and (max-width: 768px) {
+    .antonio-cart-bubble {
+      display: none !important;
+    }
+
+    .antonio-mobile-bar {
+      display: block;
+    }
+  }
+
+  /* Desktop: show bubble, hide bar */
+  @media screen and (min-width: 769px) {
+    .antonio-mobile-bar {
+      display: none !important;
+    }
+
+    .antonio-cart-bubble {
+      display: flex;
+    }
+  }
+{% endstylesheet %}
+
+{% javascript %}
+  /**
+   * antonio-floating-cart — inline boot script
+   * Runs after DOM is ready; full logic lives in antonio-cart.js.
+   * This block handles:
+   *  1. GSAP slide-in on page load (1.5 s delay)
+   *  2. Click/tap → open Savor cart drawer
+   *  3. Listening to Savor's native 'cart:update' event to refresh UI
+   */
+  (function () {
+    'use strict';
+
+    /* ── Helpers ──────────────────────────────────── */
+    function openCartDrawer() {
+      // Try Savor's cart-drawer-component custom element first
+      var drawer = document.querySelector('cart-drawer-component');
+      if (drawer) {
+        if (typeof drawer.open === 'function') {
+          drawer.open();
+          return;
+        }
+        if (typeof drawer.showDialog === 'function') {
+          drawer.showDialog();
+          return;
+        }
+      }
+      // Fallback: dispatch generic 'cart:open' event (for any listener)
+      document.dispatchEvent(new CustomEvent('cart:open', { bubbles: true }));
+    }
+
+    /* ── Element references ───────────────────────── */
+    var bubble     = document.getElementById('antonio-cart-bubble');
+    var bubbleCount = document.getElementById('antonio-cart-bubble__count');
+    var mobileBar  = document.getElementById('antonio-mobile-bar');
+    var barCount   = document.getElementById('antonio-mobile-bar__count');
+    var barLabel   = document.getElementById('antonio-mobile-bar__items-text');
+    var barTotal   = document.getElementById('antonio-mobile-bar__total');
+
+    if (!bubble || !mobileBar) return;
+
+    /* ── Click / tap handlers ─────────────────────── */
+    bubble.addEventListener('click', openCartDrawer);
+
+    mobileBar.addEventListener('click', openCartDrawer);
+    mobileBar.addEventListener('keydown', function (e) {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        openCartDrawer();
+      }
+    });
+
+    /* ── GSAP entry animations (1.5 s delay) ─────── */
+    function runEntryAnimations(count) {
+      if (typeof gsap === 'undefined') return;
+
+      if (count > 0) {
+        // Desktop bubble slides in from right
+        gsap.to(bubble, {
+          x: 0,
+          duration: 0.6,
+          delay: 1.5,
+          ease: 'back.out(1.7)',
+        });
+
+        // Mobile bar slides up from bottom
+        gsap.to(mobileBar, {
+          y: 0,
+          duration: 0.5,
+          delay: 1.5,
+          ease: 'power2.out',
+        });
+      }
+    }
+
+    /* ── Pulse animation (on item add) ───────────── */
+    function pulseBubble() {
+      if (typeof gsap === 'undefined') return;
+      gsap.timeline()
+        .to(bubble, { scale: 1.3, duration: 0.18, ease: 'back.out(2)' })
+        .to(bubble, { scale: 1,   duration: 0.22, ease: 'back.out(1.4)' });
+    }
+
+    // Expose so antonio-cart.js can call it
+    window._antonioPulseBubble = pulseBubble;
+
+    /* ── Savor 'cart:update' event ───────────────── */
+    document.addEventListener('cart:update', function (e) {
+      var count = 0;
+      var total = '';
+
+      // Savor attaches detail.data.itemCount
+      if (e.detail && e.detail.data) {
+        if (typeof e.detail.data.itemCount === 'number') {
+          count = e.detail.data.itemCount;
+        }
+      }
+
+      updateUI(count, total);
+      pulseBubble();
+    });
+
+    /* ── UI update helper ─────────────────────────── */
+    function updateUI(count, total) {
+      var hasItems = count > 0;
+
+      // Bubble
+      if (hasItems) {
+        bubble.removeAttribute('hidden');
+        bubbleCount.removeAttribute('hidden');
+      } else {
+        bubble.setAttribute('hidden', '');
+        bubbleCount.setAttribute('hidden', '');
+      }
+      bubbleCount.textContent = count;
+      bubble.setAttribute('aria-label', 'View cart, ' + count + (count === 1 ? ' item' : ' items'));
+
+      // Mobile bar
+      if (hasItems) {
+        mobileBar.removeAttribute('hidden');
+      } else {
+        mobileBar.setAttribute('hidden', '');
+      }
+      if (barCount)  barCount.textContent  = count;
+      if (barLabel)  barLabel.textContent  = '(' + count + (count === 1 ? ' item' : ' items') + ')';
+      if (barTotal && total) barTotal.textContent = total;
+      mobileBar.setAttribute('aria-label', 'View order, ' + count + (count === 1 ? ' item' : ' items') + (total ? ', ' + total : ''));
+
+      // If bar/bubble were hidden and now have items, slide them in
+      if (hasItems && typeof gsap !== 'undefined') {
+        var bubbleX = parseFloat(gsap.getProperty(bubble, 'x')) || 0;
+        if (bubbleX !== 0) {
+          gsap.to(bubble, { x: 0, duration: 0.5, ease: 'back.out(1.7)' });
+        }
+        var barY = parseFloat(gsap.getProperty(mobileBar, 'y')) || 0;
+        if (barY !== 0) {
+          gsap.to(mobileBar, { y: 0, duration: 0.45, ease: 'power2.out' });
+        }
+      }
+    }
+
+    /* ── Also listen for our own 'cart:updated' event ─ */
+    document.addEventListener('cart:updated', function (e) {
+      if (e.detail) {
+        updateUI(e.detail.count || 0, e.detail.total || '');
+        pulseBubble();
+      }
+    });
+
+    /* ── Page-load: trigger entry for non-empty cart ── */
+    var initialCount = parseInt(bubble.getAttribute('data-item-count') || '0', 10);
+    if (initialCount > 0) {
+      runEntryAnimations(initialCount);
+    }
+  })();
+{% endjavascript %}
+
+{% schema %}
+{
+  "name": "Floating Cart",
+  "tag": "antonio-floating-cart",
+  "settings": [],
+  "presets": [
+    {
+      "name": "Floating Cart"
+    }
+  ]
+}
+{% endschema %}

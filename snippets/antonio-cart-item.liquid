@@ -1,0 +1,244 @@
+{%- comment -%}
+  antonio-cart-item.liquid
+  ────────────────────────────────────────────────────────────
+  Renders pizza-builder line item properties in the cart drawer.
+
+  Usage:
+    {% render 'antonio-cart-item', item: line_item %}
+
+  Accepts:
+    item  {Object}  — A Shopify cart line item object (cart.items[n] or
+                      the `item` variable inside a for loop over cart.items).
+
+  Behaviour:
+    • Hidden properties (name starts with "_") are never displayed —
+      standard Shopify convention.
+    • The "Toppings" property has its upcharge appended when a sibling
+      hidden property named "_topping_upcharge" exists on the same line item.
+    • Each property row shows an emoji prefix determined by property name.
+    • No output is rendered when the item has no visible properties.
+  ────────────────────────────────────────────────────────────
+{%- endcomment -%}
+
+{%- liquid
+  comment
+    Pre-flight: decide if there is anything to render at all.
+    We also extract the topping upcharge value here so the Toppings
+    row can use it without a second loop.
+  endcomment
+
+  assign has_visible_props  = false
+  assign topping_upcharge   = nil
+
+  for prop in item.properties
+    assign prop_key        = prop.first
+    assign prop_key_first  = prop_key | slice: 0
+    assign prop_val        = prop.last
+
+    if prop_key_first == '_'
+      if prop_key == '_topping_upcharge' and prop_val != blank
+        assign topping_upcharge = prop_val
+      endif
+    elsif prop_val != blank
+      assign has_visible_props = true
+    endif
+  endfor
+-%}
+
+{%- if has_visible_props -%}
+  <ul class="antonio-cart-item-props" aria-label="Pizza options">
+    {%- for prop in item.properties -%}
+      {%- liquid
+        assign prop_key       = prop.first
+        assign prop_val       = prop.last
+        assign key_first_char = prop_key | slice: 0
+
+        comment
+          Skip hidden properties (name starts with "_")
+        endcomment
+        if key_first_char == '_'
+          continue
+        endif
+
+        comment
+          Skip blank values
+        endcomment
+        if prop_val == blank
+          continue
+        endif
+
+        comment
+          Determine emoji prefix from property name (case-insensitive comparison
+          via downcase).
+        endcomment
+        assign prop_key_lower = prop_key | downcase
+
+        if prop_key_lower == 'sauce'
+          assign prop_emoji = '🍕'
+        elsif prop_key_lower == 'cheese'
+          assign prop_emoji = '🧀'
+        elsif prop_key_lower == 'toppings'
+          assign prop_emoji = '🍕'
+        elsif prop_key_lower == 'cut'
+          assign prop_emoji = '✂️'
+        elsif prop_key_lower == 'notes' or prop_key_lower == 'note'
+          assign prop_emoji = '📝'
+        else
+          assign prop_emoji = '•'
+        endif
+      -%}
+
+      <li class="antonio-cart-item-props__row">
+        <span class="antonio-cart-item-props__emoji" aria-hidden="true">{{ prop_emoji }}</span>
+        <span class="antonio-cart-item-props__name">{{ prop_key }}:</span>
+        <span class="antonio-cart-item-props__value">
+          {%- comment -%}
+            For the Toppings property, append the upcharge amount if present.
+          {%- endcomment -%}
+          {{- prop_val -}}
+          {%- if prop_key_lower == 'toppings' and topping_upcharge != nil -%}
+            <span class="antonio-cart-item-props__upcharge">&nbsp;(+{{ topping_upcharge | money }})</span>
+          {%- endif -%}
+        </span>
+      </li>
+
+    {%- endfor -%}
+  </ul>
+{%- endif -%}
+
+{%- comment -%}
+  ════════════════════════════════════════════════════════════
+  STYLES
+  These are scoped to the snippet's class names and are safe
+  to include here; Shopify deduplicates {% stylesheet %} blocks.
+  ════════════════════════════════════════════════════════════
+{%- endcomment -%}
+
+<style>
+  .antonio-cart-item-props {
+    list-style: none;
+    margin: 6px 0 0 0;
+    padding: 0;
+  }
+
+  .antonio-cart-item-props__row {
+    display: flex;
+    align-items: baseline;
+    gap: 4px;
+    font-size: 13px;
+    color: #3D3D3D;
+    line-height: 1.6;
+    padding: 0;
+    flex-wrap: wrap;
+  }
+
+  .antonio-cart-item-props__emoji {
+    flex-shrink: 0;
+    font-size: 12px;
+    line-height: 1;
+    /* Align emoji baseline with text */
+    position: relative;
+    top: 1px;
+  }
+
+  .antonio-cart-item-props__name {
+    flex-shrink: 0;
+    font-weight: 600;
+    color: #3D3D3D;
+    opacity: 0.75;
+  }
+
+  .antonio-cart-item-props__value {
+    color: #3D3D3D;
+    opacity: 0.85;
+    word-break: break-word;
+  }
+
+  .antonio-cart-item-props__upcharge {
+    color: #C8291E;   /* Marinara Red — marks the cost impact clearly */
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* Mobile: tighten spacing slightly, no extra padding */
+  @media screen and (max-width: 768px) {
+    .antonio-cart-item-props {
+      margin-top: 4px;
+    }
+
+    .antonio-cart-item-props__row {
+      font-size: 12px;
+      line-height: 1.55;
+      padding: 0;
+    }
+  }
+</style>
+
+{%- comment -%}
+  ════════════════════════════════════════════════════════════
+  INTEGRATION NOTES — how to include this snippet in Savor's
+  cart-products.liquid
+  ════════════════════════════════════════════════════════════
+
+  In snippets/cart-products.liquid, find the block that renders the
+  product title and variant options for each line item. It is inside
+  the <tbody role="rowgroup"> loop:
+
+    {% for item in cart.items %}
+      …
+      <td class="cart-items__details …">
+        <div class="cart-items__product-info">
+          <p>
+            <a href="{{ item.url }}" class="cart-items__title">
+              {{- item.product.title -}}
+            </a>
+          </p>
+          …
+        </div>
+
+        <div class="cart-items__variants-wrapper">
+          …
+          {%- if has_visible_properties -%}
+            {{- ← the theme's built-in property <dl> block lives here -}}
+          {%- endif -%}
+          …
+        </div>
+      </td>
+    {% endfor %}
+
+  OPTION A — Replace the built-in property block entirely
+  ────────────────────────────────────────────────────────
+  Replace the theme's `{%- if has_visible_properties -%} … {%- endif -%}`
+  block (the one that renders the <dl class="cart-items__properties"> list)
+  with:
+
+    {% render 'antonio-cart-item', item: item %}
+
+  OPTION B — Render alongside the built-in block (recommended for safety)
+  ────────────────────────────────────────────────────────────────────────
+  Leave the theme's block in place and add the snippet immediately after
+  the closing `{%- endif -%}` of the `has_visible_properties` check:
+
+    {%- if has_visible_properties -%}
+      {{- … theme's built-in <dl> … -}}
+    {%- endif -%}
+
+    {%- comment -%} Antonio pizza-builder properties — replaces plain list {%- endcomment -%}
+    {% render 'antonio-cart-item', item: item %}
+
+  NOTE: When using Option B the native <dl class="cart-items__properties">
+  block will ALSO be shown for items that have properties. To avoid double-
+  rendering, wrap the native block in a conditional that checks whether the
+  item is a pizza-builder item, e.g.:
+
+    {%- unless item.properties['_pizza_builder'] -%}
+      {{- … native property block … -}}
+    {%- endunless -%}
+    {% render 'antonio-cart-item', item: item %}
+
+  The `_pizza_builder` hidden property should be set to `"true"` (or any
+  non-blank value) via AntonioCart.addItem(variantId, qty, { _pizza_builder: 'true', … })
+  when submitting a pizza-builder form.
+
+  ════════════════════════════════════════════════════════════
+{%- endcomment -%}
