@@ -1,0 +1,275 @@
+/* =============================================================================
+   Antonio's Real NY Pizza — Design System
+   antonio-theme.css
+   Included via theme layout. Defines all CSS custom properties and
+   base utility classes shared across custom sections.
+   ============================================================================= */
+
+/* Google Fonts ---------------------------------------------------------------- */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Bebas+Neue:wght@400&family=Inter:wght@400;500&display=swap');
+
+
+/* =============================================================================
+   1. CSS Custom Properties
+   ============================================================================= */
+
+:root {
+
+  /* --- Color System --- */
+  --color-marinara:       #C8291E;
+  --color-marinara-dark:  #A01F15;
+  --color-marinara-light: #E8453A;
+  --color-gold:           #F5A623;
+  --color-gold-dark:      #D4880A;
+  --color-basil:          #2C5F2E;
+  --color-brick:          #8B4513;
+  --color-black:          #1A1A1A;
+  --color-charcoal:       #3D3D3D;
+  --color-cream:          #F9F5EF;
+  --color-cream-dark:     #EDE6D8;
+  --color-white:          #FFFFFF;
+  --color-red-badge:      #C8291E;
+
+  /* --- Typography --- */
+  --font-headline: 'Playfair Display', Georgia, serif;
+  --font-accent:   'Bebas Neue', 'Arial Narrow', sans-serif;
+  --font-body:     'Inter', -apple-system, sans-serif;
+
+  /* --- Spacing Scale --- */
+  --space-xs:  4px;
+  --space-sm:  8px;
+  --space-md:  16px;
+  --space-lg:  24px;
+  --space-xl:  32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  --space-4xl: 96px;
+
+  /* --- Border Radius --- */
+  --radius-sm:   4px;
+  --radius-md:   8px;
+  --radius-lg:   16px;
+  --radius-pill: 999px;
+
+  /* --- Shadows --- */
+  --shadow-card:        0 2px 12px rgba(0, 0, 0, 0.08);
+  --shadow-card-hover:  0 8px 32px rgba(0, 0, 0, 0.16);
+  --shadow-button:      0 4px 16px rgba(200, 41, 30, 0.3);
+
+  /* --- Transitions --- */
+  --transition-fast:  150ms ease;
+  --transition-base:  250ms ease;
+  --transition-slow:  400ms ease;
+}
+
+
+/* =============================================================================
+   2. Reduced Motion
+   ============================================================================= */
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration:        0.01ms !important;
+    animation-iteration-count: 1      !important;
+    transition-duration:       0.01ms !important;
+    scroll-behavior:           auto   !important;
+  }
+}
+
+
+/* =============================================================================
+   3. Utility Classes
+   ============================================================================= */
+
+/* --- Badges ----------------------------------------------------------------- */
+
+.antonio-badge {
+  display:        inline-flex;
+  align-items:    center;
+  padding:        var(--space-xs) var(--space-sm);
+  font-family:    var(--font-accent);
+  font-size:      12px;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  border-radius:  var(--radius-sm);
+  line-height:    1;
+  font-weight:    400;
+  white-space:    nowrap;
+}
+
+.antonio-badge--red {
+  background-color: var(--color-red-badge);
+  color:            var(--color-white);
+}
+
+.antonio-badge--gold {
+  background-color: var(--color-gold);
+  color:            var(--color-black);
+}
+
+.antonio-badge--green {
+  background-color: var(--color-basil);
+  color:            var(--color-white);
+}
+
+.antonio-badge--new {
+  background-color: var(--color-marinara-light);
+  color:            var(--color-white);
+}
+
+
+/* --- Buttons ---------------------------------------------------------------- */
+
+.antonio-btn {
+  display:         inline-flex;
+  align-items:     center;
+  justify-content: center;
+  gap:             var(--space-sm);
+  padding:         var(--space-sm) var(--space-xl);
+  font-family:     var(--font-accent);
+  font-size:       16px;
+  letter-spacing:  0.08em;
+  text-transform:  uppercase;
+  text-decoration: none;
+  border:          2px solid transparent;
+  border-radius:   var(--radius-md);
+  cursor:          pointer;
+  line-height:     1;
+  transition:      background-color var(--transition-base),
+                   color            var(--transition-base),
+                   border-color     var(--transition-base),
+                   box-shadow       var(--transition-base),
+                   transform        var(--transition-fast);
+  white-space:     nowrap;
+  user-select:     none;
+}
+
+.antonio-btn:focus-visible {
+  outline:        3px solid var(--color-gold);
+  outline-offset: 2px;
+}
+
+.antonio-btn:active {
+  transform: translateY(1px);
+}
+
+/* Primary — Marinara Red fill */
+.antonio-btn--primary {
+  background-color: var(--color-marinara);
+  border-color:     var(--color-marinara);
+  color:            var(--color-white);
+  box-shadow:       var(--shadow-button);
+}
+
+.antonio-btn--primary:hover {
+  background-color: var(--color-marinara-dark);
+  border-color:     var(--color-marinara-dark);
+  box-shadow:       0 6px 20px rgba(200, 41, 30, 0.4);
+}
+
+/* Ghost — outlined */
+.antonio-btn--ghost {
+  background-color: transparent;
+  border-color:     var(--color-marinara);
+  color:            var(--color-marinara);
+}
+
+.antonio-btn--ghost:hover {
+  background-color: var(--color-marinara);
+  color:            var(--color-white);
+  box-shadow:       var(--shadow-button);
+}
+
+/* Gold */
+.antonio-btn--gold {
+  background-color: var(--color-gold);
+  border-color:     var(--color-gold);
+  color:            var(--color-black);
+}
+
+.antonio-btn--gold:hover {
+  background-color: var(--color-gold-dark);
+  border-color:     var(--color-gold-dark);
+  box-shadow:       0 4px 16px rgba(245, 166, 35, 0.35);
+}
+
+
+/* --- Cards ------------------------------------------------------------------ */
+
+.antonio-card {
+  background-color: var(--color-white);
+  border-radius:    var(--radius-lg);
+  box-shadow:       var(--shadow-card);
+  overflow:         hidden;
+  transition:       box-shadow var(--transition-base),
+                    transform  var(--transition-base);
+}
+
+.antonio-card:hover {
+  box-shadow: var(--shadow-card-hover);
+  transform:  translateY(-4px);
+}
+
+
+/* --- Tags ------------------------------------------------------------------- */
+
+.antonio-tag {
+  display:          inline-flex;
+  align-items:      center;
+  padding:          3px var(--space-sm);
+  font-family:      var(--font-body);
+  font-size:        11px;
+  font-weight:      500;
+  letter-spacing:   0.04em;
+  text-transform:   uppercase;
+  border-radius:    var(--radius-pill);
+  background-color: var(--color-cream-dark);
+  color:            var(--color-charcoal);
+  white-space:      nowrap;
+  line-height:      1.4;
+}
+
+
+/* --- Price ------------------------------------------------------------------ */
+
+.antonio-price {
+  font-family:  var(--font-accent);
+  font-size:    28px;
+  letter-spacing: 0.04em;
+  color:        var(--color-gold);
+  line-height:  1;
+}
+
+
+/* --- Headings --------------------------------------------------------------- */
+
+.antonio-heading {
+  font-family:  var(--font-headline);
+  font-weight:  700;
+  color:        var(--color-black);
+  line-height:  1.2;
+}
+
+
+/* --- Section Title (centered with decorative red line) --------------------- */
+
+.antonio-section-title {
+  font-family:    var(--font-headline);
+  font-weight:    700;
+  color:          var(--color-black);
+  text-align:     center;
+  line-height:    1.2;
+  margin-bottom:  var(--space-2xl);
+}
+
+.antonio-section-title::after {
+  content:          '';
+  display:          block;
+  width:            56px;
+  height:           3px;
+  background-color: var(--color-marinara);
+  border-radius:    var(--radius-pill);
+  margin:           var(--space-md) auto 0;
+}
