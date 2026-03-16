@@ -166,16 +166,16 @@
         atcBtn.disabled = true;
         atcBtn.textContent = 'Adding\u2026';
 
-        fetch('/cart/add.json', {
+        fetch('/cart/add.js', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-          body: JSON.stringify({ id: variantId, quantity: quantity, properties: properties })
+          body: JSON.stringify({ id: variantId, quantity: quantity, properties: properties, sections: ['header_section'] })
         })
         .then(function (r) { if (!r.ok) throw new Error('Cart error'); return r.json(); })
-        .then(function () {
+        .then(function (data) {
           atcBtn.textContent = 'Added!';
           if (feedbackEl) feedbackEl.textContent = 'Added to your order.';
-          document.dispatchEvent(new CustomEvent('cart:update'));
+          document.dispatchEvent(new CustomEvent('cart:update', { detail: { data: { sections: (data && data.sections) || {} } } }));
           var _d = document.querySelector('cart-drawer-component'); if (_d) { (typeof _d.open === 'function' ? _d.open() : _d.showDialog && _d.showDialog()); }
           setTimeout(function () {
             atcBtn.disabled = false;

@@ -473,7 +473,7 @@
         atcBtn.setAttribute('disabled', 'disabled');
         atcBtn.textContent = 'Adding…';
 
-        fetch('/cart/add.json', {
+        fetch('/cart/add.js', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
           body: JSON.stringify({
@@ -486,12 +486,12 @@
           if (!res.ok) throw new Error('Cart error ' + res.status);
           return res.json();
         })
-        .then(function () {
+        .then(function (data) {
           atcBtn.classList.remove('pb-btn-atc--loading');
           atcBtn.classList.add('pb-btn-atc--success');
           atcBtn.textContent = 'Added!';
           if (feedbackEl) feedbackEl.textContent = 'Your pizza has been added to the cart.';
-          document.dispatchEvent(new CustomEvent('cart:update'));
+          document.dispatchEvent(new CustomEvent('cart:update', { detail: { data: { sections: (data && data.sections) || {} } } }));
           var _d = document.querySelector('cart-drawer-component'); if (_d) { (typeof _d.open === 'function' ? _d.open() : _d.showDialog && _d.showDialog()); }
           setTimeout(function () {
             atcBtn.classList.remove('pb-btn-atc--success');
