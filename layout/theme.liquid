@@ -31,14 +31,17 @@
     {%- render 'theme-styles-variables' -%}
     {%- render 'color-schemes' -%}
 
-    {%- comment -%} Antonio's — Google Fonts preload {%- endcomment -%}
+    {%- comment -%} Antonio's — Google Fonts {%- endcomment -%}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Bebas+Neue&family=Inter:wght@400;500&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Bebas+Neue&family=Inter:wght@400;500&display=swap">
     {%- comment -%} Antonio's — design system CSS {%- endcomment -%}
     {{ 'antonio-theme.css' | asset_url | stylesheet_tag }}
     <script src="{{ 'antonio-cart.js' | asset_url }}" defer></script>
+    {%- comment -%} Antonio's — GSAP loaded ONCE here; all sections use window.gsap {%- endcomment -%}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js" defer></script>
 
     {% if request.design_mode %}
       {%- render 'theme-editor' -%}

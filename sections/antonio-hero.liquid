@@ -93,7 +93,8 @@
   .antonio-hero__bg-image-wrap {
     position: absolute;
     inset: 0;
-    clip-path: inset(100% 0 0 0); /* revealed by GSAP */
+    /* No clip-path here — GSAP sets the initial state via .set() before animating.
+       This means the image is always visible even if GSAP fails to load. */
   }
 
   .antonio-hero__bg-img {
@@ -153,8 +154,7 @@
       0 2px 24px rgba(200, 41, 30, 0.35),
       0 1px 4px rgba(0, 0, 0, 0.7);
     will-change: transform, opacity;
-    opacity: 0;
-    transform: translateY(40px);
+    /* Visible by default — GSAP sets opacity:0 / translateY(40px) via .set() before animating */
   }
 
   /* ─── Subheadline ─────────────────────────────────────────────── */
@@ -190,7 +190,7 @@
     flex-wrap: wrap;
     gap: 1rem;
     margin-top: clamp(1.5rem, 3vw, 2.25rem);
-    opacity: 0;
+    /* Visible by default — GSAP sets opacity:0 via .set() before animating */
   }
 
   .antonio-hero__btn {
@@ -198,10 +198,10 @@
     align-items: center;
     justify-content: center;
     padding: 0.875rem 2rem;
-    border-radius: 4px;
-    font-family: 'Playfair Display', Georgia, serif;
-    font-weight: 700;
-    font-size: clamp(0.9rem, 1.4vw, 1.0625rem);
+    border-radius: var(--style-border-radius-buttons-primary, 4px);
+    font-family: var(--button-font-family-primary, 'Inter', sans-serif);
+    font-weight: 600;
+    font-size: clamp(0.875rem, 1.4vw, 1rem);
     letter-spacing: 0.04em;
     text-decoration: none;
     cursor: pointer;
@@ -286,37 +286,17 @@
   }
 </style>
 
-{%- comment -%} ── GSAP Animations ──────────────────────────────── {%- endcomment -%}
+{%- comment -%} ── GSAP Animations (GSAP loaded once in theme.liquid) ── {%- endcomment -%}
 <script>
 (function () {
   'use strict';
-
   var SECTION_ID  = {{ section.id | json }};
   var SUBHEADLINE = {{ subheadline | json }};
 
-  /* ── Load scripts sequentially then run timeline ── */
-  function loadScript(src, cb) {
-    if (document.querySelector('script[src="' + src + '"]')) {
-      // already loading / loaded – wait for it
-      var existing = document.querySelector('script[src="' + src + '"]');
-      if (existing.dataset.loaded) { cb(); return; }
-      existing.addEventListener('load', cb);
-      return;
-    }
-    var s = document.createElement('script');
-    s.src = src;
-    s.async = false;
-    s.addEventListener('load', function () {
-      s.dataset.loaded = '1';
-      cb();
-    });
-    document.head.appendChild(s);
-  }
-
   function init() {
     if (typeof gsap === 'undefined') return;
-
-    gsap.registerPlugin(TextPlugin);
+    if (typeof TextPlugin !== 'undefined') gsap.registerPlugin(TextPlugin);
+    if (typeof ScrollTrigger !== 'undefined') gsap.registerPlugin(ScrollTrigger);
 
     var prefix   = '#antonio-hero-' + SECTION_ID + ' ';
     var bgWrap   = document.querySelector(prefix + '.antonio-hero__bg-image-wrap');
@@ -326,61 +306,35 @@
     var ctasEl   = document.querySelector('#ah-ctas-' + SECTION_ID);
     var btns     = ctasEl ? ctasEl.querySelectorAll('.antonio-hero__btn') : [];
 
+    /* Set initial hidden states via JS so elements are visible without JS */
+    if (bgWrap) gsap.set(bgWrap, { clipPath: 'inset(100% 0 0 0)' });
+    gsap.set(headline, { opacity: 0, y: 40 });
+    gsap.set(ctasEl,   { opacity: 0 });
+    gsap.set(btns,     { opacity: 0, y: 20 });
+
     var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
-    /* 1. Background image clip-path reveal (0.8s) */
     if (bgWrap) {
-      tl.fromTo(
-        bgWrap,
-        { clipPath: 'inset(100% 0 0 0)' },
-        { clipPath: 'inset(0% 0 0 0)', duration: 0.8 }
-      );
-    } else {
-      tl.to({}, { duration: 0.1 }); /* placeholder tick if no image */
+      tl.to(bgWrap, { clipPath: 'inset(0% 0 0 0)', duration: 0.8 });
     }
-
-    /* 2. Headline slides up (starts 0.3s after clip-path begins) */
-    tl.to(
-      headline,
-      { opacity: 1, y: 0, duration: 0.65 },
-      bgWrap ? '-=0.5' : '0'
-    );
-
-    /* 3. Typewriter on subheadline (starts after headline lands) */
-    tl.to(
-      subText,
-      {
-        duration: SUBHEADLINE.length * 0.038,
-        text: { value: SUBHEADLINE, delimiter: '' },
-        ease: 'none'
-      },
-      '+=0.15'
-    );
-
-    /* 4. Hide blinking cursor once typewriter is done */
+    tl.to(headline, { opacity: 1, y: 0, duration: 0.65 }, bgWrap ? '-=0.5' : '0');
+    tl.to(subText, {
+      duration: SUBHEADLINE.length * 0.038,
+      text: { value: SUBHEADLINE, delimiter: '' },
+      ease: 'none'
+    }, '+=0.15');
     tl.to(cursor, { opacity: 0, duration: 0.3 }, '+=0.8');
-
-    /* 5. CTAs fade in with stagger */
     tl.to(ctasEl, { opacity: 1, duration: 0.01 }, '<-0.3');
-    tl.from(
-      btns,
-      { opacity: 0, y: 20, duration: 0.45, stagger: 0.15 },
-      '<'
-    );
+    tl.to(btns,   { opacity: 1, y: 0, duration: 0.45, stagger: 0.15 }, '<');
   }
 
-  var GSAP_URL       = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js';
-  var TEXT_PLUG_URL  = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/TextPlugin.min.js';
+  /* window.load fires after all defer scripts — guaranteed GSAP is ready */
+  if (document.readyState === 'complete') { init(); }
+  else { window.addEventListener('load', init); }
 
-  function ready(fn) {
-    if (document.readyState !== 'loading') { fn(); }
-    else { document.addEventListener('DOMContentLoaded', fn); }
-  }
-
-  ready(function () {
-    loadScript(GSAP_URL, function () {
-      loadScript(TEXT_PLUG_URL, init);
-    });
+  /* Re-init when section reloaded in theme editor */
+  document.addEventListener('shopify:section:load', function(e) {
+    if (e.detail && e.detail.sectionId === SECTION_ID) init();
   });
 })();
 </script>
