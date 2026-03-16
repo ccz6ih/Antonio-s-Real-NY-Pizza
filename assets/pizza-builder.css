@@ -1372,3 +1372,35 @@
   color: var(--pb-gold);
   font-size: 1.125rem;
 }
+
+/* Size step — variant buttons with price sub-label */
+.pb-size-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+}
+
+.pb-size-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  min-width: 120px;
+  padding: 1rem 1.5rem;
+}
+
+.pb-size-btn__name {
+  font-size: 1rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.pb-size-btn__price {
+  font-size: 0.875rem;
+  font-weight: 400;
+  opacity: 0.75;
+}
+
+.pb-size-btn.is-selected .pb-size-btn__price {
+  opacity: 1;
+}

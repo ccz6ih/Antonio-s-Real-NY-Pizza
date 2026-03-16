@@ -1,24 +1,34 @@
 {%- liquid
-  assign base_price = product.selected_or_first_available_variant.price
+  assign first_variant = product.selected_or_first_available_variant
+  assign base_price = first_variant.price
   assign base_price_dollars = base_price | money
+  assign has_size_variants = false
+  if product.variants.size > 1
+    assign has_size_variants = true
+  endif
 -%}
 
-<div class="pb-whole" id="pb-whole-{{ product.id }}" data-variant-id="{{ product.selected_or_first_available_variant.id }}" data-base-price="{{ base_price }}">
+<div class="pb-whole" id="pb-whole-{{ product.id }}"
+  data-variant-id="{{ first_variant.id }}"
+  data-base-price="{{ base_price }}"
+  data-has-variants="{{ has_size_variants }}">
 
   <!-- Progress Bar -->
   <div class="pb-progress" aria-label="Builder progress">
     <div class="pb-progress__track">
-      {%- for i in (1..6) -%}
+      {%- assign pb_total = 7 -%}
+      {%- for i in (1..7) -%}
         <div class="pb-progress__step {% if i == 1 %}is-active{% endif %}" data-step="{{ i }}">
           <div class="pb-progress__dot"></div>
           <span class="pb-progress__label">
             {%- case i -%}
-              {%- when 1 -%}Sauce
-              {%- when 2 -%}Cheese
-              {%- when 3 -%}Toppings
-              {%- when 4 -%}Cut
-              {%- when 5 -%}Notes
-              {%- when 6 -%}Review
+              {%- when 1 -%}Size
+              {%- when 2 -%}Sauce
+              {%- when 3 -%}Cheese
+              {%- when 4 -%}Toppings
+              {%- when 5 -%}Cut
+              {%- when 6 -%}Notes
+              {%- when 7 -%}Review
             {%- endcase -%}
           </span>
         </div>
@@ -32,10 +42,36 @@
   <!-- Step Viewport -->
   <div class="pb-viewport" aria-live="polite">
 
-    <!-- STEP 1: Sauce -->
+    <!-- STEP 1: Size -->
     <div class="pb-step is-active" data-step="1" role="group" aria-labelledby="pb-step1-heading">
       <h2 class="pb-step__heading" id="pb-step1-heading">
-        <span class="pb-step__num">1 <span class="pb-step__of">of 6</span></span>
+        <span class="pb-step__num">1 <span class="pb-step__of">of 7</span></span>
+        Choose Your Size
+      </h2>
+      <div class="pb-btn-group pb-size-group" role="radiogroup" aria-label="Size selection">
+        {%- for variant in product.variants -%}
+          <button type="button"
+            class="pb-option-btn pb-size-btn"
+            role="radio"
+            aria-checked="false"
+            data-group="size"
+            data-value="{{ variant.title | escape }}"
+            data-variant-id="{{ variant.id }}"
+            data-price="{{ variant.price }}">
+            <span class="pb-size-btn__name">{{ variant.title }}</span>
+            <span class="pb-size-btn__price">{{ variant.price | money }}</span>
+          </button>
+        {%- endfor -%}
+      </div>
+      <div class="pb-step__nav">
+        <button type="button" class="pb-btn-next" data-next="2" disabled>Next: Sauce &rarr;</button>
+      </div>
+    </div>
+
+    <!-- STEP 2: Sauce -->
+    <div class="pb-step" data-step="2" role="group" aria-labelledby="pb-step2-heading">
+      <h2 class="pb-step__heading" id="pb-step2-heading">
+        <span class="pb-step__num">2 <span class="pb-step__of">of 7</span></span>
         Choose Your Sauce
       </h2>
       <div class="pb-btn-group" role="radiogroup" aria-label="Sauce selection">
@@ -47,14 +83,15 @@
         {%- endfor -%}
       </div>
       <div class="pb-step__nav">
-        <button type="button" class="pb-btn-next" data-next="2" disabled>Next: Cheese &rarr;</button>
+        <button type="button" class="pb-btn-prev" data-prev="1">&larr; Back</button>
+        <button type="button" class="pb-btn-next" data-next="3" disabled>Next: Cheese &rarr;</button>
       </div>
     </div>
 
-    <!-- STEP 2: Cheese -->
-    <div class="pb-step" data-step="2" role="group" aria-labelledby="pb-step2-heading">
-      <h2 class="pb-step__heading" id="pb-step2-heading">
-        <span class="pb-step__num">2 <span class="pb-step__of">of 6</span></span>
+    <!-- STEP 3: Cheese -->
+    <div class="pb-step" data-step="3" role="group" aria-labelledby="pb-step3-heading">
+      <h2 class="pb-step__heading" id="pb-step3-heading">
+        <span class="pb-step__num">3 <span class="pb-step__of">of 7</span></span>
         Choose Your Cheese
       </h2>
       <div class="pb-btn-group" role="radiogroup" aria-label="Cheese selection">
@@ -66,15 +103,15 @@
         {%- endfor -%}
       </div>
       <div class="pb-step__nav">
-        <button type="button" class="pb-btn-prev" data-prev="1">&larr; Back</button>
-        <button type="button" class="pb-btn-next" data-next="3" disabled>Next: Toppings &rarr;</button>
+        <button type="button" class="pb-btn-prev" data-prev="2">&larr; Back</button>
+        <button type="button" class="pb-btn-next" data-next="4" disabled>Next: Toppings &rarr;</button>
       </div>
     </div>
 
-    <!-- STEP 3: Toppings -->
-    <div class="pb-step" data-step="3" role="group" aria-labelledby="pb-step3-heading">
-      <h2 class="pb-step__heading" id="pb-step3-heading">
-        <span class="pb-step__num">3 <span class="pb-step__of">of 6</span></span>
+    <!-- STEP 4: Toppings -->
+    <div class="pb-step" data-step="4" role="group" aria-labelledby="pb-step4-heading">
+      <h2 class="pb-step__heading" id="pb-step4-heading">
+        <span class="pb-step__num">4 <span class="pb-step__of">of 7</span></span>
         Choose Your Toppings
         <span class="pb-step__sub">Pick up to 10 &mdash; each +$2.50</span>
       </h2>
@@ -138,15 +175,15 @@
       </div>
 
       <div class="pb-step__nav">
-        <button type="button" class="pb-btn-prev" data-prev="2">&larr; Back</button>
-        <button type="button" class="pb-btn-next" data-next="4">Next: Cut Style &rarr;</button>
+        <button type="button" class="pb-btn-prev" data-prev="3">&larr; Back</button>
+        <button type="button" class="pb-btn-next" data-next="5">Next: Cut Style &rarr;</button>
       </div>
     </div>
 
-    <!-- STEP 4: Cut Style -->
-    <div class="pb-step" data-step="4" role="group" aria-labelledby="pb-step4-heading">
-      <h2 class="pb-step__heading" id="pb-step4-heading">
-        <span class="pb-step__num">4 <span class="pb-step__of">of 6</span></span>
+    <!-- STEP 5: Cut Style -->
+    <div class="pb-step" data-step="5" role="group" aria-labelledby="pb-step5-heading">
+      <h2 class="pb-step__heading" id="pb-step5-heading">
+        <span class="pb-step__num">5 <span class="pb-step__of">of 7</span></span>
         Choose Your Cut
       </h2>
       <div class="pb-btn-group" role="radiogroup" aria-label="Cut style selection">
@@ -158,15 +195,15 @@
         {%- endfor -%}
       </div>
       <div class="pb-step__nav">
-        <button type="button" class="pb-btn-prev" data-prev="3">&larr; Back</button>
-        <button type="button" class="pb-btn-next" data-next="5" disabled>Next: Notes &rarr;</button>
+        <button type="button" class="pb-btn-prev" data-prev="4">&larr; Back</button>
+        <button type="button" class="pb-btn-next" data-next="6" disabled>Next: Notes &rarr;</button>
       </div>
     </div>
 
-    <!-- STEP 5: Special Instructions -->
-    <div class="pb-step" data-step="5" role="group" aria-labelledby="pb-step5-heading">
-      <h2 class="pb-step__heading" id="pb-step5-heading">
-        <span class="pb-step__num">5 <span class="pb-step__of">of 6</span></span>
+    <!-- STEP 6: Special Instructions -->
+    <div class="pb-step" data-step="6" role="group" aria-labelledby="pb-step6-heading">
+      <h2 class="pb-step__heading" id="pb-step6-heading">
+        <span class="pb-step__num">6 <span class="pb-step__of">of 7</span></span>
         Special Instructions
         <span class="pb-step__sub">Optional &mdash; allergy info, special requests</span>
       </h2>
@@ -184,15 +221,15 @@
         </div>
       </div>
       <div class="pb-step__nav">
-        <button type="button" class="pb-btn-prev" data-prev="4">&larr; Back</button>
-        <button type="button" class="pb-btn-next" data-next="6">Review Order &rarr;</button>
+        <button type="button" class="pb-btn-prev" data-prev="5">&larr; Back</button>
+        <button type="button" class="pb-btn-next" data-next="7">Review Order &rarr;</button>
       </div>
     </div>
 
-    <!-- STEP 6: Summary + Add to Cart -->
-    <div class="pb-step" data-step="6" role="group" aria-labelledby="pb-step6-heading">
-      <h2 class="pb-step__heading" id="pb-step6-heading">
-        <span class="pb-step__num">6 <span class="pb-step__of">of 6</span></span>
+    <!-- STEP 7: Summary + Add to Cart -->
+    <div class="pb-step" data-step="7" role="group" aria-labelledby="pb-step7-heading">
+      <h2 class="pb-step__heading" id="pb-step7-heading">
+        <span class="pb-step__num">7 <span class="pb-step__of">of 7</span></span>
         Review Your Order
       </h2>
 
@@ -207,6 +244,10 @@
           </div>
         </div>
         <dl class="pb-summary-list">
+          <div class="pb-summary-row" data-summary-row="size">
+            <dt>Size</dt>
+            <dd data-summary-value="size">&mdash;</dd>
+          </div>
           <div class="pb-summary-row" data-summary-row="sauce">
             <dt>Sauce</dt>
             <dd data-summary-value="sauce">&mdash;</dd>
@@ -235,7 +276,7 @@
       </div>
 
       <div class="pb-step__nav pb-step__nav--cart">
-        <button type="button" class="pb-btn-prev" data-prev="5">&larr; Edit</button>
+        <button type="button" class="pb-btn-prev" data-prev="6">&larr; Edit</button>
         <button type="button" class="pb-btn-atc" data-atc aria-label="Add to cart">
           Add to Cart
         </button>
@@ -259,11 +300,30 @@
     if (!root) return;
 
     var currentStep = 1;
-    var totalSteps = 6;
-    var choices = { sauce: null, cheese: null, toppings: [], cut: null, notes: '' };
+    var totalSteps = 7;
+    var choices = { size: null, sauce: null, cheese: null, toppings: [], cut: null, notes: '' };
 
     var variantId = root.dataset.variantId;
     var basePrice = parseInt(root.dataset.basePrice, 10) || 0;
+
+    // If product has only one variant, auto-select it and skip to step 2
+    var sizeButtons = root.querySelectorAll('.pb-option-btn[data-group="size"]');
+    if (sizeButtons.length === 1) {
+      var onlyBtn = sizeButtons[0];
+      onlyBtn.classList.add('is-selected');
+      onlyBtn.setAttribute('aria-checked', 'true');
+      choices.size = onlyBtn.dataset.value;
+      variantId = onlyBtn.dataset.variantId;
+      basePrice = parseInt(onlyBtn.dataset.price, 10) || 0;
+      // Skip size step — move directly to sauce
+      var sizeStep = root.querySelector('.pb-step[data-step="1"]');
+      var sauceStep = root.querySelector('.pb-step[data-step="2"]');
+      if (sizeStep && sauceStep) {
+        sizeStep.classList.remove('is-active');
+        sauceStep.classList.add('is-active');
+        currentStep = 2;
+      }
+    }
 
     // ── Helpers ──────────────────────────────────────────────────────────────
 
@@ -312,7 +372,7 @@
       currentStep = n;
       updateProgressBar();
 
-      if (n === 6) buildSummary();
+      if (n === 7) buildSummary();
 
       // Focus first interactive element in new step
       var focusTarget = arriving.querySelector('button, textarea, input');
@@ -321,7 +381,7 @@
       }
     }
 
-    // ── Option button groups (sauce, cheese, cut) ────────────────────────────
+    // ── Option button groups (size, sauce, cheese, cut) ──────────────────────
 
     root.querySelectorAll('.pb-option-btn').forEach(function (btn) {
       btn.addEventListener('click', function () {
@@ -336,6 +396,12 @@
         btn.classList.add('is-selected');
         btn.setAttribute('aria-checked', 'true');
         choices[group] = val;
+
+        // Size selection: update variant ID and base price
+        if (group === 'size') {
+          variantId = btn.dataset.variantId;
+          basePrice = parseInt(btn.dataset.price, 10) || 0;
+        }
 
         // Enable next button for steps that require a selection
         var step = btn.closest('.pb-step');
@@ -354,13 +420,11 @@
         var idx = choices.toppings.indexOf(val);
 
         if (idx > -1) {
-          // Deselect
           choices.toppings.splice(idx, 1);
           tile.classList.remove('is-selected');
           tile.setAttribute('aria-pressed', 'false');
         } else {
           if (choices.toppings.length >= MAX_TOPPINGS) {
-            // Visual shake on counter
             var badge = root.querySelector('.pb-topping-counter__badge');
             if (badge) {
               badge.classList.add('pb-shake');
@@ -387,7 +451,6 @@
         badge.textContent = count + (count === 1 ? ' topping' : ' toppings') + ' \u2014 +' + formatMoney(upcharge);
       }
 
-      // Toggle maxed-out state
       root.querySelectorAll('.pb-topping-tile').forEach(function (tile) {
         var selected = tile.classList.contains('is-selected');
         tile.classList.toggle('is-maxed', !selected && count >= MAX_TOPPINGS);
@@ -435,6 +498,7 @@
         if (el) el.textContent = val || '\u2014';
       };
 
+      setValue('size', choices.size);
       setValue('sauce', choices.sauce);
       setValue('cheese', choices.cheese);
       setValue('toppings', choices.toppings.length ? choices.toppings.join(', ') : 'None');
@@ -460,6 +524,7 @@
       atcBtn.addEventListener('click', function () {
         var upcharge = choices.toppings.length * TOPPING_PRICE;
         var properties = {
+          'Size': choices.size || 'Not specified',
           'Sauce': choices.sauce || 'Not specified',
           'Cheese': choices.cheese || 'Not specified',
           'Toppings': choices.toppings.length ? choices.toppings.join(', ') : 'None',
@@ -471,7 +536,7 @@
 
         atcBtn.classList.add('pb-btn-atc--loading');
         atcBtn.setAttribute('disabled', 'disabled');
-        atcBtn.textContent = 'Adding…';
+        atcBtn.textContent = 'Adding\u2026';
 
         fetch('/cart/add.js', {
           method: 'POST',
@@ -492,7 +557,8 @@
           atcBtn.textContent = 'Added!';
           if (feedbackEl) feedbackEl.textContent = 'Your pizza has been added to the cart.';
           document.dispatchEvent(new CustomEvent('cart:update', { detail: { data: { sections: (data && data.sections) || {} } } }));
-          var _d = document.querySelector('cart-drawer-component'); if (_d) { (typeof _d.open === 'function' ? _d.open() : _d.showDialog && _d.showDialog()); }
+          var _d = document.querySelector('cart-drawer-component');
+          if (_d) { (typeof _d.open === 'function' ? _d.open() : _d.showDialog && _d.showDialog()); }
           setTimeout(function () {
             atcBtn.classList.remove('pb-btn-atc--success');
             atcBtn.removeAttribute('disabled');
