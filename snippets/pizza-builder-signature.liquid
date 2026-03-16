@@ -176,6 +176,7 @@
           atcBtn.textContent = 'Added!';
           if (feedbackEl) feedbackEl.textContent = 'Added to your order.';
           document.dispatchEvent(new CustomEvent('cart:update'));
+          var _d = document.querySelector('cart-drawer-component'); if (_d) { (typeof _d.open === 'function' ? _d.open() : _d.showDialog && _d.showDialog()); }
           setTimeout(function () {
             atcBtn.disabled = false;
             atcBtn.textContent = 'Add to Cart';
