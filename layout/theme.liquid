@@ -38,7 +38,7 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;1,400&family=Bebas+Neue&family=Inter:wght@400;500&display=swap">
     {%- comment -%} Antonio's — design system CSS {%- endcomment -%}
     {{ 'antonio-theme.css' | asset_url | stylesheet_tag }}
-    {{ 'antonio-cart.js' | asset_url | script_tag }}
+    <script src="{{ 'antonio-cart.js' | asset_url }}" defer></script>
 
     {% if request.design_mode %}
       {%- render 'theme-editor' -%}

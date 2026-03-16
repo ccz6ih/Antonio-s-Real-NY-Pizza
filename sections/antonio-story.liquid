@@ -93,18 +93,12 @@
     {%- if section.settings.heading != blank -%}<h2 class="antonio-story__headline">{{ section.settings.heading }}</h2>{%- endif -%}
     {%- if section.settings.body != blank -%}<div class="antonio-story__body">{{ section.settings.body }}</div>{%- endif -%}
 
-    {%- assign stats = '' | split: ',' -%}
-    {%- if section.settings.stat1 != blank -%}{%- assign stats = stats | push: section.settings.stat1 -%}{%- endif -%}
-    {%- if section.settings.stat2 != blank -%}{%- assign stats = stats | push: section.settings.stat2 -%}{%- endif -%}
-    {%- if section.settings.stat3 != blank -%}{%- assign stats = stats | push: section.settings.stat3 -%}{%- endif -%}
-    {%- if section.settings.stat4 != blank -%}{%- assign stats = stats | push: section.settings.stat4 -%}{%- endif -%}
-
-    {%- if stats.size > 0 -%}
+    {%- if section.settings.stat1 != blank or section.settings.stat2 != blank or section.settings.stat3 != blank or section.settings.stat4 != blank -%}
       <div class="antonio-story__stats" aria-label="Key facts">
-        {%- for stat in stats -%}
-          <span class="antonio-story__stat">{{ stat }}</span>
-          <span class="antonio-story__stat-bullet" aria-hidden="true">&#9670;</span>
-        {%- endfor -%}
+        {%- if section.settings.stat1 != blank -%}<span class="antonio-story__stat">{{ section.settings.stat1 }}</span><span class="antonio-story__stat-bullet" aria-hidden="true">&#9670;</span>{%- endif -%}
+        {%- if section.settings.stat2 != blank -%}<span class="antonio-story__stat">{{ section.settings.stat2 }}</span><span class="antonio-story__stat-bullet" aria-hidden="true">&#9670;</span>{%- endif -%}
+        {%- if section.settings.stat3 != blank -%}<span class="antonio-story__stat">{{ section.settings.stat3 }}</span><span class="antonio-story__stat-bullet" aria-hidden="true">&#9670;</span>{%- endif -%}
+        {%- if section.settings.stat4 != blank -%}<span class="antonio-story__stat">{{ section.settings.stat4 }}</span>{%- endif -%}
       </div>
     {%- endif -%}
 
