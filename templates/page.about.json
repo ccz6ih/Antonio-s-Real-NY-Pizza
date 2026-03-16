@@ -153,6 +153,7 @@
         "loc_estes": {
           "type": "location",
           "settings": {
+            "image": "shopify://shop_images/IMG_4622_1718383962.webp",
             "tag": "GATEWAY TO ROCKY MOUNTAIN NATIONAL PARK",
             "name": "Estes Park",
             "address": "1560 Big Thompson Ave, Estes Park, CO 80517",
@@ -166,6 +167,7 @@
         "loc_longmont": {
           "type": "location",
           "settings": {
+            "image": "shopify://shop_images/Screenshot_2025-09-08_at_5.54.48_PM_1757375982.jpg",
             "tag": "DOWNTOWN LONGMONT",
             "name": "Longmont",
             "address": "325 Main Street, Longmont, CO 80501",
