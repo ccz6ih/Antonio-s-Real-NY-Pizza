@@ -43,13 +43,13 @@
       <div class="antonio-hero__ctas" id="ah-ctas-{{ section.id }}">
         <a
           href="{{ cta1_url }}"
-          class="antonio-hero__btn button"
+          class="antonio-hero__btn antonio-hero__btn--primary"
         >
           {{ cta1_text }}
         </a>
         <a
           href="{{ cta2_url }}"
-          class="antonio-hero__btn button-secondary"
+          class="antonio-hero__btn antonio-hero__btn--ghost"
         >
           {{ cta2_text }}
         </a>
@@ -198,31 +198,44 @@
     to   { opacity: 1; transform: translateY(0); }
   }
 
-  /* Force button colors for dark hero context — override Savor color-scheme vars */
-  .antonio-hero__btn.button {
-    --button-color: #F9F5EF;
-    --button-background-color: #C8291E;
-    --button-border-color: #C8291E;
+  /* Self-contained hero button styles — no Savor variable dependency */
+  .antonio-hero__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.875rem 2rem;
+    font-family: var(--font-heading--family, sans-serif);
+    font-size: 0.9375rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
     white-space: nowrap;
+    border-radius: var(--style-border-radius-buttons-primary, 3px);
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: background 0.2s ease, border-color 0.2s ease, transform 0.15s ease;
   }
-  .antonio-hero__btn.button:hover {
-    --button-color: #F9F5EF;
-    --button-background-color: #a82218;
-    --button-border-color: #a82218;
+
+  .antonio-hero__btn--primary {
+    background: #C8291E;
+    color: #F9F5EF;
+    border-color: #C8291E;
+  }
+  .antonio-hero__btn--primary:hover {
+    background: #a82218;
+    border-color: #a82218;
     transform: translateY(-2px);
   }
 
-  .antonio-hero__btn.button-secondary {
-    --button-color: #F9F5EF;
-    --button-background-color: transparent;
-    --button-border-color: rgba(249, 245, 239, 0.7);
-    --button-border-width: 1.5px;
-    white-space: nowrap;
+  .antonio-hero__btn--ghost {
+    background: transparent;
+    color: #F9F5EF;
+    border-color: rgba(249, 245, 239, 0.65);
   }
-  .antonio-hero__btn.button-secondary:hover {
-    --button-color: #F9F5EF;
-    --button-background-color: rgba(249, 245, 239, 0.12);
-    --button-border-color: #F9F5EF;
+  .antonio-hero__btn--ghost:hover {
+    background: rgba(249, 245, 239, 0.1);
+    border-color: #F9F5EF;
     transform: translateY(-2px);
   }
 
@@ -266,8 +279,7 @@
       justify-content: center;
     }
 
-    .antonio-hero__btn.button,
-    .antonio-hero__btn.button-secondary {
+    .antonio-hero__btn {
       width: 100%;
       max-width: 320px;
     }
