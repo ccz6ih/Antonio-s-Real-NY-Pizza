@@ -22,6 +22,12 @@
         {%- for block in section.blocks -%}
           <div class="antonio-locations__card" {{ block.shopify_attributes }}>
 
+            {%- if block.settings.image != blank -%}
+              <div class="antonio-locations__card-image">
+                {{ block.settings.image | image_url: width: 900 | image_tag: class: 'antonio-locations__img', widths: '400, 600, 900', sizes: '(min-width: 768px) 50vw, 100vw', loading: 'lazy', alt: block.settings.name | escape }}
+              </div>
+            {%- endif -%}
+
             <div class="antonio-locations__card-header">
               {%- if block.settings.tag != blank -%}
                 <span class="antonio-locations__tag">{{ block.settings.tag }}</span>
@@ -115,6 +121,17 @@
     box-shadow: 0 4px 28px rgba(0,0,0,0.09);
     display: flex; flex-direction: column;
     overflow: hidden;
+  }
+  #{{ section_id }} .antonio-locations__card-image {
+    width: 100%; height: 220px; overflow: hidden; flex-shrink: 0;
+  }
+  #{{ section_id }} .antonio-locations__img {
+    width: 100%; height: 100%; object-fit: cover; object-position: center;
+    display: block;
+    transition: transform 0.4s ease;
+  }
+  #{{ section_id }} .antonio-locations__card:hover .antonio-locations__img {
+    transform: scale(1.03);
   }
   #{{ section_id }} .antonio-locations__card-header {
     padding: 32px 32px 28px;
@@ -212,6 +229,7 @@
       "type": "location",
       "name": "Location",
       "settings": [
+        { "type": "image_picker", "id": "image", "label": "Location photo" },
         { "type": "text",     "id": "tag",         "label": "Tag / neighborhood",  "default": "GATEWAY TO RMNP" },
         { "type": "text",     "id": "name",        "label": "Location name",       "default": "Estes Park" },
         { "type": "text",     "id": "address",     "label": "Address",             "default": "1560 Big Thompson Ave, Estes Park, CO 80517" },
