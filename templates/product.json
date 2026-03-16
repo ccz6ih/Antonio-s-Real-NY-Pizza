@@ -159,10 +159,7 @@
                   "static": true,
                   "settings": {}
                 }
-              },
-              "block_order": [
-                "add-to-cart"
-              ]
+              }
             }
           },
           "block_order": [
