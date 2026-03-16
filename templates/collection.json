@@ -102,17 +102,17 @@
           "type": "_product-card",
           "static": true,
           "settings": {
-            "product_card_gap": 13,
+            "product_card_gap": 15,
             "inherit_color_scheme": true,
             "color_scheme": "scheme-4",
             "border": "none",
             "border_width": 10,
             "border_opacity": 100,
             "border_radius": 10,
-            "padding-block-start": 0,
-            "padding-block-end": 0,
-            "padding-inline-start": 0,
-            "padding-inline-end": 0
+            "padding-block-start": 4,
+            "padding-block-end": 10,
+            "padding-inline-start": 10,
+            "padding-inline-end": 10
           },
           "blocks": {
             "product_card_gallery_68C7TN": {
@@ -141,7 +141,7 @@
                 "vertical_alignment": "flex-start",
                 "align_baseline": false,
                 "horizontal_alignment_flex_direction_column": "center",
-                "vertical_alignment_flex_direction_column": "space-between",
+                "vertical_alignment_flex_direction_column": "center",
                 "gap": 0,
                 "width": "fill",
                 "custom_width": 100,
