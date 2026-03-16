@@ -1,0 +1,269 @@
+{%- liquid
+  assign pb_product    = product
+  assign first_variant = pb_product.selected_or_first_available_variant
+  assign base_price    = first_variant.price
+  assign max_tops      = pb_product.metafields.custom.max_toppings.value | plus: 0
+  if max_tops == 0
+    assign max_tops = 3
+  endif
+-%}
+
+<div
+  class="pb-toppings-only"
+  id="pb-tops-{{ pb_product.id }}"
+  data-variant-id="{{ first_variant.id }}"
+  data-base-price="{{ base_price }}"
+  data-max="{{ max_tops }}"
+>
+
+  <!-- Preset recipe notice -->
+  <div class="pb-tops__preset-notice">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true"><circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="2"/><path d="M12 8v4m0 4h.01" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+    Sauce &amp; cheese are set for this recipe. You can add up to {{ max_tops }} topping{{ max_tops | minus: 1 | modulo: 10 | at_most: 1 | times: 0 | append: 's' }} below.
+  </div>
+
+  <!-- Topping grid -->
+  <div class="pb-tops__section">
+    <h3 class="pb-tops__label">
+      Add Toppings
+      <span class="pb-step__sub">Up to {{ max_tops }} &mdash; each +$2.50</span>
+    </h3>
+
+    <div class="pb-topping-grid" role="group" aria-label="Topping selection" data-max="{{ max_tops }}">
+
+      <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Pepperoni">
+        <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Pepperoni-Slide-01.png" alt="Pepperoni" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+        <span class="pb-topping-tile__label">Pepperoni</span>
+      </button>
+      <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Mushrooms">
+        <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Mushroom-Slide.png" alt="Mushrooms" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+        <span class="pb-topping-tile__label">Mushrooms</span>
+      </button>
+      <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Tomatoes">
+        <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Tomato-Slide.png" alt="Tomatoes" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+        <span class="pb-topping-tile__label">Tomatoes</span>
+      </button>
+      <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Black Olives">
+        <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Black-Olive.png" alt="Black Olives" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+        <span class="pb-topping-tile__label">Black Olives</span>
+      </button>
+      <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Sweet Peppers">
+        <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Sweet-Pepper.png" alt="Sweet Peppers" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+        <span class="pb-topping-tile__label">Sweet Peppers</span>
+      </button>
+      <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Extra Cheese">
+        <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Cheese.png" alt="Extra Cheese" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+        <span class="pb-topping-tile__label">Extra Cheese</span>
+      </button>
+      <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Oregano">
+        <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Oregano-Leaves.png" alt="Oregano" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+        <span class="pb-topping-tile__label">Oregano</span>
+      </button>
+      <button type="button" class="pb-topping-tile" aria-pressed="false" data-value="Arugula">
+        <img src="https://cdn.shopify.com/s/files/1/0974/8693/0226/files/Rocket-Leave.png" alt="Arugula" class="pb-topping-tile__icon" loading="lazy" width="64" height="64">
+        <span class="pb-topping-tile__label">Arugula</span>
+      </button>
+      {%- assign text_toppings = 'Sausage,Onions,Anchovies,Jalapeños,Spinach,Basil' | split: ',' -%}
+      {%- for topping in text_toppings -%}
+        <button type="button" class="pb-topping-tile pb-topping-tile--text" aria-pressed="false" data-value="{{ topping | strip }}">
+          <span class="pb-topping-tile__text-icon">{{ topping | strip | slice: 0, 2 | upcase }}</span>
+          <span class="pb-topping-tile__label">{{ topping | strip }}</span>
+        </button>
+      {%- endfor -%}
+
+    </div>
+
+    <div class="pb-topping-counter" aria-live="polite" aria-atomic="true">
+      <span class="pb-topping-counter__badge">0 toppings &mdash; +$0.00</span>
+    </div>
+  </div>
+
+  <!-- Cut Style -->
+  <div class="pb-tops__section">
+    <h3 class="pb-tops__label">Cut Style</h3>
+    <div class="pb-btn-group" role="radiogroup" aria-label="Cut style">
+      {%- assign cuts = 'Triangle Slices,Square Slices,No Cut' | split: ',' -%}
+      {%- for cut in cuts -%}
+        <button
+          type="button"
+          class="pb-option-btn{% if forloop.first %} is-selected{% endif %}"
+          role="radio"
+          aria-checked="{{ forloop.first | json }}"
+          data-group="cut"
+          data-value="{{ cut | strip }}"
+        >
+          {{ cut | strip }}
+        </button>
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <!-- Notes -->
+  <div class="pb-tops__section">
+    <h3 class="pb-tops__label">Special Instructions <span class="pb-step__sub">Optional</span></h3>
+    <div class="pb-textarea-wrap">
+      <textarea
+        class="pb-textarea"
+        id="pb-tops-notes-{{ pb_product.id }}"
+        maxlength="200"
+        rows="3"
+        placeholder="Allergy info, special requests…"
+        aria-label="Special instructions"
+        data-tops-notes
+      ></textarea>
+      <div class="pb-char-counter" aria-live="polite">
+        <span class="pb-char-counter__current">0</span> / 200
+      </div>
+    </div>
+  </div>
+
+  <!-- Total + Add to Cart -->
+  <div class="pb-tops__total-row">
+    <span class="pb-tops__total-label">Total</span>
+    <span class="pb-tops__total-price" data-tops-total>{{ base_price | money }}</span>
+  </div>
+
+  <div class="pb-sig__cta-row">
+    <div class="pb-qty" role="group" aria-label="Quantity">
+      <button type="button" class="pb-qty__btn pb-qty__btn--minus" aria-label="Decrease" data-qty-minus>&#8722;</button>
+      <input type="number" class="pb-qty__input" value="1" min="1" max="99" aria-label="Quantity" data-qty-input readonly>
+      <button type="button" class="pb-qty__btn pb-qty__btn--plus" aria-label="Increase" data-qty-plus>&#43;</button>
+    </div>
+    <button type="button" class="pb-btn-atc pb-btn-atc--wide" data-atc>Add to Cart</button>
+  </div>
+  <div class="pb-atc-feedback" aria-live="polite" aria-atomic="true"></div>
+
+</div><!-- /.pb-toppings-only -->
+
+<script>
+(function () {
+  'use strict';
+
+  var ROOT         = '#pb-tops-{{ pb_product.id }}';
+  var TOPPING_PRICE = 250;
+
+  function init() {
+    var root = document.querySelector(ROOT);
+    if (!root) return;
+
+    var variantId = root.dataset.variantId;
+    var basePrice = parseInt(root.dataset.basePrice, 10) || 0;
+    var maxTops   = parseInt(root.dataset.max, 10) || 3;
+    var quantity  = 1;
+    var toppings  = [];
+    var cut       = 'Triangle Slices';
+
+    var qtyInput   = root.querySelector('[data-qty-input]');
+    var minusBtn   = root.querySelector('[data-qty-minus]');
+    var plusBtn    = root.querySelector('[data-qty-plus]');
+    var notesEl    = root.querySelector('[data-tops-notes]');
+    var charCount  = root.querySelector('.pb-char-counter__current');
+    var totalEl    = root.querySelector('[data-tops-total]');
+    var atcBtn     = root.querySelector('[data-atc]');
+    var feedbackEl = root.querySelector('.pb-atc-feedback');
+
+    function formatMoney(cents) {
+      return '$' + (cents / 100).toFixed(2);
+    }
+
+    function updateTotal() {
+      if (totalEl) totalEl.textContent = formatMoney(basePrice + toppings.length * TOPPING_PRICE);
+    }
+
+    /* Quantity */
+    function syncQty() {
+      if (qtyInput) qtyInput.value = quantity;
+      if (minusBtn) minusBtn.disabled = quantity <= 1;
+    }
+    if (minusBtn) minusBtn.addEventListener('click', function () { if (quantity > 1) { quantity--; syncQty(); } });
+    if (plusBtn)  plusBtn.addEventListener('click',  function () { if (quantity < 99) { quantity++; syncQty(); } });
+
+    /* Topping tiles */
+    root.querySelectorAll('.pb-topping-tile').forEach(function (tile) {
+      tile.addEventListener('click', function () {
+        var val = tile.dataset.value;
+        var idx = toppings.indexOf(val);
+        if (idx > -1) {
+          toppings.splice(idx, 1);
+          tile.classList.remove('is-selected');
+          tile.setAttribute('aria-pressed', 'false');
+        } else {
+          if (toppings.length >= maxTops) {
+            var badge = root.querySelector('.pb-topping-counter__badge');
+            if (badge) { badge.classList.add('pb-shake'); badge.addEventListener('animationend', function () { badge.classList.remove('pb-shake'); }, { once: true }); }
+            return;
+          }
+          toppings.push(val);
+          tile.classList.add('is-selected');
+          tile.setAttribute('aria-pressed', 'true');
+        }
+        var count  = toppings.length;
+        var upcharge = count * TOPPING_PRICE;
+        var badge = root.querySelector('.pb-topping-counter__badge');
+        if (badge) badge.textContent = count + (count === 1 ? ' topping' : ' toppings') + ' \u2014 +' + formatMoney(upcharge);
+        root.querySelectorAll('.pb-topping-tile').forEach(function (t) {
+          var sel = t.classList.contains('is-selected');
+          t.classList.toggle('is-maxed', !sel && count >= maxTops);
+          t.setAttribute('aria-disabled', (!sel && count >= maxTops) ? 'true' : 'false');
+        });
+        updateTotal();
+      });
+    });
+
+    /* Cut */
+    root.querySelectorAll('[data-group="cut"]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        root.querySelectorAll('[data-group="cut"]').forEach(function (b) { b.classList.remove('is-selected'); b.setAttribute('aria-checked', 'false'); });
+        btn.classList.add('is-selected'); btn.setAttribute('aria-checked', 'true');
+        cut = btn.dataset.value;
+      });
+    });
+
+    /* Notes */
+    if (notesEl) notesEl.addEventListener('input', function () { if (charCount) charCount.textContent = notesEl.value.length; });
+
+    /* Add to Cart */
+    if (atcBtn) {
+      atcBtn.addEventListener('click', function () {
+        var upcharge = toppings.length * TOPPING_PRICE;
+        var properties = {
+          'Toppings': toppings.length ? toppings.join(', ') : 'None',
+          'Cut': cut
+        };
+        if (notesEl && notesEl.value.trim()) properties['Notes'] = notesEl.value.trim();
+        if (toppings.length) {
+          properties['_topping_count']    = String(toppings.length);
+          properties['_topping_upcharge'] = formatMoney(upcharge);
+        }
+
+        atcBtn.disabled = true;
+        atcBtn.textContent = 'Adding\u2026';
+
+        fetch('/cart/add.json', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ id: variantId, quantity: quantity, properties: properties })
+        })
+        .then(function (r) { if (!r.ok) throw new Error('Cart error'); return r.json(); })
+        .then(function () {
+          atcBtn.textContent = 'Added!';
+          if (feedbackEl) feedbackEl.textContent = 'Added to your order.';
+          document.dispatchEvent(new CustomEvent('cart:update'));
+          setTimeout(function () { atcBtn.disabled = false; atcBtn.textContent = 'Add to Cart'; if (feedbackEl) feedbackEl.textContent = ''; }, 3000);
+        })
+        .catch(function (err) {
+          atcBtn.disabled = false; atcBtn.textContent = 'Add to Cart';
+          if (feedbackEl) feedbackEl.textContent = 'Something went wrong. Please try again.';
+          console.error(err);
+        });
+      });
+    }
+
+    syncQty();
+    updateTotal();
+  }
+
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); }
+  else { init(); }
+})();
+</script>

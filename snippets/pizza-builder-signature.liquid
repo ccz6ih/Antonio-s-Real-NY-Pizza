@@ -1,0 +1,200 @@
+{%- liquid
+  assign pb_product   = product
+  assign first_variant = pb_product.selected_or_first_available_variant
+  assign has_variants  = false
+  if pb_product.variants.size > 1
+    assign has_variants = true
+  endif
+-%}
+
+<div
+  class="pb-signature"
+  id="pb-sig-{{ pb_product.id }}"
+  data-variant-id="{{ first_variant.id }}"
+  data-base-price="{{ first_variant.price }}"
+>
+
+  {%- if has_variants -%}
+    <!-- Variant picker -->
+    <div class="pb-sig__section">
+      <h3 class="pb-sig__label">Choose Your Option</h3>
+      <div class="pb-btn-group" role="radiogroup" aria-label="Variant selection">
+        {%- for variant in pb_product.variants -%}
+          <button
+            type="button"
+            class="pb-option-btn{% if forloop.first %} is-selected{% endif %}"
+            role="radio"
+            aria-checked="{{ forloop.first | json }}"
+            data-variant-id="{{ variant.id }}"
+            data-variant-price="{{ variant.price }}"
+            data-sig-variant
+          >
+            {{ variant.title }}
+          </button>
+        {%- endfor -%}
+      </div>
+    </div>
+  {%- endif -%}
+
+  <!-- Cut Style -->
+  <div class="pb-sig__section">
+    <h3 class="pb-sig__label">Cut Style</h3>
+    <div class="pb-btn-group" role="radiogroup" aria-label="Cut style">
+      {%- assign cuts = 'Triangle Slices,Square Slices,No Cut' | split: ',' -%}
+      {%- for cut in cuts -%}
+        <button
+          type="button"
+          class="pb-option-btn{% if forloop.first %} is-selected{% endif %}"
+          role="radio"
+          aria-checked="{{ forloop.first | json }}"
+          data-group="cut"
+          data-value="{{ cut | strip }}"
+          data-sig-cut
+        >
+          {{ cut | strip }}
+        </button>
+      {%- endfor -%}
+    </div>
+  </div>
+
+  <!-- Special Instructions -->
+  <div class="pb-sig__section">
+    <h3 class="pb-sig__label">
+      Special Instructions
+      <span class="pb-step__sub">Optional</span>
+    </h3>
+    <div class="pb-textarea-wrap">
+      <textarea
+        class="pb-textarea"
+        id="pb-sig-notes-{{ pb_product.id }}"
+        maxlength="200"
+        rows="3"
+        placeholder="Allergy info, special requests…"
+        aria-label="Special instructions (200 character maximum)"
+        data-sig-notes
+      ></textarea>
+      <div class="pb-char-counter" aria-live="polite">
+        <span class="pb-char-counter__current">0</span> / 200
+      </div>
+    </div>
+  </div>
+
+  <!-- Quantity + Add to Cart -->
+  <div class="pb-sig__cta-row">
+    <div class="pb-qty" role="group" aria-label="Quantity">
+      <button type="button" class="pb-qty__btn pb-qty__btn--minus" aria-label="Decrease quantity" data-qty-minus>&#8722;</button>
+      <input type="number" class="pb-qty__input" value="1" min="1" max="99" aria-label="Quantity" data-qty-input readonly>
+      <button type="button" class="pb-qty__btn pb-qty__btn--plus" aria-label="Increase quantity" data-qty-plus>&#43;</button>
+    </div>
+    <button type="button" class="pb-btn-atc pb-btn-atc--wide" data-atc aria-label="Add to cart">
+      Add to Cart
+    </button>
+  </div>
+  <div class="pb-atc-feedback" aria-live="polite" aria-atomic="true"></div>
+
+</div><!-- /.pb-signature -->
+
+<script>
+(function () {
+  'use strict';
+
+  var ROOT = '#pb-sig-{{ pb_product.id }}';
+
+  function init() {
+    var root = document.querySelector(ROOT);
+    if (!root) return;
+
+    var variantId  = root.dataset.variantId;
+    var quantity   = 1;
+    var cut        = 'Triangle Slices';
+
+    var qtyInput   = root.querySelector('[data-qty-input]');
+    var minusBtn   = root.querySelector('[data-qty-minus]');
+    var plusBtn    = root.querySelector('[data-qty-plus]');
+    var notesEl    = root.querySelector('[data-sig-notes]');
+    var charCount  = root.querySelector('.pb-char-counter__current');
+    var atcBtn     = root.querySelector('[data-atc]');
+    var feedbackEl = root.querySelector('.pb-atc-feedback');
+
+    /* Quantity */
+    function syncQty() {
+      if (qtyInput) qtyInput.value = quantity;
+      if (minusBtn) minusBtn.disabled = quantity <= 1;
+    }
+    if (minusBtn) minusBtn.addEventListener('click', function () { if (quantity > 1) { quantity--; syncQty(); } });
+    if (plusBtn)  plusBtn.addEventListener('click',  function () { if (quantity < 99) { quantity++; syncQty(); } });
+
+    /* Variant selection */
+    root.querySelectorAll('[data-sig-variant]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        root.querySelectorAll('[data-sig-variant]').forEach(function (b) {
+          b.classList.remove('is-selected');
+          b.setAttribute('aria-checked', 'false');
+        });
+        btn.classList.add('is-selected');
+        btn.setAttribute('aria-checked', 'true');
+        variantId = btn.dataset.variantId;
+      });
+    });
+
+    /* Cut selection */
+    root.querySelectorAll('[data-sig-cut]').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        root.querySelectorAll('[data-sig-cut]').forEach(function (b) {
+          b.classList.remove('is-selected');
+          b.setAttribute('aria-checked', 'false');
+        });
+        btn.classList.add('is-selected');
+        btn.setAttribute('aria-checked', 'true');
+        cut = btn.dataset.value;
+      });
+    });
+
+    /* Notes char counter */
+    if (notesEl) {
+      notesEl.addEventListener('input', function () {
+        if (charCount) charCount.textContent = notesEl.value.length;
+      });
+    }
+
+    /* Add to Cart */
+    if (atcBtn) {
+      atcBtn.addEventListener('click', function () {
+        var properties = { 'Cut': cut };
+        if (notesEl && notesEl.value.trim()) properties['Notes'] = notesEl.value.trim();
+
+        atcBtn.disabled = true;
+        atcBtn.textContent = 'Adding\u2026';
+
+        fetch('/cart/add.json', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+          body: JSON.stringify({ id: variantId, quantity: quantity, properties: properties })
+        })
+        .then(function (r) { if (!r.ok) throw new Error('Cart error'); return r.json(); })
+        .then(function () {
+          atcBtn.textContent = 'Added!';
+          if (feedbackEl) feedbackEl.textContent = 'Added to your order.';
+          document.dispatchEvent(new CustomEvent('cart:update'));
+          setTimeout(function () {
+            atcBtn.disabled = false;
+            atcBtn.textContent = 'Add to Cart';
+            if (feedbackEl) feedbackEl.textContent = '';
+          }, 3000);
+        })
+        .catch(function (err) {
+          atcBtn.disabled = false;
+          atcBtn.textContent = 'Add to Cart';
+          if (feedbackEl) feedbackEl.textContent = 'Something went wrong. Please try again.';
+          console.error(err);
+        });
+      });
+    }
+
+    syncQty();
+  }
+
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', init); }
+  else { init(); }
+})();
+</script>

@@ -1297,3 +1297,78 @@
     transform: none !important;
   }
 }
+
+/* ── Signature Builder ───────────────────────────────────────── */
+
+.pb-signature,
+.pb-toppings-only {
+  padding-top: 0.5rem;
+}
+
+.pb-sig__section,
+.pb-tops__section {
+  margin-bottom: 1.25rem;
+}
+
+.pb-sig__label,
+.pb-tops__label {
+  font-family: var(--font-body--family, 'Inter', sans-serif);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--pb-cream);
+  margin-bottom: 0.625rem;
+  display: flex;
+  align-items: baseline;
+  gap: 0.5rem;
+}
+
+.pb-sig__cta-row {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  margin-top: 1rem;
+}
+
+.pb-btn-atc--wide {
+  flex: 1;
+}
+
+/* Preset notice (toppings builder) */
+.pb-tops__preset-notice {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 0.875rem;
+  background: rgba(245, 166, 35, 0.1);
+  border: 1px solid rgba(245, 166, 35, 0.3);
+  border-radius: 6px;
+  font-size: 0.8125rem;
+  color: var(--pb-gold);
+  margin-bottom: 1.25rem;
+}
+
+.pb-tops__preset-notice svg {
+  flex-shrink: 0;
+  color: var(--pb-gold);
+}
+
+/* Total row */
+.pb-tops__total-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-top: 1px solid rgba(249, 245, 239, 0.12);
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--pb-cream);
+}
+
+.pb-tops__total-price {
+  font-family: var(--font-body--family, 'Inter', sans-serif);
+  color: var(--pb-gold);
+  font-size: 1.125rem;
+}

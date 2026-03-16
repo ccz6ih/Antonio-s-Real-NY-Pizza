@@ -1,30 +1,48 @@
 {{ 'pizza-builder.css' | asset_url | stylesheet_tag }}
 
 {%- liquid
-  assign pb_product = closest.product
-  assign option_value = pb_product.metafields.custom.pizza_option_set.value | downcase | strip
+  assign pb_product    = closest.product
+  assign option_value  = pb_product.metafields.custom.pizza_option_set.value | downcase | strip
 -%}
 
 <div class="pizza-builder-section" data-product-id="{{ pb_product.id }}">
   {%- case option_value -%}
+
+    {%- comment -%} ── Pizza tiers ──────────────────────────────────────── {%- endcomment -%}
     {%- when 'whole-pizza' -%}
       {%- render 'pizza-builder-whole', product: pb_product -%}
+
+    {%- when 'toppings-only' -%}
+      {%- render 'pizza-builder-toppings', product: pb_product -%}
+
+    {%- when 'signature' -%}
+      {%- render 'pizza-builder-signature', product: pb_product -%}
+
+    {%- comment -%} ── Other product types ───────────────────────────── {%- endcomment -%}
     {%- when 'calzone' -%}
       {%- render 'pizza-builder-calzone', product: pb_product -%}
+
     {%- when 'appetizer' -%}
       {%- render 'pizza-builder-appetizer', product: pb_product -%}
+
     {%- when 'pasta' -%}
       {%- render 'pizza-builder-simple', product: pb_product -%}
+
     {%- when 'salad' -%}
       {%- render 'pizza-builder-simple', product: pb_product -%}
+
     {%- when 'sandwich' -%}
       {%- render 'pizza-builder-simple', product: pb_product -%}
+
     {%- when 'dessert' -%}
       {%- render 'pizza-builder-simple', product: pb_product -%}
+
     {%- when 'drink' -%}
       {%- render 'pizza-builder-simple', product: pb_product -%}
+
     {%- else -%}
       {%- render 'pizza-builder-simple', product: pb_product -%}
+
   {%- endcase -%}
 </div>
 
