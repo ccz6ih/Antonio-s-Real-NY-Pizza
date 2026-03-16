@@ -190,15 +190,39 @@
     flex-wrap: wrap;
     gap: 1rem;
     margin-top: clamp(1.5rem, 3vw, 2.25rem);
-    /* Visible by default — GSAP sets opacity:0 via .set() before animating */
+    animation: ah-ctas-in 0.5s ease 0.3s both;
   }
 
-  /* Lift on hover for hero context */
-  .antonio-hero__btn {
+  @keyframes ah-ctas-in {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Force button colors for dark hero context — override Savor color-scheme vars */
+  .antonio-hero__btn.button {
+    --button-color: #F9F5EF;
+    --button-background-color: #C8291E;
+    --button-border-color: #C8291E;
     white-space: nowrap;
   }
+  .antonio-hero__btn.button:hover {
+    --button-color: #F9F5EF;
+    --button-background-color: #a82218;
+    --button-border-color: #a82218;
+    transform: translateY(-2px);
+  }
 
-  .antonio-hero__btn:hover {
+  .antonio-hero__btn.button-secondary {
+    --button-color: #F9F5EF;
+    --button-background-color: transparent;
+    --button-border-color: rgba(249, 245, 239, 0.7);
+    --button-border-width: 1.5px;
+    white-space: nowrap;
+  }
+  .antonio-hero__btn.button-secondary:hover {
+    --button-color: #F9F5EF;
+    --button-background-color: rgba(249, 245, 239, 0.12);
+    --button-border-color: #F9F5EF;
     transform: translateY(-2px);
   }
 
@@ -267,14 +291,9 @@
     var headline = document.querySelector('#ah-headline-' + SECTION_ID);
     var subText  = document.querySelector(prefix + '.ah-sub-text');
     var cursor   = document.querySelector(prefix + '.ah-cursor');
-    var ctasEl   = document.querySelector('#ah-ctas-' + SECTION_ID);
-    var btns     = ctasEl ? ctasEl.querySelectorAll('.antonio-hero__btn') : [];
-
     /* Set initial hidden states via JS so elements are visible without JS */
     if (bgWrap) gsap.set(bgWrap, { clipPath: 'inset(100% 0 0 0)' });
     gsap.set(headline, { opacity: 0, y: 40 });
-    gsap.set(ctasEl,   { opacity: 0 });
-    gsap.set(btns,     { opacity: 0, y: 20 });
 
     var tl = gsap.timeline({ defaults: { ease: 'power3.out' } });
 
@@ -288,8 +307,7 @@
       ease: 'none'
     }, '+=0.15');
     tl.to(cursor, { opacity: 0, duration: 0.3 }, '+=0.8');
-    tl.to(ctasEl, { opacity: 1, duration: 0.01 }, '<-0.3');
-    tl.to(btns,   { opacity: 1, y: 0, duration: 0.45, stagger: 0.15 }, '<');
+    /* Buttons animate via CSS — no GSAP needed, no load-event delay */
   }
 
   /* window.load fires after all defer scripts — guaranteed GSAP is ready */
