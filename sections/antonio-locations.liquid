@@ -1,0 +1,261 @@
+{%- liquid
+  assign section_id = 'antonio-locations-' | append: section.id
+-%}
+
+<section id="{{ section_id }}" class="antonio-locations" aria-label="{{ section.settings.heading | default: 'Our locations' | escape }}">
+  <div class="antonio-locations__inner">
+
+    <div class="antonio-locations__header">
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="antonio-locations__eyebrow">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="antonio-locations__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+      {%- if section.settings.subheading != blank -%}
+        <p class="antonio-locations__subheading">{{ section.settings.subheading }}</p>
+      {%- endif -%}
+    </div>
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="antonio-locations__grid">
+        {%- for block in section.blocks -%}
+          <div class="antonio-locations__card" {{ block.shopify_attributes }}>
+
+            <div class="antonio-locations__card-header">
+              {%- if block.settings.tag != blank -%}
+                <span class="antonio-locations__tag">{{ block.settings.tag }}</span>
+              {%- endif -%}
+              {%- if block.settings.name != blank -%}
+                <h3 class="antonio-locations__name">{{ block.settings.name }}</h3>
+              {%- endif -%}
+              {%- if block.settings.address != blank -%}
+                <p class="antonio-locations__address">{{ block.settings.address }}</p>
+              {%- endif -%}
+            </div>
+
+            <div class="antonio-locations__card-body">
+              {%- if block.settings.description != blank -%}
+                <p class="antonio-locations__desc">{{ block.settings.description }}</p>
+              {%- endif -%}
+
+              {%- if block.settings.hours != blank -%}
+                <div class="antonio-locations__hours">
+                  <span class="antonio-locations__hours-label">Hours</span>
+                  <div class="antonio-locations__hours-lines">{{ block.settings.hours | newline_to_br }}</div>
+                </div>
+              {%- endif -%}
+
+              {%- if block.settings.closed_note != blank -%}
+                <p class="antonio-locations__closed-note">{{ block.settings.closed_note }}</p>
+              {%- endif -%}
+            </div>
+
+            <div class="antonio-locations__card-footer">
+              {%- if block.settings.map_url != blank -%}
+                <a href="{{ block.settings.map_url }}" target="_blank" rel="noopener noreferrer" class="antonio-locations__link">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Get Directions
+                </a>
+              {%- endif -%}
+              {%- if block.settings.order_url != blank -%}
+                <a href="{{ block.settings.order_url }}" class="antonio-locations__btn">Order from Here</a>
+              {%- endif -%}
+            </div>
+
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+<style>
+  #{{ section_id }} {
+    background: #F9F5EF;
+    padding: 80px 24px;
+  }
+  #{{ section_id }} .antonio-locations__inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+  #{{ section_id }} .antonio-locations__header {
+    text-align: center;
+    margin-bottom: 56px;
+  }
+  #{{ section_id }} .antonio-locations__eyebrow {
+    display: block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px; letter-spacing: 0.22em;
+    color: #C8291E; text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  #{{ section_id }} .antonio-locations__heading {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700; font-size: clamp(28px, 4vw, 48px);
+    color: #1A1A1A; margin: 0 0 12px; line-height: 1.2;
+  }
+  #{{ section_id }} .antonio-locations__subheading {
+    font-size: 16px; color: #3D3023; margin: 0; line-height: 1.6;
+  }
+  #{{ section_id }} .antonio-locations__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+  }
+  @media (min-width: 768px) {
+    #{{ section_id }} .antonio-locations__grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  #{{ section_id }} .antonio-locations__card {
+    background: #FFFFFF;
+    border-top: 4px solid #C8291E;
+    box-shadow: 0 4px 28px rgba(0,0,0,0.09);
+    display: flex; flex-direction: column;
+    overflow: hidden;
+  }
+  #{{ section_id }} .antonio-locations__card-header {
+    padding: 32px 32px 28px;
+    background: #1A1A1A;
+  }
+  #{{ section_id }} .antonio-locations__tag {
+    display: inline-block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px; letter-spacing: 0.22em;
+    color: #F5A623; text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  #{{ section_id }} .antonio-locations__name {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700; font-size: clamp(24px, 3vw, 32px);
+    color: #FFFFFF; margin: 0 0 10px; line-height: 1.2;
+  }
+  #{{ section_id }} .antonio-locations__address {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px; letter-spacing: 0.1em;
+    color: rgba(249,245,239,0.65); margin: 0;
+    text-transform: uppercase; line-height: 1.4;
+  }
+  #{{ section_id }} .antonio-locations__card-body {
+    padding: 28px 32px 24px;
+    flex: 1;
+  }
+  #{{ section_id }} .antonio-locations__desc {
+    font-size: 14px; line-height: 1.75;
+    color: #3D3023; margin: 0 0 20px;
+  }
+  #{{ section_id }} .antonio-locations__hours {
+    margin-bottom: 14px;
+  }
+  #{{ section_id }} .antonio-locations__hours-label {
+    display: block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px; letter-spacing: 0.22em;
+    color: #C8291E; text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  #{{ section_id }} .antonio-locations__hours-lines {
+    font-size: 14px; line-height: 1.85; color: #1A1A1A;
+  }
+  #{{ section_id }} .antonio-locations__closed-note {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 12px; letter-spacing: 0.15em;
+    color: #C8291E; text-transform: uppercase;
+    margin: 8px 0 0;
+  }
+  #{{ section_id }} .antonio-locations__card-footer {
+    padding: 20px 32px;
+    background: #F9F5EF;
+    display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+    border-top: 1px solid rgba(0,0,0,0.07);
+  }
+  #{{ section_id }} .antonio-locations__link {
+    display: inline-flex; align-items: center; gap: 7px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px; letter-spacing: 0.13em;
+    color: #1A1A1A; text-decoration: none;
+    text-transform: uppercase;
+    transition: color 0.2s ease;
+  }
+  #{{ section_id }} .antonio-locations__link:hover { color: #C8291E; }
+  #{{ section_id }} .antonio-locations__btn {
+    display: inline-block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 14px; letter-spacing: 0.16em;
+    color: #FFFFFF; background: #C8291E;
+    text-decoration: none; padding: 10px 26px;
+    text-transform: uppercase; border: 2px solid #C8291E;
+    transition: background 0.2s ease, color 0.2s ease;
+    margin-left: auto;
+  }
+  #{{ section_id }} .antonio-locations__btn:hover {
+    background: transparent; color: #C8291E;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Locations",
+  "tag": "section",
+  "class": "antonio-locations-wrapper",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "max_blocks": 4,
+  "settings": [
+    { "type": "text", "id": "eyebrow",    "label": "Eyebrow",     "default": "FIND US" },
+    { "type": "text", "id": "heading",    "label": "Heading",     "default": "2 Colorado Locations" },
+    { "type": "text", "id": "subheading", "label": "Subheading",  "default": "Real New York Pizza & Bagels made by actual New Yorkers since 2014" }
+  ],
+  "blocks": [
+    {
+      "type": "location",
+      "name": "Location",
+      "settings": [
+        { "type": "text",     "id": "tag",         "label": "Tag / neighborhood",  "default": "GATEWAY TO RMNP" },
+        { "type": "text",     "id": "name",        "label": "Location name",       "default": "Estes Park" },
+        { "type": "text",     "id": "address",     "label": "Address",             "default": "1560 Big Thompson Ave, Estes Park, CO 80517" },
+        { "type": "textarea","id": "description", "label": "Description",         "default": "Estes Park, Colorado is the gateway to Rocky Mountain National Park and home to Antonio's Real NY Pizza since 2014." },
+        { "type": "textarea","id": "hours",       "label": "Hours (one line each)","default": "Tuesday–Sunday: 12pm–8pm\nMonday: Closed\nSee Google Maps for special hours" },
+        { "type": "text",     "id": "closed_note", "label": "Closed note",         "default": "CLOSED MONDAYS" },
+        { "type": "url",      "id": "map_url",     "label": "Google Maps URL" },
+        { "type": "url",      "id": "order_url",   "label": "Order URL" }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Locations",
+      "settings": {
+        "eyebrow":    "FIND US",
+        "heading":    "2 Colorado Locations",
+        "subheading": "Real New York Pizza & Bagels made by actual New Yorkers since 2014"
+      },
+      "blocks": [
+        {
+          "type": "location",
+          "settings": {
+            "tag":         "GATEWAY TO ROCKY MOUNTAIN NATIONAL PARK",
+            "name":        "Estes Park",
+            "address":     "1560 Big Thompson Ave, Estes Park, CO 80517",
+            "description": "Estes Park, Colorado is the gateway to Rocky Mountain National Park and home to Antonio's Real NY Pizza since 2014.",
+            "hours":       "Tuesday–Sunday: 12pm–8pm\nMonday: Closed\nSee Google Maps for special hours",
+            "closed_note": "CLOSED MONDAYS"
+          }
+        },
+        {
+          "type": "location",
+          "settings": {
+            "tag":         "DOWNTOWN LONGMONT",
+            "name":        "Longmont",
+            "address":     "325 Main Street, Longmont, CO 80501",
+            "description": "Right in the heart of downtown Longmont, north of 3rd and Main. Opened June 2024. Parking in the back or on the street.",
+            "hours":       "Tuesday–Sunday: 11:30am–8pm\nFriday & Saturday: Open later\nMonday: Closed",
+            "closed_note": "CLOSED MONDAYS"
+          }
+        }
+      ]
+    }
+  ]
+}
+{% endschema %}

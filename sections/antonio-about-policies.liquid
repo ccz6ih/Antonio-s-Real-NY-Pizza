@@ -1,0 +1,177 @@
+{%- liquid
+  assign section_id = 'antonio-about-policies-' | append: section.id
+-%}
+
+<section id="{{ section_id }}" class="antonio-about-policies" aria-label="Our commitments and policies">
+  <div class="antonio-about-policies__inner">
+
+    <div class="antonio-about-policies__do-grid">
+
+      {%- if section.settings.do_heading != blank or section.settings.do_body != blank -%}
+        <div class="antonio-about-policies__panel antonio-about-policies__panel--do">
+          <div class="antonio-about-policies__panel-icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C8291E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <span class="antonio-about-policies__panel-eyebrow">{{ section.settings.do_eyebrow | default: 'WHAT WE DO WELL' }}</span>
+          {%- if section.settings.do_heading != blank -%}
+            <h2 class="antonio-about-policies__panel-heading">{{ section.settings.do_heading }}</h2>
+          {%- endif -%}
+          {%- if section.settings.do_body != blank -%}
+            <div class="antonio-about-policies__panel-body">{{ section.settings.do_body }}</div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+      {%- if section.settings.dont_heading != blank or section.settings.dont_body != blank -%}
+        <div class="antonio-about-policies__panel antonio-about-policies__panel--dont">
+          <div class="antonio-about-policies__panel-icon" aria-hidden="true">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#C8291E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </div>
+          <span class="antonio-about-policies__panel-eyebrow">{{ section.settings.dont_eyebrow | default: "WHAT WE DON'T DO" }}</span>
+          {%- if section.settings.dont_heading != blank -%}
+            <h2 class="antonio-about-policies__panel-heading">{{ section.settings.dont_heading }}</h2>
+          {%- endif -%}
+          {%- if section.settings.dont_body != blank -%}
+            <div class="antonio-about-policies__panel-body">{{ section.settings.dont_body }}</div>
+          {%- endif -%}
+        </div>
+      {%- endif -%}
+
+    </div>
+
+    {%- if section.settings.policy_heading != blank or section.settings.policy_body != blank -%}
+      <div class="antonio-about-policies__notice" role="note">
+        <div class="antonio-about-policies__notice-icon" aria-hidden="true">
+          <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#F5A623" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        </div>
+        <div class="antonio-about-policies__notice-content">
+          {%- if section.settings.policy_heading != blank -%}
+            <h3 class="antonio-about-policies__notice-heading">{{ section.settings.policy_heading }}</h3>
+          {%- endif -%}
+          {%- if section.settings.policy_body != blank -%}
+            <div class="antonio-about-policies__notice-body">{{ section.settings.policy_body }}</div>
+          {%- endif -%}
+        </div>
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+<style>
+  #{{ section_id }} {
+    background: #1A1A1A;
+    padding: 80px 24px;
+  }
+  #{{ section_id }} .antonio-about-policies__inner {
+    max-width: 1100px;
+    margin: 0 auto;
+    display: flex; flex-direction: column; gap: 32px;
+  }
+  #{{ section_id }} .antonio-about-policies__do-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  @media (min-width: 768px) {
+    #{{ section_id }} .antonio-about-policies__do-grid {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+  #{{ section_id }} .antonio-about-policies__panel {
+    padding: 40px;
+    border-top: 4px solid transparent;
+  }
+  #{{ section_id }} .antonio-about-policies__panel--do {
+    background: rgba(255,255,255,0.04);
+    border-color: #C8291E;
+  }
+  #{{ section_id }} .antonio-about-policies__panel--dont {
+    background: rgba(200,41,30,0.07);
+    border-color: rgba(200,41,30,0.25);
+  }
+  #{{ section_id }} .antonio-about-policies__panel-icon {
+    margin-bottom: 16px;
+  }
+  #{{ section_id }} .antonio-about-policies__panel-eyebrow {
+    display: block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px; letter-spacing: 0.24em;
+    color: #C8291E; text-transform: uppercase;
+    margin-bottom: 10px;
+  }
+  #{{ section_id }} .antonio-about-policies__panel-heading {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700; font-size: clamp(20px, 2.4vw, 28px);
+    color: #FFFFFF; margin: 0 0 18px; line-height: 1.25;
+  }
+  #{{ section_id }} .antonio-about-policies__panel-body {
+    font-size: 15px; line-height: 1.8;
+    color: rgba(249,245,239,0.72);
+  }
+  #{{ section_id }} .antonio-about-policies__panel-body p { margin: 0 0 12px; }
+  #{{ section_id }} .antonio-about-policies__panel-body p:last-child { margin-bottom: 0; }
+
+  #{{ section_id }} .antonio-about-policies__notice {
+    background: rgba(245,166,35,0.07);
+    border: 1px solid rgba(245,166,35,0.28);
+    padding: 36px 40px;
+    display: flex; gap: 24px; align-items: flex-start;
+  }
+  #{{ section_id }} .antonio-about-policies__notice-icon { flex-shrink: 0; padding-top: 2px; }
+  #{{ section_id }} .antonio-about-policies__notice-content { flex: 1; }
+  #{{ section_id }} .antonio-about-policies__notice-heading {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 22px; letter-spacing: 0.14em;
+    color: #F5A623; text-transform: uppercase;
+    margin: 0 0 12px;
+  }
+  #{{ section_id }} .antonio-about-policies__notice-body {
+    font-size: 15px; line-height: 1.8;
+    color: rgba(249,245,239,0.72);
+  }
+  #{{ section_id }} .antonio-about-policies__notice-body p { margin: 0 0 10px; }
+  #{{ section_id }} .antonio-about-policies__notice-body p:last-child { margin-bottom: 0; }
+
+  @media (max-width: 480px) {
+    #{{ section_id }} .antonio-about-policies__panel { padding: 28px 24px; }
+    #{{ section_id }} .antonio-about-policies__notice { padding: 24px; gap: 16px; }
+  }
+</style>
+
+{% schema %}
+{
+  "name": "About: Policies",
+  "tag": "section",
+  "class": "antonio-about-policies-wrapper",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "settings": [
+    { "type": "header",   "content": "What We Do Well" },
+    { "type": "text",     "id": "do_eyebrow",  "label": "Eyebrow",  "default": "WHAT WE DO WELL" },
+    { "type": "text",     "id": "do_heading",  "label": "Heading",  "default": "Excellence in Everything We Make" },
+    { "type": "richtext", "id": "do_body",     "label": "Body",     "default": "<p>We continue to elevate pizza — and anything we make — to the highest level. All of our sauces, doughs and breads are made right here using recipes honed continually. We love our people and care for them like family.</p>" },
+    { "type": "header",   "content": "What We Don't Do" },
+    { "type": "text",     "id": "dont_eyebrow","label": "Eyebrow",  "default": "WHAT WE DON'T DO" },
+    { "type": "text",     "id": "dont_heading","label": "Heading",  "default": "No Gluten Free. No Allergy Exceptions." },
+    { "type": "richtext", "id": "dont_body",   "label": "Body",     "default": "<p>We don't offer Gluten Free because there is high gluten flour on every surface in the store. We don't serve people with allergies — we have a child who has been in the hospital more times than we care to recount due to reactions. You never know when things will go bad. Don't ask us to make an exception — we won't take chances with your health.</p>" },
+    { "type": "header",   "content": "Policy Notice (No Timed Orders)" },
+    { "type": "text",     "id": "policy_heading","label": "Notice heading", "default": "NO TIMED ORDERS" },
+    { "type": "richtext", "id": "policy_body",   "label": "Notice body",   "default": "<p>We do not offer the ability to order at a specific time for pickup — because everyone wants 6pm and that's impossible. Our volume dictates how long the wait is; 11 years in, we can say this unequivocally.</p><p>When you place your order, the system will tell you what time pickup is available based on current volume. If the time is long, we're really busy. If not, we aren't. It's that simple.</p>" }
+  ],
+  "presets": [
+    {
+      "name": "About: Policies",
+      "settings": {
+        "do_eyebrow":      "WHAT WE DO WELL",
+        "do_heading":      "Excellence in Everything We Make",
+        "do_body":         "<p>We continue to elevate pizza — and anything we make — to the highest level. All of our sauces, doughs and breads are made right here using recipes honed continually. We love our people and care for them like family.</p>",
+        "dont_eyebrow":    "WHAT WE DON'T DO",
+        "dont_heading":    "No Gluten Free. No Allergy Exceptions.",
+        "dont_body":       "<p>We don't offer Gluten Free because there is high gluten flour on every surface in the store. We don't serve people with allergies — we have a child who has been in the hospital more times than we care to recount due to reactions. You never know when things will go bad. Don't ask us to make an exception — we won't take chances with your health.</p>",
+        "policy_heading":  "NO TIMED ORDERS",
+        "policy_body":     "<p>We do not offer the ability to order at a specific time for pickup — because everyone wants 6pm and that's impossible. Our volume dictates how long the wait is; 11 years in, we can say this unequivocally.</p><p>When you place your order, the system will tell you what time pickup is available based on current volume. If the time is long, we're really busy. If not, we aren't. It's that simple.</p>"
+      }
+    }
+  ]
+}
+{% endschema %}

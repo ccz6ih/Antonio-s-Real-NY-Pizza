@@ -1,0 +1,185 @@
+{%- liquid
+  assign section_id = 'antonio-milestones-' | append: section.id
+-%}
+
+<section id="{{ section_id }}" class="antonio-milestones" aria-label="{{ section.settings.heading | default: 'Our milestones' | escape }}">
+  <div class="antonio-milestones__inner">
+
+    <div class="antonio-milestones__header">
+      {%- if section.settings.eyebrow != blank -%}
+        <span class="antonio-milestones__eyebrow">{{ section.settings.eyebrow }}</span>
+      {%- endif -%}
+      {%- if section.settings.heading != blank -%}
+        <h2 class="antonio-milestones__heading">{{ section.settings.heading }}</h2>
+      {%- endif -%}
+    </div>
+
+    {%- if section.blocks.size > 0 -%}
+      <div class="antonio-milestones__timeline" role="list">
+        {%- for block in section.blocks -%}
+          <div class="antonio-milestones__item" role="listitem" {{ block.shopify_attributes }}>
+
+            <div class="antonio-milestones__year-col" aria-hidden="true">
+              <span class="antonio-milestones__year">{{ block.settings.year }}</span>
+            </div>
+
+            <div class="antonio-milestones__connector" aria-hidden="true">
+              <span class="antonio-milestones__dot"></span>
+              {%- unless forloop.last -%}<span class="antonio-milestones__line"></span>{%- endunless -%}
+            </div>
+
+            <div class="antonio-milestones__content-col">
+              {%- if block.settings.label != blank -%}
+                <span class="antonio-milestones__label">{{ block.settings.label }}</span>
+              {%- endif -%}
+              {%- if block.settings.title != blank -%}
+                <h3 class="antonio-milestones__title">{{ block.settings.title }}</h3>
+              {%- endif -%}
+              {%- if block.settings.body != blank -%}
+                <p class="antonio-milestones__body">{{ block.settings.body }}</p>
+              {%- endif -%}
+            </div>
+
+          </div>
+        {%- endfor -%}
+      </div>
+    {%- endif -%}
+
+  </div>
+</section>
+
+<style>
+  #{{ section_id }} {
+    background: #1A1A1A;
+    padding: 80px 24px 60px;
+    overflow: hidden;
+  }
+  #{{ section_id }} .antonio-milestones__inner {
+    max-width: 860px;
+    margin: 0 auto;
+  }
+  #{{ section_id }} .antonio-milestones__header {
+    text-align: center;
+    margin-bottom: 64px;
+  }
+  #{{ section_id }} .antonio-milestones__eyebrow {
+    display: block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 13px; letter-spacing: 0.22em;
+    color: #C8291E; text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+  #{{ section_id }} .antonio-milestones__heading {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700; font-size: clamp(28px, 4vw, 48px);
+    color: #FFFFFF; margin: 0; line-height: 1.2;
+  }
+  #{{ section_id }} .antonio-milestones__timeline {
+    display: flex;
+    flex-direction: column;
+  }
+  #{{ section_id }} .antonio-milestones__item {
+    display: grid;
+    grid-template-columns: 72px 36px 1fr;
+    align-items: start;
+  }
+  @media (max-width: 480px) {
+    #{{ section_id }} .antonio-milestones__item {
+      grid-template-columns: 56px 28px 1fr;
+    }
+  }
+  #{{ section_id }} .antonio-milestones__year-col {
+    padding-top: 2px;
+    text-align: right;
+    padding-right: 0;
+  }
+  #{{ section_id }} .antonio-milestones__year {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 20px; letter-spacing: 0.04em;
+    color: #F5A623; line-height: 1.25;
+    display: block;
+  }
+  #{{ section_id }} .antonio-milestones__connector {
+    display: flex; flex-direction: column;
+    align-items: center;
+    padding-top: 5px;
+  }
+  #{{ section_id }} .antonio-milestones__dot {
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    background: #C8291E;
+    box-shadow: 0 0 0 4px rgba(200,41,30,0.18);
+    flex-shrink: 0;
+  }
+  #{{ section_id }} .antonio-milestones__line {
+    width: 2px; flex: 1; min-height: 36px;
+    background: linear-gradient(to bottom, #C8291E 0%, rgba(200,41,30,0.15) 100%);
+    margin-top: 4px;
+  }
+  #{{ section_id }} .antonio-milestones__content-col {
+    padding: 0 0 44px 20px;
+  }
+  #{{ section_id }} .antonio-milestones__label {
+    display: inline-block;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 10px; letter-spacing: 0.22em;
+    color: #C8291E; text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+  #{{ section_id }} .antonio-milestones__title {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700; font-size: clamp(17px, 2vw, 22px);
+    color: #FFFFFF; margin: 0 0 10px; line-height: 1.3;
+  }
+  #{{ section_id }} .antonio-milestones__body {
+    font-size: 14px; line-height: 1.75;
+    color: rgba(249,245,239,0.65);
+    margin: 0;
+  }
+</style>
+
+{% schema %}
+{
+  "name": "Milestones Timeline",
+  "tag": "section",
+  "class": "antonio-milestones-wrapper",
+  "disabled_on": { "groups": ["header", "footer"] },
+  "max_blocks": 15,
+  "settings": [
+    { "type": "text", "id": "eyebrow", "label": "Eyebrow text", "default": "THE JOURNEY" },
+    { "type": "text", "id": "heading", "label": "Heading",      "default": "From Long Island to Colorado's Best" }
+  ],
+  "blocks": [
+    {
+      "type": "milestone",
+      "name": "Milestone",
+      "settings": [
+        { "type": "text",     "id": "year",  "label": "Year",        "default": "2014" },
+        { "type": "text",     "id": "label", "label": "Label badge", "default": "FOUNDED" },
+        { "type": "text",     "id": "title", "label": "Title",       "default": "Antonio's Opens in Estes Park" },
+        { "type": "textarea", "id": "body",  "label": "Description", "default": "After the 1,000-year floods of 2013, Antonio seized the opportunity and opened Colorado's best New York pizza." }
+      ]
+    }
+  ],
+  "presets": [
+    {
+      "name": "Milestones Timeline",
+      "settings": {
+        "eyebrow": "THE JOURNEY",
+        "heading": "From Long Island to Colorado's Best"
+      },
+      "blocks": [
+        { "type": "milestone", "settings": { "year": "2006", "label": "ARRIVED",          "title": "From Long Island to Colorado",               "body": "Antonio and Tracey moved straight from Long Island's Nassau County. After trying 50+ pizzerias from Pueblo to Wyoming, they confirmed what they already knew: authentic NY food simply didn't exist in Colorado." } },
+        { "type": "milestone", "settings": { "year": "2010", "label": "OBSESSION BEGINS", "title": "The Pizza Mission Starts",                   "body": "Faced with an ultimatum from his wife Tracey — 'find authentic food or move back' — Antonio committed to mastering the craft of New York pizza from the ground up." } },
+        { "type": "milestone", "settings": { "year": "2012", "label": "THE DIVING BOARD", "title": "Coffee Shop Becomes a Pizza Revolution",     "body": "Antonio built a drive-thru coffee shop just outside Rocky Mountain National Park. Customers pulled up, smelled fresh pizza instead of coffee, and declared it the best food in town. The obsession had found its stage." } },
+        { "type": "milestone", "settings": { "year": "2013", "label": "TURNING POINT",    "title": "The 1,000-Year Floods Hit Estes Park",       "body": "Historic floods wiped out 2 of the 3 roads into town. Most employees left, never to return. When everyone else saw disaster, Antonio saw opportunity." } },
+        { "type": "milestone", "settings": { "year": "2014", "label": "FOUNDED",          "title": "Antonio's Real NY Pizza Opens",              "body": "Authentic New York pizza arrives in Estes Park. Made by actual New Yorkers using real NY techniques. Millions of believers would follow." } },
+        { "type": "milestone", "settings": { "year": "2021", "label": "WORLD STAGE",      "title": "Inducted into the World Pizza Champions",    "body": "The industry took note. Antonio was inducted into the elite World Pizza Champions team — a recognition earned through a decade of relentless pursuit of perfection." } },
+        { "type": "milestone", "settings": { "year": "2023", "label": "NATIONALLY RANKED","title": "#1 in Colorado — The Washington Post",       "body": "In September 2023, The Washington Post named Antonio's the Best New York Pizza in the State of Colorado. Colorado already knew." } },
+        { "type": "milestone", "settings": { "year": "2024", "label": "PUBLISHED + EXPANDED","title": "Author, Speaker & Longmont Grand Opening","body": "Antonio became a published author in March 2024. On June 18th, a second location opened on Main Street in Longmont — serving slices all day with both thin and thick crust." } },
+        { "type": "milestone", "settings": { "year": "2024", "label": "WORLD'S BEST",     "title": "2nd Place: World's Best Cheese Slice",       "body": "At the International Pizza Expo, Antonio competed against 50 of the world's best pizzerias and took second place for World's Best Cheese Slice. Out of 50. In the world." } }
+      ]
+    }
+  ]
+}
+{% endschema %}
