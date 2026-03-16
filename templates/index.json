@@ -64,7 +64,7 @@
     "antonio-menu-grid-wings": {
       "type": "antonio-menu-grid",
       "settings": {
-        "collection": "wings",
+        "collection": "sides",
         "show_heading": true,
         "heading": "Wings & Sides",
         "subheading": "Jumbo wings cooked to order. Garlic knots made from our own dough.",
