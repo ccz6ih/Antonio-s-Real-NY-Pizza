@@ -160,7 +160,7 @@
             "description": "Estes Park, Colorado is the gateway to Rocky Mountain National Park and home to Antonio's Real NY Pizza since 2014.",
             "hours": "Tuesday–Sunday: 12pm–8pm\nMonday: Closed\nSee Google Maps for special hours",
             "closed_note": "CLOSED MONDAYS",
-            "map_url": "",
+            "map_url": "https://www.google.com/maps?rlz=1C1UEAD_enUS1122US1122&gs_lcrp=EgZjaHJvbWUyBggAEEUYOTIICAEQRRgnGDsyEggCEC4YFBivARjHARiHAhiABDILCAMQABgKGAsYgAQyCwgEEAAYChgLGIAEMggIBRAAGBYYHjIKCAYQABgKGBYYHjIKCAcQABgKGBYYHjIKCAgQABgKGBYYHjIICAkQABgWGB7SAQg4MTM3ajBqNKgCALACAA&um=1&ie=UTF-8&fb=1&gl=us&sa=X&geocode=Ke0p0kqOZWmHMRgfyeuvtwyD&daddr=1560+Big+Thompson+Ave,+Estes+Park,+CO+80517",
             "order_url": ""
           }
         },
@@ -174,7 +174,7 @@
             "description": "Right in the heart of downtown Longmont, north of 3rd and Main. Opened June 2024. Parking in the back or on the street.",
             "hours": "Tuesday–Sunday: 11:30am–8pm\nFriday & Saturday: Open later\nMonday: Closed",
             "closed_note": "CLOSED MONDAYS",
-            "map_url": "",
+            "map_url": "https://google.com/maps/place/antonios+pizza+longmont/data=!4m2!3m1!1s0x876bf90024535451:0xfc618feaec214b70?sa=X&ved=1t:242&ictx=111",
             "order_url": ""
           }
         }
