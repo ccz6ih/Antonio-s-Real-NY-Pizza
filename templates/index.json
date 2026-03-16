@@ -16,9 +16,9 @@
         "headline": "Real New York Pizza.",
         "subheadline": "Long Island Born & Raised. Made by actual New Yorkers.",
         "cta1_text": "Order Now",
-        "cta1_url": "",
+        "cta1_url": "shopify://collections/all",
         "cta2_text": "See The Menu",
-        "cta2_url": ""
+        "cta2_url": "shopify://collections"
       }
     },
     "antonio-specials-marquee": {
