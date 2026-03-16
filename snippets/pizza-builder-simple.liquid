@@ -7,15 +7,6 @@
 
   <div class="pb-simple__inner">
 
-    <div class="pb-simple__header">
-      <h2 class="pb-simple__title">{{ product.title }}</h2>
-      <p class="pb-simple__price">{{ base_price_dollars }}</p>
-    </div>
-
-    {%- if product.description != blank -%}
-      <div class="pb-simple__desc">{{ product.description }}</div>
-    {%- endif -%}
-
     <!-- Quantity Selector -->
     <div class="pb-simple__qty-wrap">
       <label class="pb-simple__qty-label" id="pb-simple-qty-label-{{ product.id }}">Quantity</label>

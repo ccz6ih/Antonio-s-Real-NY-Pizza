@@ -22,15 +22,6 @@
     <!-- Fallback (shown until JS runs or if no steps detected) -->
     <div class="pb-combo__fallback" data-combo-fallback>
 
-      <div class="pb-simple__header">
-        <h2 class="pb-simple__title">{{ product.title }}</h2>
-        <p class="pb-simple__price">{{ base_price_dollars }}</p>
-      </div>
-
-      {%- if product.description != blank -%}
-        <div class="pb-simple__desc pb-combo__desc">{{ product.description }}</div>
-      {%- endif -%}
-
       <div class="pb-simple__qty-wrap">
         <label class="pb-simple__qty-label" id="pb-combo-qty-label-{{ product.id }}">Quantity</label>
         <div class="pb-qty" role="group" aria-labelledby="pb-combo-qty-label-{{ product.id }}">
@@ -50,7 +41,6 @@
     <!-- Dynamic step builder (injected by JS when sub-items detected) -->
     <div class="pb-combo__dynamic" data-combo-dynamic style="display:none">
 
-      <h2 class="pb-combo__title">{{ product.title }}</h2>
       <p class="pb-combo__subtitle">Build your combo below</p>
 
       <!-- Progress bar injected by JS -->
