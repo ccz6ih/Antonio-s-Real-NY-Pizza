@@ -11,20 +11,43 @@
   "sections": {
     "antonio-hero": {
       "type": "antonio-hero",
-      "settings": {}
+      "settings": {
+        "bg_image": "shopify://shop_images/51495603_1807134026058841_8275776962866184192_o.webp",
+        "headline": "Real New York Pizza.",
+        "subheadline": "Long Island Born & Raised. Made by actual New Yorkers.",
+        "cta1_text": "Order Now",
+        "cta1_url": "",
+        "cta2_text": "See The Menu",
+        "cta2_url": ""
+      }
     },
     "antonio-specials-marquee": {
       "type": "antonio-specials-marquee",
-      "settings": {}
+      "settings": {
+        "speed": "medium",
+        "bg_color": "#1a1a1a",
+        "text_color": "#f5a623"
+      }
     },
     "antonio-menu-nav": {
       "type": "antonio-menu-nav",
-      "settings": {}
+      "settings": {
+        "handle_pizzas": "pizzas",
+        "handle_calzones": "calzones",
+        "handle_desserts": "desserts",
+        "handle_wings": "wings",
+        "handle_pasta": "pasta",
+        "handle_salads": "salads",
+        "handle_sides": "sides",
+        "handle_bagels": "bagels",
+        "handle_heros": "heros"
+      }
     },
     "antonio-menu-grid-pizzas": {
       "type": "antonio-menu-grid",
       "settings": {
         "collection": "pizzas",
+        "show_heading": true,
         "heading": "Our NY Pizzas",
         "subheading": "Hand-tossed, long-fermented dough. Stanislaus tomatoes. Bacio mozzarella.",
         "max_products": 8
@@ -32,12 +55,17 @@
     },
     "antonio-ingredient-belt": {
       "type": "antonio-ingredient-belt",
-      "settings": {}
+      "settings": {
+        "bg_color": "#1a1a1a",
+        "show_on_mobile": true,
+        "speed": "medium"
+      }
     },
     "antonio-menu-grid-wings": {
       "type": "antonio-menu-grid",
       "settings": {
         "collection": "wings",
+        "show_heading": true,
         "heading": "Wings & Sides",
         "subheading": "Jumbo wings cooked to order. Garlic knots made from our own dough.",
         "max_products": 6
@@ -45,12 +73,24 @@
     },
     "antonio-story": {
       "type": "antonio-story",
-      "settings": {}
+      "settings": {
+        "layout": "image-left",
+        "eyebrow": "OUR STORY",
+        "heading": "Long Island Born. Colorado Made. No Shortcuts.",
+        "body": "<p>Antonio grew up on Long Island, where real New York pizza isn't a trend — it's a way of life. After 25+ years of making pizza and training under the influence of legendary pizzaiolo Tony Gemignani — whose team won the Food Network Pizza Champions Challenge in 2006 — Antonio packed that obsession into every recipe and brought it to Colorado. The mission was simple: real NY pizza, no shortcuts, no compromises.</p><p>Every pie starts with long-fermented dough, Stanislaus tomatoes from California, and Bacio premium mozzarella. House-made mozzarella and pasta made from Gragnano Italy flour are crafted fresh daily. Tracey hand-forms every NY bagel from scratch — kettled and baked the way it's supposed to be done. In January 2025, Antonio took his Spicy Calabrian pizza to an international competition in Rimini, Italy, competing against the world's best. The judges have already spoken: Antonio's is the #1 pizza in Colorado and earned the title of 2nd Best Cheese Slice in the World.</p><p>You'll find us in Estes Park and Longmont — two Colorado towns that now know what real New York pizza tastes like. Come find out for yourself.</p>",
+        "stat1": "25+ Years",
+        "stat2": "#1 in Colorado",
+        "stat3": "World's Best Cheese Slice",
+        "stat4": "2 Colorado Locations",
+        "cta_text": "Order Now",
+        "cta_url": ""
+      }
     },
     "antonio-menu-grid-calzones": {
       "type": "antonio-menu-grid",
       "settings": {
         "collection": "calzones",
+        "show_heading": true,
         "heading": "Calzones",
         "subheading": "Personal to monster size. Stuffed with ricotta, mozzarella and your choice of fillings.",
         "max_products": 4
