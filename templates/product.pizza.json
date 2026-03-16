@@ -115,19 +115,6 @@
               },
               "blocks": {}
             },
-            "variant_picker_R3rGDr": {
-              "type": "variant-picker",
-              "settings": {
-                "variant_style": "buttons",
-                "show_swatches": true,
-                "alignment": "left",
-                "padding-block-start": 12,
-                "padding-block-end": 24,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
             "text_gXMUag": {
               "type": "text",
               "name": "Product description",
@@ -158,7 +145,6 @@
           "block_order": [
             "text_tefwj7",
             "price_a7krng",
-            "variant_picker_R3rGDr",
             "text_gXMUag"
           ]
         }

@@ -177,7 +177,7 @@
             atcBtn.classList.add('pb-btn-atc--success');
             atcBtn.textContent = 'Added!';
             if (feedbackEl) feedbackEl.textContent = 'Combo added to your order.';
-            document.dispatchEvent(new CustomEvent('cart:refresh'));
+            document.dispatchEvent(new CustomEvent('cart:update'));
             setTimeout(function () {
               atcBtn.classList.remove('pb-btn-atc--success');
               atcBtn.removeAttribute('disabled');
@@ -285,7 +285,7 @@
                 atcBtn.classList.add('pb-btn-atc--success');
                 atcBtn.textContent = 'Added!';
                 if (feedbackEl) feedbackEl.textContent = 'Combo added to your cart.';
-                document.dispatchEvent(new CustomEvent('cart:refresh'));
+                document.dispatchEvent(new CustomEvent('cart:update'));
                 setTimeout(function () {
                   atcBtn.classList.remove('pb-btn-atc--success');
                   atcBtn.removeAttribute('disabled');

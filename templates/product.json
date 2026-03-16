@@ -119,16 +119,6 @@
               },
               "blocks": {}
             },
-            "pizza-builder": {
-              "type": "pizza-builder",
-              "settings": {
-                "padding-block-start": 0,
-                "padding-block-end": 0,
-                "padding-inline-start": 0,
-                "padding-inline-end": 0
-              },
-              "blocks": {}
-            },
             "text_gXMUag": {
               "type": "text",
               "name": "Product description",
@@ -154,13 +144,32 @@
                 "padding-inline-end": 0
               },
               "blocks": {}
+            },
+            "buy_buttons_eYQEYi": {
+              "type": "buy-buttons",
+              "settings": {
+                "padding-block-start": 0,
+                "padding-block-end": 0,
+                "padding-inline-start": 0,
+                "padding-inline-end": 0
+              },
+              "blocks": {
+                "add-to-cart": {
+                  "type": "add-to-cart",
+                  "static": true,
+                  "settings": {}
+                }
+              },
+              "block_order": [
+                "add-to-cart"
+              ]
             }
           },
           "block_order": [
             "text_tefwj7",
             "price_a7krng",
             "variant_picker_R3rGDr",
-            "pizza-builder",
+            "buy_buttons_eYQEYi",
             "text_gXMUag"
           ]
         }
