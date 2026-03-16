@@ -1,6 +1,6 @@
 {%- liquid
-  assign categories = 'Whole Pies,Starters,Calzones,Pasta,Hot Baked,Heroes & Subs,Salads,Deals,Drinks' | split: ','
-  assign handles = section.settings.handle_whole_pies | append: ',' | append: section.settings.handle_starters | append: ',' | append: section.settings.handle_calzones | append: ',' | append: section.settings.handle_pasta | append: ',' | append: section.settings.handle_hot_baked | append: ',' | append: section.settings.handle_heroes_subs | append: ',' | append: section.settings.handle_salads | append: ',' | append: section.settings.handle_deals | append: ',' | append: section.settings.handle_drinks
+  assign categories = 'Pizzas,Calzones,Desserts,Wings,Pasta,Salads,Sides,Bagels,Heros' | split: ','
+  assign handles = section.settings.handle_pizzas | append: ',' | append: section.settings.handle_calzones | append: ',' | append: section.settings.handle_desserts | append: ',' | append: section.settings.handle_wings | append: ',' | append: section.settings.handle_pasta | append: ',' | append: section.settings.handle_salads | append: ',' | append: section.settings.handle_sides | append: ',' | append: section.settings.handle_bagels | append: ',' | append: section.settings.handle_heros
   assign handles_arr = handles | split: ','
 -%}
 
@@ -13,20 +13,16 @@
     width: 100%;
     transition: box-shadow 0.25s ease;
   }
-
   #antonio-menu-nav.is-sticky {
     position: sticky;
     top: 0;
     box-shadow: 0 2px 12px rgba(26,26,26,0.13);
   }
-
-  /* Sentinel sits above the nav; when it leaves viewport the nav becomes sticky */
   #antonio-menu-nav-sentinel {
     height: 1px;
     margin-bottom: -1px;
     pointer-events: none;
   }
-
   .antonio-menu-nav__track {
     display: flex;
     flex-direction: row;
@@ -36,14 +32,10 @@
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
     scroll-snap-type: x proximity;
-    scrollbar-width: none;       /* Firefox */
-    -ms-overflow-style: none;    /* IE / Edge */
+    scrollbar-width: none;
+    -ms-overflow-style: none;
   }
-
-  .antonio-menu-nav__track::-webkit-scrollbar {
-    display: none;               /* Chrome / Safari */
-  }
-
+  .antonio-menu-nav__track::-webkit-scrollbar { display: none; }
   .antonio-menu-nav__pill {
     display: inline-flex;
     align-items: center;
@@ -53,7 +45,7 @@
     flex-shrink: 0;
     padding: 8px 18px;
     border-radius: 999px;
-    border: 1.5px solid transparent;
+    border: 1.5px solid rgba(26,26,26,0.18);
     font-family: inherit;
     font-size: 0.875rem;
     font-weight: 600;
@@ -62,18 +54,14 @@
     cursor: pointer;
     background-color: #F9F5EF;
     color: #1A1A1A;
-    border-color: rgba(26,26,26,0.18);
     transition: background-color 0.18s ease, color 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease;
-    will-change: transform;
     -webkit-tap-highlight-color: transparent;
     outline-offset: 3px;
   }
-
   .antonio-menu-nav__pill:hover {
     border-color: #C8291E;
     color: #C8291E;
   }
-
   .antonio-menu-nav__pill.is-active,
   .antonio-menu-nav__pill[aria-current="page"] {
     background-color: #C8291E;
@@ -81,7 +69,6 @@
     border-color: #C8291E;
     box-shadow: 0 2px 8px rgba(200,41,30,0.28);
   }
-
   @media (min-width: 768px) {
     .antonio-menu-nav__track {
       padding: 12px 24px;
@@ -90,41 +77,24 @@
       flex-wrap: wrap;
       overflow-x: visible;
     }
-
-    .antonio-menu-nav__pill {
-      font-size: 0.9rem;
-    }
+    .antonio-menu-nav__pill { font-size: 0.9rem; }
   }
-
   @media (min-width: 1200px) {
-    .antonio-menu-nav__track {
-      padding: 14px 40px;
-      gap: 12px;
-    }
+    .antonio-menu-nav__track { padding: 14px 40px; gap: 12px; }
   }
 </style>
 
-{%- comment -%} Sentinel element — when this scrolls out of view, nav sticks {%- endcomment -%}
 <div id="antonio-menu-nav-sentinel" aria-hidden="true"></div>
 
-<nav
-  id="antonio-menu-nav"
-  aria-label="Menu categories"
-  data-section-id="{{ section.id }}"
->
+<nav id="antonio-menu-nav" aria-label="Menu categories" data-section-id="{{ section.id }}">
   <div class="antonio-menu-nav__track" role="list">
     {%- for category in categories -%}
       {%- assign idx = forloop.index0 -%}
       {%- assign raw_handle = handles_arr[idx] | strip -%}
       {%- assign col_handle = raw_handle | default: category | handleize -%}
       {%- assign col_url = '/collections/' | append: col_handle -%}
-
-      {%- comment -%} Determine active state from current URL {%- endcomment -%}
       {%- assign is_active = false -%}
-      {%- if request.path contains col_url -%}
-        {%- assign is_active = true -%}
-      {%- endif -%}
-
+      {%- if request.path contains col_url -%}{%- assign is_active = true -%}{%- endif -%}
       <a
         href="{{ col_url }}"
         class="antonio-menu-nav__pill{% if is_active %} is-active{% endif %}"
@@ -132,9 +102,7 @@
         data-handle="{{ col_handle }}"
         data-section-target="#section-{{ col_handle }}"
         {% if is_active %}aria-current="page"{% endif %}
-      >
-        {{- category -}}
-      </a>
+      >{{- category -}}</a>
     {%- endfor -%}
   </div>
 </nav>
@@ -142,177 +110,61 @@
 <script>
 (function () {
   'use strict';
-
-  /* ── Helpers ─────────────────────────────────────────── */
-  const nav     = document.getElementById('antonio-menu-nav');
-  const sentinel = document.getElementById('antonio-menu-nav-sentinel');
-  const pills   = Array.from(nav.querySelectorAll('.antonio-menu-nav__pill'));
-  const track   = nav.querySelector('.antonio-menu-nav__track');
-
+  var nav      = document.getElementById('antonio-menu-nav');
+  var sentinel = document.getElementById('antonio-menu-nav-sentinel');
+  var pills    = Array.from(nav.querySelectorAll('.antonio-menu-nav__pill'));
+  var track    = nav.querySelector('.antonio-menu-nav__track');
   if (!nav || !pills.length) return;
 
-  /* ── 1. Sticky behaviour via IntersectionObserver ────── */
   if (sentinel && 'IntersectionObserver' in window) {
-    const stickyObserver = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (!entry.isIntersecting) {
-            nav.classList.add('is-sticky');
-          } else {
-            nav.classList.remove('is-sticky');
-          }
-        });
-      },
-      { threshold: 0, rootMargin: '0px' }
-    );
-    stickyObserver.observe(sentinel);
+    new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        nav.classList.toggle('is-sticky', !e.isIntersecting);
+      });
+    }, { threshold: 0 }).observe(sentinel);
   }
 
-  /* ── 2. Active pill helpers ──────────────────────────── */
-  function setActivePill(pill) {
-    pills.forEach(function (p) {
-      p.classList.remove('is-active');
-      p.removeAttribute('aria-current');
-    });
-    if (pill) {
-      pill.classList.add('is-active');
-      pill.setAttribute('aria-current', 'page');
-      scrollPillIntoView(pill);
-    }
-  }
-
-  function scrollPillIntoView(pill) {
+  function setActive(pill) {
+    pills.forEach(function (p) { p.classList.remove('is-active'); p.removeAttribute('aria-current'); });
     if (!pill) return;
-    var trackRect  = track.getBoundingClientRect();
-    var pillRect   = pill.getBoundingClientRect();
-    var scrollLeft = track.scrollLeft;
-    var pillLeft   = pillRect.left - trackRect.left + scrollLeft;
-    var target     = pillLeft - (trackRect.width / 2) + (pillRect.width / 2);
-    track.scrollTo({ left: target, behavior: 'smooth' });
+    pill.classList.add('is-active');
+    pill.setAttribute('aria-current', 'page');
+    var tr = track.getBoundingClientRect(), pr = pill.getBoundingClientRect();
+    track.scrollTo({ left: (pr.left - tr.left + track.scrollLeft) - (tr.width / 2) + (pr.width / 2), behavior: 'smooth' });
   }
 
-  /* ── 3. URL-based active state on load ───────────────── */
-  var currentPath = window.location.pathname;
-  var activePillFromURL = null;
-
-  pills.forEach(function (pill) {
-    var handle = pill.getAttribute('data-handle');
-    if (handle && currentPath.indexOf('/collections/' + handle) !== -1) {
-      activePillFromURL = pill;
-    }
+  var path = window.location.pathname;
+  pills.forEach(function (p) {
+    if (path.indexOf('/collections/' + p.dataset.handle) !== -1) setActive(p);
   });
 
-  if (activePillFromURL) {
-    setActivePill(activePillFromURL);
-  }
-
-  /* ── 4. IntersectionObserver for on-page section targets */
-  var sectionTargetObserver = null;
-
-  function buildSectionObserver() {
-    var sectionMap = {};
-    pills.forEach(function (pill) {
-      var targetSelector = pill.getAttribute('data-section-target');
-      if (targetSelector) {
-        var el = document.querySelector(targetSelector);
-        if (el) {
-          sectionMap[targetSelector] = pill;
-        }
-      }
-    });
-
-    if (!Object.keys(sectionMap).length) return;
-
-    sectionTargetObserver = new IntersectionObserver(
-      function (entries) {
-        entries.forEach(function (entry) {
-          if (entry.isIntersecting) {
-            var matchingPill = null;
-            pills.forEach(function (pill) {
-              var sel = pill.getAttribute('data-section-target');
-              if (sel && document.querySelector(sel) === entry.target) {
-                matchingPill = pill;
-              }
-            });
-            if (matchingPill) setActivePill(matchingPill);
-          }
-        });
-      },
-      {
-        rootMargin: '-20% 0px -60% 0px',
-        threshold: 0
-      }
-    );
-
-    Object.values(sectionMap).forEach(function (pill) {
-      var sel = pill.getAttribute('data-section-target');
-      var el  = sel ? document.querySelector(sel) : null;
-      if (el) sectionTargetObserver.observe(el);
-    });
-  }
-
-  buildSectionObserver();
-
-  /* ── 5. Click: smooth-scroll if section exists on page ── */
   pills.forEach(function (pill) {
     pill.addEventListener('click', function (e) {
-      var targetSelector = pill.getAttribute('data-section-target');
-      var targetEl = targetSelector ? document.querySelector(targetSelector) : null;
-
-      if (targetEl) {
+      var el = pill.dataset.sectionTarget ? document.querySelector(pill.dataset.sectionTarget) : null;
+      if (el) {
         e.preventDefault();
-        setActivePill(pill);
-        var navHeight = nav.offsetHeight || 60;
-        var top = targetEl.getBoundingClientRect().top + window.pageYOffset - navHeight - 8;
-        window.scrollTo({ top: top, behavior: 'smooth' });
+        setActive(pill);
+        window.scrollTo({ top: el.getBoundingClientRect().top + window.pageYOffset - nav.offsetHeight - 8, behavior: 'smooth' });
       } else {
-        /* Normal navigation — just highlight immediately for perceived speed */
-        setActivePill(pill);
+        setActive(pill);
       }
     });
   });
 
-  /* ── 6. GSAP hover animations ────────────────────────── */
   function initGSAP() {
     if (typeof gsap === 'undefined') return;
-
     pills.forEach(function (pill) {
       pill.addEventListener('mouseenter', function () {
-        if (!pill.classList.contains('is-active')) {
-          gsap.to(pill, {
-            scale: 1.05,
-            duration: 0.18,
-            ease: 'power1.out',
-            overwrite: 'auto'
-          });
-        }
+        if (!pill.classList.contains('is-active')) gsap.to(pill, { scale: 1.05, duration: 0.18, ease: 'power1.out', overwrite: 'auto' });
       });
-
       pill.addEventListener('mouseleave', function () {
-        gsap.to(pill, {
-          scale: 1,
-          duration: 0.18,
-          ease: 'power1.inOut',
-          overwrite: 'auto'
-        });
-      });
-
-      /* Snap active pill back to scale:1 cleanly */
-      pill.addEventListener('click', function () {
-        gsap.to(pill, { scale: 1, duration: 0.12, ease: 'power2.out', overwrite: 'auto' });
+        gsap.to(pill, { scale: 1, duration: 0.18, ease: 'power1.inOut', overwrite: 'auto' });
       });
     });
   }
 
-  /* Try immediately; fall back to DOMContentLoaded / load */
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', initGSAP);
-  } else {
-    /* GSAP might be loaded after this script — wait one tick */
-    setTimeout(initGSAP, 0);
-    window.addEventListener('load', initGSAP);
-  }
-
+  if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', initGSAP); }
+  else { setTimeout(initGSAP, 0); window.addEventListener('load', initGSAP); }
 })();
 </script>
 
@@ -325,67 +177,18 @@
     {
       "type": "header",
       "content": "Collection Handles",
-      "info": "Enter the Shopify collection handle for each menu category. Leave blank to auto-generate from the category name."
+      "info": "Match the Shopify collection handle for each real menu category."
     },
-    {
-      "type": "text",
-      "id": "handle_whole_pies",
-      "label": "Whole Pies — collection handle",
-      "default": "whole-pies"
-    },
-    {
-      "type": "text",
-      "id": "handle_starters",
-      "label": "Starters — collection handle",
-      "default": "starters"
-    },
-    {
-      "type": "text",
-      "id": "handle_calzones",
-      "label": "Calzones — collection handle",
-      "default": "calzones"
-    },
-    {
-      "type": "text",
-      "id": "handle_pasta",
-      "label": "Pasta — collection handle",
-      "default": "pasta"
-    },
-    {
-      "type": "text",
-      "id": "handle_hot_baked",
-      "label": "Hot Baked — collection handle",
-      "default": "hot-baked"
-    },
-    {
-      "type": "text",
-      "id": "handle_heroes_subs",
-      "label": "Heroes & Subs — collection handle",
-      "default": "heroes-subs"
-    },
-    {
-      "type": "text",
-      "id": "handle_salads",
-      "label": "Salads — collection handle",
-      "default": "salads"
-    },
-    {
-      "type": "text",
-      "id": "handle_deals",
-      "label": "Deals — collection handle",
-      "default": "deals"
-    },
-    {
-      "type": "text",
-      "id": "handle_drinks",
-      "label": "Drinks — collection handle",
-      "default": "drinks"
-    }
+    { "type": "text", "id": "handle_pizzas",   "label": "Pizzas — collection handle",   "default": "pizzas"   },
+    { "type": "text", "id": "handle_calzones", "label": "Calzones — collection handle", "default": "calzones" },
+    { "type": "text", "id": "handle_desserts", "label": "Desserts — collection handle", "default": "desserts" },
+    { "type": "text", "id": "handle_wings",    "label": "Wings — collection handle",    "default": "wings"    },
+    { "type": "text", "id": "handle_pasta",    "label": "Pasta — collection handle",    "default": "pasta"    },
+    { "type": "text", "id": "handle_salads",   "label": "Salads — collection handle",   "default": "salads"   },
+    { "type": "text", "id": "handle_sides",    "label": "Sides — collection handle",    "default": "sides"    },
+    { "type": "text", "id": "handle_bagels",   "label": "Bagels — collection handle",   "default": "bagels"   },
+    { "type": "text", "id": "handle_heros",    "label": "Heros — collection handle",    "default": "heros"    }
   ],
-  "presets": [
-    {
-      "name": "Antonio's Menu Nav"
-    }
-  ]
+  "presets": [{ "name": "Antonio's Menu Nav" }]
 }
 {% endschema %}

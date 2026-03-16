@@ -1,3 +1,12 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
 {
   "sections": {
     "antonio-hero": {
@@ -12,11 +21,12 @@
       "type": "antonio-menu-nav",
       "settings": {}
     },
-    "antonio-menu-grid-pies": {
+    "antonio-menu-grid-pizzas": {
       "type": "antonio-menu-grid",
       "settings": {
-        "collection": "whole-pies",
-        "heading": "Our Whole Pies",
+        "collection": "pizzas",
+        "heading": "Our NY Pizzas",
+        "subheading": "Hand-tossed, long-fermented dough. Stanislaus tomatoes. Bacio mozzarella.",
         "max_products": 8
       }
     },
@@ -24,11 +34,12 @@
       "type": "antonio-ingredient-belt",
       "settings": {}
     },
-    "antonio-menu-grid-starters": {
+    "antonio-menu-grid-wings": {
       "type": "antonio-menu-grid",
       "settings": {
-        "collection": "starters",
-        "heading": "Starters & Bites",
+        "collection": "wings",
+        "heading": "Wings & Sides",
+        "subheading": "Jumbo wings cooked to order. Garlic knots made from our own dough.",
         "max_products": 6
       }
     },
@@ -36,12 +47,13 @@
       "type": "antonio-story",
       "settings": {}
     },
-    "antonio-menu-grid-deals": {
+    "antonio-menu-grid-calzones": {
       "type": "antonio-menu-grid",
       "settings": {
-        "collection": "family-deals",
-        "heading": "Family Deals",
-        "max_products": 3
+        "collection": "calzones",
+        "heading": "Calzones",
+        "subheading": "Personal to monster size. Stuffed with ricotta, mozzarella and your choice of fillings.",
+        "max_products": 4
       }
     },
     "antonio-reviews": {
@@ -53,11 +65,11 @@
     "antonio-hero",
     "antonio-specials-marquee",
     "antonio-menu-nav",
-    "antonio-menu-grid-pies",
+    "antonio-menu-grid-pizzas",
     "antonio-ingredient-belt",
-    "antonio-menu-grid-starters",
+    "antonio-menu-grid-wings",
     "antonio-story",
-    "antonio-menu-grid-deals",
+    "antonio-menu-grid-calzones",
     "antonio-reviews"
   ]
 }
