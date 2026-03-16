@@ -1,125 +1,63 @@
-{%- comment -%}
-  Antonio's Real NY Pizza — Daily Specials Ticker
-  Section: antonio-specials-marquee.liquid
-  GSAP-powered infinite horizontal marquee with pause-on-hover,
-  block-driven content, and speed/color controls.
-{%- endcomment -%}
-
+{%- comment -%}Antonio's Real NY Pizza — Daily Specials Ticker{%- endcomment -%}
 {%- assign speed_duration = '25s' -%}
-{%- if section.settings.speed == 'slow' -%}
-  {%- assign speed_duration = '40s' -%}
-{%- elsif section.settings.speed == 'fast' -%}
-  {%- assign speed_duration = '15s' -%}
+{%- if section.settings.speed == 'slow' -%}{%- assign speed_duration = '40s' -%}
+{%- elsif section.settings.speed == 'fast' -%}{%- assign speed_duration = '15s' -%}
 {%- endif -%}
-
 {%- assign bg_color   = section.settings.bg_color   | default: '#1A1A1A' -%}
 {%- assign text_color = section.settings.text_color | default: '#F5A623' -%}
 
-<link
-  rel="preconnect"
-  href="https://fonts.googleapis.com"
-/>
-<link
-  rel="preconnect"
-  href="https://fonts.gstatic.com"
-  crossorigin
-/>
-<link
-  href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap"
-  rel="stylesheet"
-/>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&display=swap" rel="stylesheet" />
 
 <style>
   #antonio-specials-{{ section.id }} {
-    --asp-bg:         {{ bg_color }};
-    --asp-text:       {{ text_color }};
-    --asp-separator:  #D0021B;
-    --asp-height:     56px;
-    --asp-font-size:  1.25rem;    /* ~20px desktop */
-    --asp-duration:   {{ speed_duration }};
+    --asp-bg:        {{ bg_color }};
+    --asp-text:      {{ text_color }};
+    --asp-separator: #D0021B;
+    --asp-height:    56px;
+    --asp-font-size: 1.25rem;
+    --asp-duration:  {{ speed_duration }};
   }
-
   #antonio-specials-{{ section.id }} .asp-ticker {
-    display:         flex;
-    align-items:     center;
-    width:           100%;
-    height:          var(--asp-height);
-    background:      var(--asp-bg);
-    overflow:        hidden;
-    position:        relative;
-    cursor:          default;
+    display: flex; align-items: center; width: 100%;
+    height: var(--asp-height); background: var(--asp-bg);
+    overflow: hidden; position: relative; cursor: default;
   }
-
   #antonio-specials-{{ section.id }} .asp-track {
-    display:         flex;
-    align-items:     center;
-    white-space:     nowrap;
-    will-change:     transform;
-    /* GSAP controls the animation; this is the initial state */
+    display: flex; align-items: center;
+    white-space: nowrap; will-change: transform;
   }
-
   #antonio-specials-{{ section.id }} .asp-item {
-    display:         inline-flex;
-    align-items:     center;
-    gap:             0.45em;
-    font-family:     'Bebas Neue', sans-serif;
-    font-size:       var(--asp-font-size);
-    letter-spacing:  0.04em;
-    color:           var(--asp-text);
-    text-transform:  uppercase;
-    line-height:     1;
-    padding:         0 0.1em;
-    user-select:     none;
+    display: inline-flex; align-items: center; gap: 0.45em;
+    font-family: 'Bebas Neue', sans-serif; font-size: var(--asp-font-size);
+    letter-spacing: 0.04em; color: var(--asp-text);
+    text-transform: uppercase; line-height: 1;
+    padding: 0 0.1em; user-select: none;
   }
-
   #antonio-specials-{{ section.id }} .asp-separator {
-    display:         inline-block;
-    color:           var(--asp-separator);
-    font-size:       0.7em;
-    margin:          0 1em;
-    line-height:     1;
-    vertical-align:  middle;
-    flex-shrink:     0;
+    display: inline-block; color: var(--asp-separator);
+    font-size: 0.7em; margin: 0 1em; vertical-align: middle; flex-shrink: 0;
   }
-
-  /* Mobile — slightly smaller text, same height */
   @media (max-width: 749px) {
-    #antonio-specials-{{ section.id }} {
-      --asp-font-size: 1rem;   /* ~16px */
-    }
+    #antonio-specials-{{ section.id }} { --asp-font-size: 1rem; }
   }
-
-  /* Respect reduced-motion preference — freeze the ticker */
   @media (prefers-reduced-motion: reduce) {
-    #antonio-specials-{{ section.id }} .asp-track {
-      animation: none !important;
-    }
+    #antonio-specials-{{ section.id }} .asp-track { animation: none !important; }
   }
 </style>
 
-<div
-  id="antonio-specials-{{ section.id }}"
-  data-section-id="{{ section.id }}"
->
+<div id="antonio-specials-{{ section.id }}" data-section-id="{{ section.id }}">
   <div class="asp-ticker" id="asp-ticker-{{ section.id }}">
     <div class="asp-track" id="asp-track-{{ section.id }}">
-      {%- comment -%}
-        Render blocks once; JS will duplicate the set to create
-        a seamless loop. We output both passes in Liquid as a
-        fallback so something shows even if JS hasn't run yet.
-      {%- endcomment -%}
       {%- for block in section.blocks -%}
         {%- assign emoji     = block.settings.emoji     | default: '' -%}
         {%- assign deal_text = block.settings.deal_text | default: '' -%}
         {%- assign price     = block.settings.price     | default: '' -%}
         <span class="asp-item" {{ block.shopify_attributes }}>
-          {%- if emoji != '' -%}
-            <span class="asp-emoji" aria-hidden="true">{{ emoji }}</span>
-          {%- endif -%}
+          {%- if emoji != '' -%}<span class="asp-emoji" aria-hidden="true">{{ emoji }}</span>{%- endif -%}
           <span class="asp-deal">{{ deal_text }}</span>
-          {%- if price != '' -%}
-            <span class="asp-price">&mdash; {{ price }}</span>
-          {%- endif -%}
+          {%- if price != '' -%}<span class="asp-price">&mdash; {{ price }}</span>{%- endif -%}
         </span>
         <span class="asp-separator" aria-hidden="true">&#9670;</span>
       {%- endfor -%}
@@ -128,95 +66,44 @@
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js" defer></script>
-
 <script>
 (function () {
   'use strict';
-
-  var SECTION_ID  = '{{ section.id }}';
-  var DURATION    = {{ speed_duration | remove: 's' }};   // numeric seconds
-
-  function initTicker () {
-    var ticker  = document.getElementById('asp-ticker-'  + SECTION_ID);
-    var track   = document.getElementById('asp-track-'   + SECTION_ID);
-
+  var SECTION_ID = '{{ section.id }}';
+  var DURATION   = {{ speed_duration | remove: 's' }};
+  function initTicker() {
+    var ticker = document.getElementById('asp-ticker-' + SECTION_ID);
+    var track  = document.getElementById('asp-track-'  + SECTION_ID);
     if (!ticker || !track || !window.gsap) return;
-
-    /* ── 1. Duplicate the original set of items to fill the track ── */
     var originalContent = track.innerHTML;
-    /* Clone enough times so the duplicated content is at least 2× the
-       viewport width. We always need at minimum 2 copies for a seamless
-       loop (original + 1 clone). Add more if the item set is short. */
     var copies = 1;
-    track.insertAdjacentHTML('beforeend', originalContent); // first clone
-
-    /* After inserting, measure and clone again until wider than 2× viewport */
-    var ensureWidth = function () {
+    track.insertAdjacentHTML('beforeend', originalContent);
+    function ensureWidth() {
       while (track.scrollWidth < window.innerWidth * 2) {
         track.insertAdjacentHTML('beforeend', originalContent);
         copies++;
-        if (copies > 20) break; // safety cap
+        if (copies > 20) break;
       }
-    };
-
-    /* Run after fonts/layout are ready */
-    if (document.readyState === 'complete') {
-      ensureWidth();
-      startAnimation();
-    } else {
-      window.addEventListener('load', function () {
-        ensureWidth();
-        startAnimation();
-      });
     }
-
     var tween;
-
-    function startAnimation () {
-      /* The track holds (copies + 1) identical sets.
-         We animate exactly 1 set width to the left, then wrap. */
+    function startAnimation() {
       var setWidth = track.scrollWidth / (copies + 1);
-
       tween = gsap.to(track, {
-        x:          -setWidth,
-        duration:   DURATION,
-        ease:       'none',
-        repeat:     -1,
-        modifiers:  {
-          x: function (x) {
-            /* Keep x within [−setWidth, 0) for seamless looping */
-            return (parseFloat(x) % setWidth) + 'px';
-          }
-        }
+        x: -setWidth, duration: DURATION, ease: 'none', repeat: -1,
+        modifiers: { x: function(x) { return (parseFloat(x) % setWidth) + 'px'; } }
       });
-
-      /* ── 2. Pause on hover ── */
-      ticker.addEventListener('mouseenter', function () {
-        tween && tween.pause();
-      });
-      ticker.addEventListener('mouseleave', function () {
-        tween && tween.resume();
-      });
-
-      /* Touch devices: pause on touchstart, resume on touchend */
-      ticker.addEventListener('touchstart', function () {
-        tween && tween.pause();
-      }, { passive: true });
-      ticker.addEventListener('touchend', function () {
-        tween && tween.resume();
-      }, { passive: true });
+      ticker.addEventListener('mouseenter', function() { tween && tween.pause(); });
+      ticker.addEventListener('mouseleave', function() { tween && tween.resume(); });
+      ticker.addEventListener('touchstart', function() { tween && tween.pause(); }, { passive: true });
+      ticker.addEventListener('touchend',   function() { tween && tween.resume(); }, { passive: true });
     }
+    if (document.readyState === 'complete') { ensureWidth(); startAnimation(); }
+    else { window.addEventListener('load', function() { ensureWidth(); startAnimation(); }); }
   }
-
-  /* Wait for GSAP to be available (it has defer attribute) */
-  function waitForGsap (attempts) {
-    if (window.gsap) {
-      initTicker();
-    } else if (attempts < 50) {
-      setTimeout(function () { waitForGsap(attempts + 1); }, 100);
-    }
+  function waitForGsap(n) {
+    if (window.gsap) { initTicker(); }
+    else if (n < 50) { setTimeout(function() { waitForGsap(n + 1); }, 100); }
   }
-
   waitForGsap(0);
 })();
 </script>
@@ -232,108 +119,38 @@
       "type": "deal",
       "name": "Deal",
       "settings": [
-        {
-          "type": "text",
-          "id": "emoji",
-          "label": "Emoji",
-          "default": "🍕",
-          "info": "Paste a single emoji (e.g. 🍕, 🔥, 🎉)"
-        },
-        {
-          "type": "text",
-          "id": "deal_text",
-          "label": "Deal Text",
-          "default": "FAMILY SPECIAL",
-          "info": "Short all-caps description shown in the ticker"
-        },
-        {
-          "type": "text",
-          "id": "price",
-          "label": "Price",
-          "default": "$44.99",
-          "info": "Price displayed after an em-dash (e.g. $44.99)"
-        }
+        { "type": "text", "id": "emoji",     "label": "Emoji",     "default": "🍕" },
+        { "type": "text", "id": "deal_text", "label": "Deal Text", "default": "NY 18 INCH PIZZA" },
+        { "type": "text", "id": "price",     "label": "Price",     "default": "$24.99" }
       ]
     }
   ],
   "settings": [
     {
-      "type": "select",
-      "id": "speed",
-      "label": "Ticker Speed",
+      "type": "select", "id": "speed", "label": "Ticker Speed",
       "options": [
-        { "value": "slow",   "label": "Slow (40 s)" },
-        { "value": "medium", "label": "Medium (25 s)" },
-        { "value": "fast",   "label": "Fast (15 s)" }
+        { "value": "slow",   "label": "Slow (40s)"   },
+        { "value": "medium", "label": "Medium (25s)" },
+        { "value": "fast",   "label": "Fast (15s)"   }
       ],
       "default": "medium"
     },
-    {
-      "type": "color",
-      "id": "bg_color",
-      "label": "Background Color",
-      "default": "#1A1A1A"
-    },
-    {
-      "type": "color",
-      "id": "text_color",
-      "label": "Text Color",
-      "default": "#F5A623"
-    }
+    { "type": "color", "id": "bg_color",   "label": "Background Color", "default": "#1A1A1A" },
+    { "type": "color", "id": "text_color", "label": "Text Color",       "default": "#F5A623" }
   ],
   "presets": [
     {
       "name": "Specials Ticker",
       "category": "Promotional",
       "blocks": [
-        {
-          "type": "deal",
-          "settings": {
-            "emoji": "🍕",
-            "deal_text": "FAMILY SPECIAL",
-            "price": "$44.99"
-          }
-        },
-        {
-          "type": "deal",
-          "settings": {
-            "emoji": "🔥",
-            "deal_text": "WINGS 10PC",
-            "price": "$13.99"
-          }
-        },
-        {
-          "type": "deal",
-          "settings": {
-            "emoji": "🎉",
-            "deal_text": "DATE NIGHT DEAL",
-            "price": "$42.99"
-          }
-        },
-        {
-          "type": "deal",
-          "settings": {
-            "emoji": "🍝",
-            "deal_text": "PASTA COMBO",
-            "price": "$18.99"
-          }
-        },
-        {
-          "type": "deal",
-          "settings": {
-            "emoji": "🥤",
-            "deal_text": "PIZZA + DRINKS",
-            "price": "$29.99"
-          }
-        },
-        {
-          "type": "deal",
-          "settings": {
-            "emoji": "👨‍👩‍👧‍👦",
-            "deal_text": "KIDS EAT FREE",
-            "price": "TUES & WEDS"
-          }
-        }
+        { "type": "deal", "settings": { "emoji": "🍕", "deal_text": "NY 18\" PIZZA",                        "price": "$24.99"   } },
+        { "type": "deal", "settings": { "emoji": "🔥", "deal_text": "WINGS 6-10 PER LB",                   "price": "FROM $8.00" } },
+        { "type": "deal", "settings": { "emoji": "🏆", "deal_text": "VOTED #1 PIZZA IN COLORADO",          "price": ""         } },
+        { "type": "deal", "settings": { "emoji": "🍕", "deal_text": "MEGA DON 26\"",                        "price": "$48.99"   } },
+        { "type": "deal", "settings": { "emoji": "🏅", "deal_text": "2ND BEST CHEESE SLICE IN THE WORLD",  "price": ""         } },
+        { "type": "deal", "settings": { "emoji": "🧄", "deal_text": "GARLIC KNOTS DOZEN",                  "price": "$7.50"    } },
+        { "type": "deal", "settings": { "emoji": "🍝", "deal_text": "PASTA MARINARA",                      "price": "FROM $6.00" } },
+        { "type": "deal", "settings": { "emoji": "🇮🇹", "deal_text": "BACIO MOZZ · STANISLAUS TOMATOES · LONG-FERMENTED DOUGH", "price": "" } }
       ]
     }
   ]

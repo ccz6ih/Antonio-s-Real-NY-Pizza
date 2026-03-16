@@ -10,14 +10,11 @@
   data-section-id="{{ section.id }}"
 >
   <div class="antonio-reviews__inner">
-    <h2 class="antonio-reviews__heading">What New York Is Saying</h2>
+    <h2 class="antonio-reviews__heading">What Colorado Is Saying</h2>
 
     {% if section.blocks.size > 0 %}
-
-      {%- comment -%} Split blocks into two rows for desktop {%- endcomment -%}
       {%- assign half = section.blocks.size | divided_by: 2 -%}
 
-      {%- comment -%} Row 1 — all blocks {%- endcomment -%}
       <div class="antonio-reviews__track-wrapper" data-row="1">
         <div class="antonio-reviews__track" id="ar-track-1-{{ section.id }}">
           {% for block in section.blocks %}
@@ -26,55 +23,41 @@
             <div class="ar-card" {{ block.shopify_attributes }}>
               <div class="ar-card__stars" aria-label="{{ stars_count }} out of 5 stars">
                 {%- for i in (1..5) -%}
-                  {%- if i <= stars_count -%}
-                    <span class="ar-star ar-star--filled">&#9733;</span>
-                  {%- else -%}
-                    <span class="ar-star ar-star--empty">&#9733;</span>
+                  {%- if i <= stars_count -%}<span class="ar-star ar-star--filled">&#9733;</span>
+                  {%- else -%}<span class="ar-star ar-star--empty">&#9733;</span>
                   {%- endif -%}
                 {%- endfor -%}
               </div>
               <p class="ar-card__quote">&ldquo;{{ review_text }}&rdquo;</p>
               <div class="ar-card__meta">
                 <span class="ar-card__name">{{ block.settings.name | escape }}</span>
-                {%- if block.settings.location != blank -%}
-                  <span class="ar-card__location">{{ block.settings.location | escape }}</span>
-                {%- endif -%}
-                {%- if block.settings.date != blank -%}
-                  <span class="ar-card__date">{{ block.settings.date | escape }}</span>
-                {%- endif -%}
+                {%- if block.settings.location != blank -%}<span class="ar-card__location">{{ block.settings.location | escape }}</span>{%- endif -%}
+                {%- if block.settings.date != blank -%}<span class="ar-card__date">{{ block.settings.date | escape }}</span>{%- endif -%}
               </div>
             </div>
           {% endfor %}
-          {%- comment -%} Duplicate set for seamless loop {%- endcomment -%}
           {% for block in section.blocks %}
             {%- assign stars_count = block.settings.stars | default: 5 -%}
             {%- assign review_text = block.settings.review | truncate: 123 -%}
             <div class="ar-card ar-card--clone" aria-hidden="true">
               <div class="ar-card__stars">
                 {%- for i in (1..5) -%}
-                  {%- if i <= stars_count -%}
-                    <span class="ar-star ar-star--filled">&#9733;</span>
-                  {%- else -%}
-                    <span class="ar-star ar-star--empty">&#9733;</span>
+                  {%- if i <= stars_count -%}<span class="ar-star ar-star--filled">&#9733;</span>
+                  {%- else -%}<span class="ar-star ar-star--empty">&#9733;</span>
                   {%- endif -%}
                 {%- endfor -%}
               </div>
               <p class="ar-card__quote">&ldquo;{{ review_text }}&rdquo;</p>
               <div class="ar-card__meta">
                 <span class="ar-card__name">{{ block.settings.name | escape }}</span>
-                {%- if block.settings.location != blank -%}
-                  <span class="ar-card__location">{{ block.settings.location | escape }}</span>
-                {%- endif -%}
-                {%- if block.settings.date != blank -%}
-                  <span class="ar-card__date">{{ block.settings.date | escape }}</span>
-                {%- endif -%}
+                {%- if block.settings.location != blank -%}<span class="ar-card__location">{{ block.settings.location | escape }}</span>{%- endif -%}
+                {%- if block.settings.date != blank -%}<span class="ar-card__date">{{ block.settings.date | escape }}</span>{%- endif -%}
               </div>
             </div>
           {% endfor %}
         </div>
       </div>
 
-      {%- comment -%} Row 2 — desktop only, 30% faster {%- endcomment -%}
       <div class="antonio-reviews__track-wrapper antonio-reviews__track-wrapper--row2" data-row="2">
         <div class="antonio-reviews__track" id="ar-track-2-{{ section.id }}">
           {% for block in section.blocks %}
@@ -83,22 +66,16 @@
             <div class="ar-card">
               <div class="ar-card__stars" aria-label="{{ stars_count }} out of 5 stars">
                 {%- for i in (1..5) -%}
-                  {%- if i <= stars_count -%}
-                    <span class="ar-star ar-star--filled">&#9733;</span>
-                  {%- else -%}
-                    <span class="ar-star ar-star--empty">&#9733;</span>
+                  {%- if i <= stars_count -%}<span class="ar-star ar-star--filled">&#9733;</span>
+                  {%- else -%}<span class="ar-star ar-star--empty">&#9733;</span>
                   {%- endif -%}
                 {%- endfor -%}
               </div>
               <p class="ar-card__quote">&ldquo;{{ review_text }}&rdquo;</p>
               <div class="ar-card__meta">
                 <span class="ar-card__name">{{ block.settings.name | escape }}</span>
-                {%- if block.settings.location != blank -%}
-                  <span class="ar-card__location">{{ block.settings.location | escape }}</span>
-                {%- endif -%}
-                {%- if block.settings.date != blank -%}
-                  <span class="ar-card__date">{{ block.settings.date | escape }}</span>
-                {%- endif -%}
+                {%- if block.settings.location != blank -%}<span class="ar-card__location">{{ block.settings.location | escape }}</span>{%- endif -%}
+                {%- if block.settings.date != blank -%}<span class="ar-card__date">{{ block.settings.date | escape }}</span>{%- endif -%}
               </div>
             </div>
           {% endfor %}
@@ -108,22 +85,16 @@
             <div class="ar-card ar-card--clone" aria-hidden="true">
               <div class="ar-card__stars">
                 {%- for i in (1..5) -%}
-                  {%- if i <= stars_count -%}
-                    <span class="ar-star ar-star--filled">&#9733;</span>
-                  {%- else -%}
-                    <span class="ar-star ar-star--empty">&#9733;</span>
+                  {%- if i <= stars_count -%}<span class="ar-star ar-star--filled">&#9733;</span>
+                  {%- else -%}<span class="ar-star ar-star--empty">&#9733;</span>
                   {%- endif -%}
                 {%- endfor -%}
               </div>
               <p class="ar-card__quote">&ldquo;{{ review_text }}&rdquo;</p>
               <div class="ar-card__meta">
                 <span class="ar-card__name">{{ block.settings.name | escape }}</span>
-                {%- if block.settings.location != blank -%}
-                  <span class="ar-card__location">{{ block.settings.location | escape }}</span>
-                {%- endif -%}
-                {%- if block.settings.date != blank -%}
-                  <span class="ar-card__date">{{ block.settings.date | escape }}</span>
-                {%- endif -%}
+                {%- if block.settings.location != blank -%}<span class="ar-card__location">{{ block.settings.location | escape }}</span>{%- endif -%}
+                {%- if block.settings.date != blank -%}<span class="ar-card__date">{{ block.settings.date | escape }}</span>{%- endif -%}
               </div>
             </div>
           {% endfor %}
@@ -137,22 +108,13 @@
 </section>
 
 <style>
-  /* ============================================================
-     Antonio Reviews — Section Styles
-  ============================================================ */
-
   #antonio-reviews-{{ section.id }} {
     background-color: #1A1A1A;
     padding: 60px 0;
     overflow: hidden;
     width: 100%;
   }
-
-  #antonio-reviews-{{ section.id }} .antonio-reviews__inner {
-    max-width: 100%;
-  }
-
-  /* ---------- Heading ---------- */
+  #antonio-reviews-{{ section.id }} .antonio-reviews__inner { max-width: 100%; }
   #antonio-reviews-{{ section.id }} .antonio-reviews__heading {
     font-family: 'Playfair Display', Georgia, serif;
     font-size: clamp(26px, 4vw, 40px);
@@ -167,7 +129,6 @@
     transform: translateX(-50%);
     white-space: nowrap;
   }
-
   #antonio-reviews-{{ section.id }} .antonio-reviews__heading::after {
     content: '';
     display: block;
@@ -179,38 +140,15 @@
     left: 0;
     border-radius: 2px;
   }
-
-  /* ---------- Track Wrapper (overflow mask) ---------- */
   #antonio-reviews-{{ section.id }} .antonio-reviews__track-wrapper {
     overflow: hidden;
     width: 100%;
     margin-bottom: 20px;
-    -webkit-mask-image: linear-gradient(
-      to right,
-      transparent 0%,
-      #000 80px,
-      #000 calc(100% - 80px),
-      transparent 100%
-    );
-    mask-image: linear-gradient(
-      to right,
-      transparent 0%,
-      #000 80px,
-      #000 calc(100% - 80px),
-      transparent 100%
-    );
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, #000 80px, #000 calc(100% - 80px), transparent 100%);
+    mask-image: linear-gradient(to right, transparent 0%, #000 80px, #000 calc(100% - 80px), transparent 100%);
   }
-
-  #antonio-reviews-{{ section.id }} .antonio-reviews__track-wrapper:last-child {
-    margin-bottom: 0;
-  }
-
-  /* Row 2 hidden on mobile */
-  #antonio-reviews-{{ section.id }} .antonio-reviews__track-wrapper--row2 {
-    display: none;
-  }
-
-  /* ---------- Track (flex strip) ---------- */
+  #antonio-reviews-{{ section.id }} .antonio-reviews__track-wrapper:last-child { margin-bottom: 0; }
+  #antonio-reviews-{{ section.id }} .antonio-reviews__track-wrapper--row2 { display: none; }
   #antonio-reviews-{{ section.id }} .antonio-reviews__track {
     display: flex;
     flex-wrap: nowrap;
@@ -218,8 +156,6 @@
     width: max-content;
     will-change: transform;
   }
-
-  /* ---------- Card ---------- */
   #antonio-reviews-{{ section.id }} .ar-card {
     flex: 0 0 280px;
     width: 280px;
@@ -227,34 +163,16 @@
     border-radius: 12px;
     padding: 20px;
     border-left: 3px solid #C8291E;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
     display: flex;
     flex-direction: column;
     gap: 10px;
     box-sizing: border-box;
   }
-
-  /* ---------- Stars ---------- */
-  #antonio-reviews-{{ section.id }} .ar-card__stars {
-    display: flex;
-    gap: 2px;
-    line-height: 1;
-  }
-
-  #antonio-reviews-{{ section.id }} .ar-star {
-    font-size: 18px;
-    line-height: 1;
-  }
-
-  #antonio-reviews-{{ section.id }} .ar-star--filled {
-    color: #F5A623;
-  }
-
-  #antonio-reviews-{{ section.id }} .ar-star--empty {
-    color: #D4C5C5;
-  }
-
-  /* ---------- Quote ---------- */
+  #antonio-reviews-{{ section.id }} .ar-card__stars { display: flex; gap: 2px; line-height: 1; }
+  #antonio-reviews-{{ section.id }} .ar-star { font-size: 18px; line-height: 1; }
+  #antonio-reviews-{{ section.id }} .ar-star--filled { color: #F5A623; }
+  #antonio-reviews-{{ section.id }} .ar-star--empty  { color: #D4C5C5; }
   #antonio-reviews-{{ section.id }} .ar-card__quote {
     font-family: 'Playfair Display', Georgia, serif;
     font-style: italic;
@@ -264,141 +182,57 @@
     margin: 0;
     flex: 1;
   }
-
-  /* ---------- Meta ---------- */
-  #antonio-reviews-{{ section.id }} .ar-card__meta {
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
-  }
-
-  #antonio-reviews-{{ section.id }} .ar-card__name {
-    font-family: 'Playfair Display', Georgia, serif;
-    font-weight: 700;
-    font-size: 13px;
-    color: #1A1A1A;
-  }
-
-  #antonio-reviews-{{ section.id }} .ar-card__location {
-    font-size: 12px;
-    color: #888888;
-    font-style: normal;
-  }
-
-  #antonio-reviews-{{ section.id }} .ar-card__date {
-    font-size: 11px;
-    color: #AAAAAA;
-  }
-
-  /* ---------- Empty state ---------- */
-  #antonio-reviews-{{ section.id }} .antonio-reviews__empty {
-    color: #888888;
-    text-align: center;
-    font-size: 15px;
-    padding: 0 20px;
-  }
-
-  /* ---------- Desktop: show row 2 ---------- */
+  #antonio-reviews-{{ section.id }} .ar-card__meta { display: flex; flex-direction: column; gap: 2px; }
+  #antonio-reviews-{{ section.id }} .ar-card__name     { font-family: 'Playfair Display', Georgia, serif; font-weight: 700; font-size: 13px; color: #1A1A1A; }
+  #antonio-reviews-{{ section.id }} .ar-card__location { font-size: 12px; color: #888888; }
+  #antonio-reviews-{{ section.id }} .ar-card__date     { font-size: 11px; color: #AAAAAA; }
+  #antonio-reviews-{{ section.id }} .antonio-reviews__empty { color: #888888; text-align: center; font-size: 15px; padding: 0 20px; }
   @media screen and (min-width: 768px) {
-    #antonio-reviews-{{ section.id }} .antonio-reviews__track-wrapper--row2 {
-      display: block;
-    }
+    #antonio-reviews-{{ section.id }} .antonio-reviews__track-wrapper--row2 { display: block; }
   }
 </style>
 
 <script>
 (function () {
   'use strict';
-
   var SECTION_ID = '{{ section.id }}';
   var GSAP_CDN   = 'https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js';
-
-  /* Card width + gap */
-  var CARD_W     = 280;
-  var CARD_GAP   = 20;
-  var CARD_STEP  = CARD_W + CARD_GAP;
-
-  /* Base duration (seconds) per card-step — row 2 is 30% faster */
-  var BASE_SPD   = 3.2;   /* seconds to travel one card width */
-  var ROW2_MULT  = 0.70;  /* 30% faster */
-
+  var CARD_W = 280, CARD_GAP = 20, CARD_STEP = 300;
+  var BASE_SPD = 3.2, ROW2_MULT = 0.70;
   function initReviews() {
     if (typeof gsap === 'undefined') return;
-
     var section = document.getElementById('antonio-reviews-' + SECTION_ID);
     if (!section) return;
-
-    var wrappers = section.querySelectorAll('.antonio-reviews__track-wrapper');
-
-    wrappers.forEach(function (wrapper, idx) {
-      var track      = wrapper.querySelector('.antonio-reviews__track');
+    section.querySelectorAll('.antonio-reviews__track-wrapper').forEach(function (wrapper, idx) {
+      var track = wrapper.querySelector('.antonio-reviews__track');
       if (!track) return;
-
-      /* Count only original (non-clone) cards */
-      var allCards   = track.querySelectorAll('.ar-card:not(.ar-card--clone)');
-      var cardCount  = allCards.length;
-      if (cardCount === 0) return;
-
-      /* Total width of one set */
-      var setWidth   = cardCount * CARD_STEP;
-
-      /* Speed multiplier for row 2 */
-      var speedMult  = (idx === 1) ? ROW2_MULT : 1;
-      var duration   = (cardCount * BASE_SPD) / speedMult;
-
-      /* GSAP infinite scroll tween */
+      var cardCount = track.querySelectorAll('.ar-card:not(.ar-card--clone)').length;
+      if (!cardCount) return;
+      var setWidth  = cardCount * CARD_STEP;
+      var speedMult = idx === 1 ? ROW2_MULT : 1;
+      var duration  = (cardCount * BASE_SPD) / speedMult;
       var tween = gsap.to(track, {
-        x: '-=' + setWidth,
-        duration: duration,
-        ease: 'none',
-        repeat: -1,
-        modifiers: {
-          x: gsap.utils.unitize(function (x) {
-            return parseFloat(x) % setWidth;
-          })
-        }
+        x: '-=' + setWidth, duration: duration, ease: 'none', repeat: -1,
+        modifiers: { x: gsap.utils.unitize(function (x) { return parseFloat(x) % setWidth; }) }
       });
-
-      /* Pause on hover */
       wrapper.addEventListener('mouseenter', function () { tween.pause(); });
       wrapper.addEventListener('mouseleave', function () { tween.resume(); });
     });
   }
-
-  function loadGSAP(callback) {
-    if (typeof gsap !== 'undefined') {
-      callback();
-      return;
-    }
+  function loadGSAP(cb) {
+    if (typeof gsap !== 'undefined') { cb(); return; }
     var s = document.createElement('script');
-    s.src = GSAP_CDN;
-    s.async = true;
-    s.onload = callback;
-    s.onerror = function () {
-      console.warn('[Antonio Reviews] Failed to load GSAP from CDN.');
-    };
+    s.src = GSAP_CDN; s.async = true; s.onload = cb;
     document.head.appendChild(s);
   }
-
-  /* Run on DOMContentLoaded or immediately if already ready */
   function ready(fn) {
-    if (document.readyState !== 'loading') {
-      fn();
-    } else {
-      document.addEventListener('DOMContentLoaded', fn);
-    }
+    if (document.readyState !== 'loading') { fn(); }
+    else { document.addEventListener('DOMContentLoaded', fn); }
   }
-
-  ready(function () {
-    loadGSAP(initReviews);
-  });
-
-  /* Shopify theme editor: re-init on section reload */
+  ready(function () { loadGSAP(initReviews); });
   if (window.Shopify && window.Shopify.designMode) {
     document.addEventListener('shopify:section:load', function (e) {
-      if (e.detail && e.detail.sectionId === SECTION_ID) {
-        loadGSAP(initReviews);
-      }
+      if (e.detail && e.detail.sectionId === SECTION_ID) { loadGSAP(initReviews); }
     });
   }
 })();
@@ -416,40 +250,11 @@
       "type": "review",
       "name": "Customer Review",
       "settings": [
-        {
-          "type": "range",
-          "id": "stars",
-          "label": "Star Rating",
-          "min": 1,
-          "max": 5,
-          "step": 1,
-          "default": 5
-        },
-        {
-          "type": "textarea",
-          "id": "review",
-          "label": "Review Text",
-          "info": "Max 120 characters recommended",
-          "default": "Best pizza I've ever had outside of the city!"
-        },
-        {
-          "type": "text",
-          "id": "name",
-          "label": "Customer Name",
-          "default": "John D."
-        },
-        {
-          "type": "text",
-          "id": "location",
-          "label": "Location",
-          "default": "Massapequa, NY"
-        },
-        {
-          "type": "text",
-          "id": "date",
-          "label": "Date",
-          "default": "March 2025"
-        }
+        { "type": "range",    "id": "stars",    "label": "Star Rating", "min": 1, "max": 5, "step": 1, "default": 5 },
+        { "type": "textarea", "id": "review",   "label": "Review Text", "default": "Best pizza in Colorado, period." },
+        { "type": "text",     "id": "name",     "label": "Customer Name", "default": "John D." },
+        { "type": "text",     "id": "location", "label": "Location", "default": "Estes Park, CO" },
+        { "type": "text",     "id": "date",     "label": "Date", "default": "March 2025" }
       ]
     }
   ],
@@ -461,9 +266,9 @@
           "type": "review",
           "settings": {
             "stars": 5,
-            "review": "This is the real deal — thin crust, perfect char, sauce that tastes like it came straight from Brooklyn. Antonio's is the only pizza on Long Island I'll drive out of my way for.",
-            "name": "Mike R.",
-            "location": "Hicksville, NY",
+            "review": "I've lived in Colorado my whole life and never believed I'd find pizza this good without boarding a plane to New York. Antonio's is the real deal — voted #1 in Colorado and every bite proves it. I can't believe it's right here in Estes Park.",
+            "name": "Sarah M.",
+            "location": "Estes Park, CO",
             "date": "February 2025"
           }
         },
@@ -471,9 +276,9 @@
           "type": "review",
           "settings": {
             "stars": 5,
-            "review": "I grew up eating pizza in Queens and thought nothing on the Island could compare. Antonio's proved me completely wrong. The Margherita slice is absolutely perfect.",
-            "name": "Donna C.",
-            "location": "Garden City, NY",
+            "review": "I've tried every pizza place along the Front Range looking for that authentic NY taste and they all fall flat. Antonio's nails it completely. The crust, the sauce, the cheese pull — nothing else in Colorado even comes close. This is the only place I go now.",
+            "name": "Mike T.",
+            "location": "Longmont, CO",
             "date": "January 2025"
           }
         },
@@ -481,9 +286,9 @@
           "type": "review",
           "settings": {
             "stars": 5,
-            "review": "Hands down the best New York-style pizza in Nassau County. The crust has that incredible crunch and the cheese pull is unreal. My whole family is obsessed.",
-            "name": "Tommy V.",
-            "location": "Levittown, NY",
+            "review": "Made the drive down from Fort Collins specifically for the wings and pizza after a friend wouldn't stop talking about this place. Absolutely worth every mile. The wings are crispy perfection and the pizza is on another level. Already planning my next trip.",
+            "name": "Jennifer K.",
+            "location": "Fort Collins, CO",
             "date": "March 2025"
           }
         },
@@ -491,9 +296,9 @@
           "type": "review",
           "settings": {
             "stars": 5,
-            "review": "We ordered three pies for a family gathering and every single one was gone in minutes. The Sicilian is thick, saucy, and absolutely incredible. Antonio's is our new go-to.",
-            "name": "Angela M.",
-            "location": "Plainview, NY",
+            "review": "The Grandma Lita is unlike anything I've ever eaten. The combination of flavors is bold and inventive but somehow perfectly balanced — it shouldn't work and yet it's the best slice I've had anywhere. Antonio is a genuine artist. Boulder is lucky to be close to this.",
+            "name": "David R.",
+            "location": "Boulder, CO",
             "date": "February 2025"
           }
         },
@@ -501,20 +306,20 @@
           "type": "review",
           "settings": {
             "stars": 5,
-            "review": "I've been searching for an authentic NY slice since moving out to Long Island 5 years ago. Found it. Antonio's sauce recipe tastes like a Sunday in my grandma's kitchen.",
-            "name": "Frank S.",
-            "location": "Bethpage, NY",
-            "date": "January 2025"
+            "review": "We made the trip up from Denver just to try the Mega Don and the Godfather and they both exceeded every expectation. The Godfather alone is worth the drive — loaded with real Italian ingredients, perfectly balanced, incredible crust. We're already planning our next visit.",
+            "name": "Lisa & Tom P.",
+            "location": "Denver, CO",
+            "date": "March 2025"
           }
         },
         {
           "type": "review",
           "settings": {
             "stars": 5,
-            "review": "The pizza here is legitimately as good as anything you'll find in the five boroughs. Crispy bottom, fresh mozzarella, that perfect balance of tangy and sweet in the sauce. Outstanding.",
-            "name": "Lauren B.",
-            "location": "Syosset, NY",
-            "date": "March 2025"
+            "review": "The Spicy Calabrian changed my life. I know that sounds dramatic but I genuinely think about it all the time. The heat builds perfectly, the toppings are generous and fresh, and that crust is everything. Antonio competed in Italy and you can taste every bit of that skill.",
+            "name": "Chris A.",
+            "location": "Loveland, CO",
+            "date": "January 2025"
           }
         }
       ]
